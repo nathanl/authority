@@ -38,7 +38,7 @@ describe ModelCitizen::Abilities do
 
   describe "class methods" do
 
-    ModelCitizen::Abilities::ADJECTIVES.each do |adjective|
+    ModelCitizen::ADJECTIVES.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
@@ -61,7 +61,7 @@ describe ModelCitizen::Abilities do
       @authorizer    = AbilityModel.authorizer.new(@ability_model)
     end
 
-    ModelCitizen::Abilities::ADJECTIVES.each do |adjective|
+    ModelCitizen::ADJECTIVES.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
@@ -74,7 +74,12 @@ describe ModelCitizen::Abilities do
         @ability_model.send(method_name, @actor)
       end
 
-      it "should always create a new authorizer instance when checking `#{method_name}`"
+      it "should always create a new authorizer instance when checking `#{method_name}`" do
+        2.times do
+          @ability_model.class.authorizer.should_receive(:new).with(@ability_model).and_return(@authorizer)
+          @ability_model.send(method_name, @actor)
+        end
+      end
 
     end
     

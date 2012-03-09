@@ -2,8 +2,6 @@ module ModelCitizen
   module Abilities
     extend ActiveSupport::Concern
 
-    ADJECTIVES = %w[creatable readable updatable deletable]
-
     included do
       class_attribute :authorizer_name
 
