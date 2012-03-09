@@ -18,7 +18,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Models
+
+`include ModelCitizen::Abilities`
+
+### Controllers
+
+`check_authorization_on ModelName`
 
 ## Contributing
 
