@@ -2,6 +2,8 @@ module ModelCitizen
   module Abilities
     extend ActiveSupport::Concern
 
+    ADJECTIVES = %w[creatable readable updatable deletable]
+
     included do
       class_attribute :authorizer_name
 
@@ -10,16 +12,14 @@ module ModelCitizen
 
     module ClassMethods
 
-      def creatable_by?(actor)
-      end
+      ADJECTIVES.each do |adjective|
 
-      def readable_by?(actor)
-      end
-
-      def updatable_by?(actor)
-      end
-
-      def deletable_by?(actor)
+        # Metaprogram needed methods, allowing for nice backtraces
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          def #{adjective}_by?(actor)
+            authorizer.#{adjective}_by?(actor)
+          end
+        RUBY
       end
 
       def authorizer
@@ -27,17 +27,15 @@ module ModelCitizen
       end
     end
 
-    def creatable_by?(actor)
-    end
+      ADJECTIVES.each do |adjective|
 
-    def readable_by?(actor)
-    end
-
-    def updatable_by?(actor)
-    end
-
-    def deletable_by?(actor)
-    end
+        # Metaprogram needed methods, allowing for nice backtraces
+        class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          def #{adjective}_by?(actor)
+            self.class.authorizer.new(self).#{adjective}_by?(actor)
+          end
+        RUBY
+      end
 
   end
 end

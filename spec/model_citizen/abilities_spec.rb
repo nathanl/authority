@@ -4,6 +4,10 @@ require 'support/actor'
 
 describe ModelCitizen::Abilities do
 
+  before :each do
+    @actor = Actor.new
+  end
+
   describe "authorizer" do
 
     it "should have a class attribute getter for authorizer_name" do
@@ -34,15 +38,14 @@ describe ModelCitizen::Abilities do
 
   describe "class methods" do
 
-    %w[creatable readable updatable deletable].each do |verb|
-      method_name = "#{verb}_by?"
+    ModelCitizen::Abilities::ADJECTIVES.each do |adjective|
+      method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
         AbilityModel.should respond_to(method_name)
       end
 
       it "should delegate `#{method_name}` to its authorizer class" do
-        pending
         AbilityModel.authorizer.should_receive(method_name).with(@actor)
         AbilityModel.send(method_name, @actor)
       end
@@ -55,17 +58,20 @@ describe ModelCitizen::Abilities do
 
     before :each do
       @ability_model = AbilityModel.new
+      @authorizer    = AbilityModel.authorizer.new(@ability_model)
     end
 
-    %w[creatable readable updatable deletable].each do |verb|
-      method_name = "#{verb}_by?"
+    ModelCitizen::Abilities::ADJECTIVES.each do |adjective|
+      method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
         @ability_model.should respond_to(method_name)
       end
 
-      it "should delegate `#{method_name}`  to a new authorizer instance" do
-        pending
+      it "should delegate `#{method_name}` to a new authorizer instance" do
+        AbilityModel.authorizer.stub(:new).and_return(@authorizer)
+        @authorizer.should_receive(method_name).with(@actor)
+        @ability_model.send(method_name, @actor)
       end
 
       it "should always create a new authorizer instance when checking `#{method_name}`"
