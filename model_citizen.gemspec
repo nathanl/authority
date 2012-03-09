@@ -8,6 +8,7 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{TODO: Write a gem summary}
   gem.homepage      = ""
 
+  gem.add_dependency "rails", ">= 3.0.0"
   gem.add_development_dependency "bundler", ">= 1.0.0"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
