@@ -156,6 +156,9 @@ If you update your authorizer as follows:
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+3. `bundle install` to get all dependencies
+4. `rspec spec` to run all tests.
+5. Make your changes and update/add tests as necessary.
+6. Commit your changes (`git commit -am 'Added some feature'`)
+7. Push to the branch (`git push origin my-new-feature`)
+8. Create new Pull Request
