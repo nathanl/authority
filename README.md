@@ -27,7 +27,9 @@ The goals of Authority are:
 
 ## Installation
 
-Add this line to your application's Gemfile:
+First, check in whatever changes you've made to your app already. You want to see what we're doing to your app, don't you?
+
+Now, add this line to your application's Gemfile:
 
     gem 'authority'
 
@@ -39,7 +41,21 @@ Or install it yourself as:
 
     $ gem install authority
 
+Then run the generator:
+
+    $ rails g authority:install
+
+Hooray! New files! Go look at them.
+
+## TL;DR
+
+No time for reading! Reading is for chumps! Here's the skinny:
+
+(TODO: fill this in)
+
 ## How it works
+
+Still here? Reading is fun! You always knew that. Time for a deeper look at things.
 
 In broad terms, the authorization process flows like this:
 
@@ -134,6 +150,7 @@ If you update your authorizer as follows:
   - Add generator to installation instructions
   - Generate well-commented default configuration file like Devise does (shout out!)
   - Generate 403.html, with option to skip if exists
+- Write about configuration file and options. Note that you MUST call configure; internals aren't included until you do.
 
 ## Contributing
 
