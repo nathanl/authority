@@ -1,4 +1,4 @@
-module ModelCitizen
+module Authority
   class Authorizer
 
     attr_reader :resource

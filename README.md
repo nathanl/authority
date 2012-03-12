@@ -1,14 +1,14 @@
-# ModelCitizen
+# Authority
 
 ## SUPER ALPHA VERSION
 
 ## Overview
 
-ModelCitizen gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
+Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
 
 It assumes that you already have some kind of user object in your application.
 
-The goals of ModelCitizen are:
+The goals of Authority are:
 
 - To allow broad, class-level rules. Examples: 
   - "Basic users cannot delete **any** Widget."
@@ -29,7 +29,7 @@ The goals of ModelCitizen are:
 
 Add this line to your application's Gemfile:
 
-    gem 'model_citizen'
+    gem 'authority'
 
 And then execute:
 
@@ -37,7 +37,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install model_citizen
+    $ gem install authority
 
 ## How it works
 
@@ -52,11 +52,11 @@ In broad terms, the authorization process flows like this:
 
 ### Users
 
-Your user model (whatever you call it) should `include ModelCitizen::UserAbilities`. This defines methods like `can_edit?(resource)`, which are just nice shortcuts for `resource.editable_by?(user)`. (TODO: Add this module).
+Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_edit?(resource)`, which are just nice shortcuts for `resource.editable_by?(user)`. (TODO: Add this module).
 
 ### Models
 
-In your models, simply `include ModelCitizen::Abilities`. This sets up both class-level and instance-level methods like `creatable_by?(user)`, etc, all of which delegate to the model's corresponding authorizer. For example, the `Rabbit` model would delegate to `RabbitAuthorizer`.
+In your models, simply `include Authority::Abilities`. This sets up both class-level and instance-level methods like `creatable_by?(user)`, etc, all of which delegate to the model's corresponding authorizer. For example, the `Rabbit` model would delegate to `RabbitAuthorizer`.
 
 ### Controllers
 
@@ -79,18 +79,18 @@ If you need to check some attributes of a model instance to decide if an action 
 Authorizers should be added under `app/authorizers`, one for each of your models. Each authorizer should correspond to a single model. So if you have `app/models/laser_cannon.rb`, you should have, at minimum:
 
     # app/authorizers/laser_cannon_authorizer.rb
-    class LaserCannonAuthorizer < ModelCitizen::Authorizer
+    class LaserCannonAuthorizer < Authority::Authorizer
     end
 
-These are where your actual authorization logic goes. You do have to specify your own business rules, but ModelCitizen comes with the following baked in:
+These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
 
-- All class-level methods defined on `ModelCitizen::Authorizer` return false by default; you must override them in your Authorizers to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
-- All instance-level methods defined on `ModelCitizen::Authorizer` call their corresponding class-level method by default.
+- All class-level methods defined on `Authority::Authorizer` return false by default; you must override them in your Authorizers to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
+- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default.
 
 This combination means that, with this code:
 
     # app/authorizers/laser_cannon_authorizer.rb
-    class LaserCannonAuthorizer < ModelCitizen::Authorizer
+    class LaserCannonAuthorizer < Authority::Authorizer
     end
 
 ... you can already do the following:
@@ -101,7 +101,7 @@ This combination means that, with this code:
 If you update your authorizer as follows:
 
     # app/authorizers/laser_cannon_authorizer.rb
-    class LaserCannonAuthorizer < ModelCitizen::Authorizer
+    class LaserCannonAuthorizer < Authority::Authorizer
 
       def self.creatable_by?(user) # class-level permission
         true
@@ -123,6 +123,8 @@ If you update your authorizer as follows:
 
 - Add a module, to be included in whatever user class an app has, which defines all the `can_(verb)` methods.
 - Determine exact syntax for checking rules during a controller action.
+- Add ability to customize default authorization
+- Add customizable logger for authorization violations
 
 ## Contributing
 

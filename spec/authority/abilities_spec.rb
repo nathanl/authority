@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'support/ability_model'
 require 'support/actor'
 
-describe ModelCitizen::Abilities do
+describe Authority::Abilities do
 
   before :each do
     @actor = Actor.new
@@ -38,7 +38,7 @@ describe ModelCitizen::Abilities do
 
   describe "class methods" do
 
-    ModelCitizen::ADJECTIVES.each do |adjective|
+    Authority::ADJECTIVES.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
@@ -61,7 +61,7 @@ describe ModelCitizen::Abilities do
       @authorizer    = AbilityModel.authorizer.new(@ability_model)
     end
 
-    ModelCitizen::ADJECTIVES.each do |adjective|
+    Authority::ADJECTIVES.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do

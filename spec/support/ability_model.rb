@@ -1,6 +1,6 @@
 class AbilityModel
-  include ModelCitizen::Abilities
+  include Authority::Abilities
 end
 
-class AbilityModelAuthorizer < ModelCitizen::Authorizer
+class AbilityModelAuthorizer < Authority::Authorizer
 end

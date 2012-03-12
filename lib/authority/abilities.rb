@@ -1,4 +1,4 @@
-module ModelCitizen
+module Authority
   module Abilities
     extend ActiveSupport::Concern
 
