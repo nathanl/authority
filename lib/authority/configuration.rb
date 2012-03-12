@@ -1,24 +1,31 @@
 module Authority
   class Configuration
 
-    attr_accessor :default_strategy, :abilities
+    attr_accessor :default_strategy, :abilities, :authority_actions, :user_method
 
     def initialize
       @default_strategy = Proc.new { |able, authorizer, user|
         false
       }
 
-      @abilities ||= {
+      @abilities = {
         :create => 'creatable',
         :read   => 'readable',
         :update => 'updatable',
         :delete => 'deletable'
       }
 
-      def @abilities.[]=(key, value)
-        Authority.instance_variable_set(:@abilities, nil)
-        super
-      end
+      @authority_actions = {
+        :index   => 'read',
+        :show    => 'read',
+        :new     => 'create',
+        :create  => 'create',
+        :edit    => 'update',
+        :update  => 'update',
+        :destroy => 'delete'
+      }
+
+      @user_method = :current_user
     end
 
   end

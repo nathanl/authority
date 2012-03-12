@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'active_support/core_ext/class/attribute'
+require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/string/inflections'
 
 module Authority
@@ -38,8 +39,12 @@ module Authority
     require 'authority/user_abilities'
   end
 
+  class SecurityTransgression < StandardError ; end
+
 end
 
 require 'authority/configuration'
+require 'authority/controller'
+require 'authority/railtie' if defined?(Rails)
 require 'authority/version'
 

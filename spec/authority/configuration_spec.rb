@@ -11,6 +11,14 @@ describe Authority::Configuration do
       Authority.configuration.default_strategy.call(:action, Authority::Authorizer, User.new).should be_false
     end
 
+    it "should have a default authority controller actions map" do
+      Authority.configuration.authority_actions.should be_a(Hash)
+    end
+
+    it "should have a default controller method for accessing the user object" do
+      Authority.configuration.user_method.should eq(:current_user)
+    end
+
   end
 
   describe "customizing the configuration" do

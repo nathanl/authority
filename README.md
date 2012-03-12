@@ -72,7 +72,7 @@ If that's all you need, one line does it.
 
 #### In-action usage
 
-If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(:action, @model_instance, @user)` (TODO: determine this)
+If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(:action, @model_instance, @user)`
 
 ### Authorizers
 
@@ -124,6 +124,7 @@ If you update your authorizer as follows:
 - Determine exact syntax for checking rules during a controller action.
 - Add customizable logger for authorization violations
 - Add generators or hook into existing rails generators
+- Generate default configuration file and 403.html
 
 ## Contributing
 
