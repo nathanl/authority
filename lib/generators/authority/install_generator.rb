@@ -11,6 +11,10 @@ module Authority
       def copy_initializer
         template "authority.rb", "config/initializers/authority.rb"
       end
+
+      def copy_forbidden
+        template "403.html", "public/403.html"
+      end
       
     end
   end
