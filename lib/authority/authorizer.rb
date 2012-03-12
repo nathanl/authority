@@ -7,18 +7,18 @@ module Authority
       @resource = resource
     end
 
-    ADJECTIVES.each do |adjective|
+    Authority.adjectives.each do |adjective|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def self.#{adjective}_by?(actor)
-          false
+        def self.#{adjective}_by?(user)
+          Authority.default_strategy.call(:#{adjective}, self, user)
         end
       RUBY
     end
 
-    ADJECTIVES.each do |adjective|
+    Authority.adjectives.each do |adjective|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{adjective}_by?(actor)
-          false
+        def #{adjective}_by?(user)
+          self.class.#{adjective}_by?(user)
         end
       RUBY
     end

@@ -123,8 +123,8 @@ If you update your authorizer as follows:
 
 - Add a module, to be included in whatever user class an app has, which defines all the `can_(verb)` methods.
 - Determine exact syntax for checking rules during a controller action.
-- Add ability to customize default authorization
 - Add customizable logger for authorization violations
+- Add generators or hook into existing rails generators
 
 ## Contributing
 

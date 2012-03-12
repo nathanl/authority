@@ -10,12 +10,12 @@ module Authority
 
     module ClassMethods
 
-      ADJECTIVES.each do |adjective|
+      Authority.adjectives.each do |adjective|
 
         # Metaprogram needed methods, allowing for nice backtraces
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{adjective}_by?(actor)
-            authorizer.#{adjective}_by?(actor)
+          def #{adjective}_by?(user)
+            authorizer.#{adjective}_by?(user)
           end
         RUBY
       end
@@ -25,12 +25,16 @@ module Authority
       end
     end
 
-      ADJECTIVES.each do |adjective|
+      Authority.adjectives.each do |adjective|
 
         # Metaprogram needed methods, allowing for nice backtraces
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{adjective}_by?(actor)
-            self.class.authorizer.new(self).#{adjective}_by?(actor)
+          def #{adjective}_by?(user)
+            authorizer.#{adjective}_by?(user)
+          end
+
+          def authorizer
+            self.class.authorizer.new(self)
           end
         RUBY
       end

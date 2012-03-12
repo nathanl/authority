@@ -1,11 +1,11 @@
 require 'spec_helper'
 require 'support/ability_model'
-require 'support/actor'
+require 'support/user'
 
 describe Authority::Abilities do
 
   before :each do
-    @actor = Actor.new
+    @user = User.new
   end
 
   describe "authorizer" do
@@ -38,7 +38,7 @@ describe Authority::Abilities do
 
   describe "class methods" do
 
-    Authority::ADJECTIVES.each do |adjective|
+    Authority.adjectives.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
@@ -46,8 +46,8 @@ describe Authority::Abilities do
       end
 
       it "should delegate `#{method_name}` to its authorizer class" do
-        AbilityModel.authorizer.should_receive(method_name).with(@actor)
-        AbilityModel.send(method_name, @actor)
+        AbilityModel.authorizer.should_receive(method_name).with(@user)
+        AbilityModel.send(method_name, @user)
       end
 
     end
@@ -61,7 +61,7 @@ describe Authority::Abilities do
       @authorizer    = AbilityModel.authorizer.new(@ability_model)
     end
 
-    Authority::ADJECTIVES.each do |adjective|
+    Authority.adjectives.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
@@ -70,17 +70,21 @@ describe Authority::Abilities do
 
       it "should delegate `#{method_name}` to a new authorizer instance" do
         AbilityModel.authorizer.stub(:new).and_return(@authorizer)
-        @authorizer.should_receive(method_name).with(@actor)
-        @ability_model.send(method_name, @actor)
+        @authorizer.should_receive(method_name).with(@user)
+        @ability_model.send(method_name, @user)
       end
 
-      it "should always create a new authorizer instance when checking `#{method_name}`" do
-        2.times do
-          @ability_model.class.authorizer.should_receive(:new).with(@ability_model).and_return(@authorizer)
-          @ability_model.send(method_name, @actor)
-        end
-      end
+    end
 
+    it "should provide an accessor for its authorizer" do
+      @ability_model.should respond_to(:authorizer)
+    end
+
+    # TODO: Nathan will comment more clearly in the future
+    # aka "don't memoize" (to prevent dirty models from contaminating authorization)
+    it "should always create a new authorizer instance when accessing the authorizer" do 
+      @ability_model.class.authorizer.should_receive(:new).with(@ability_model).twice
+      2.times { @ability_model.authorizer }
     end
     
   end
