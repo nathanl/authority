@@ -25,7 +25,7 @@ describe Authority::Authorizer do
 
       it "should run the default authorization strategy block" do
         able = method_name.sub('_by?', '').to_sym
-        Authority.default_strategy.should_receive(:call).with(able, Authority::Authorizer, @user)
+        Authority.configuration.default_strategy.should_receive(:call).with(able, Authority::Authorizer, @user)
         Authority::Authorizer.send(method_name, @user)
       end
 

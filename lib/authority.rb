@@ -4,13 +4,10 @@ require 'active_support/core_ext/string/inflections'
 
 module Authority
 
+  # NOTE: once this method is called, the library has started meta programming
+  # and abilities should no longer be modified
   def self.abilities
-    @abilities ||= {
-      :create => 'creatable',
-      :read   => 'readable',
-      :update => 'updatable',
-      :delete => 'deletable'
-    }
+    configuration.abilities.freeze
   end
 
   def self.verbs
@@ -21,18 +18,28 @@ module Authority
     abilities.values
   end
 
-  def self.default_strategy
-    @default_strategy ||= Proc.new { |able, authorizer, user|
-      false
-    }
+  class << self
+    attr_accessor :configuration
   end
 
-  def self.default_strategy=(value)
-    @default_strategy = value
+  def self.configure
+    self.configuration ||= Configuration.new
+    yield(configuration) if block_given?
+    require_authority_internals!
+
+    configuration
   end
+
+  private
+
+  def self.require_authority_internals!
+    require 'authority/abilities'
+    require 'authority/authorizer'
+    require 'authority/user_abilities'
+  end
+
 end
 
-require 'authority/abilities'
-require 'authority/authorizer'
-require 'authority/user_abilities'
+require 'authority/configuration'
 require 'authority/version'
+
