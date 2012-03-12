@@ -126,6 +126,7 @@ If you update your authorizer as follows:
 
 ## TODO
 
+- Add a TL;DR section at the top of this file
 - Determine exact syntax for checking rules during a controller action
 - Add customizable logger for authorization violations
 - Generator

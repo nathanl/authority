@@ -22,6 +22,10 @@ module Authority
 
     protected
 
+    def authority_forbidden(error)
+      render :file => Rails.root.join('public', '403.html'), :status => 403
+    end
+
     def run_authorization_check
       check_authorization_for self.class.authority_resource, send(Authority.configuration.user_method)
     end
