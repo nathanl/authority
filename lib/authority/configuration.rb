@@ -27,7 +27,7 @@ module Authority
 
       @user_method = :current_user
 
-      @logger = defined?(Rails) ? Rails.logger : Logger.new(STDERR)
+      @logger = Logger.new(STDERR)
     end
 
   end

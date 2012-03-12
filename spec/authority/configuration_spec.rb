@@ -21,17 +21,11 @@ describe Authority::Configuration do
 
     describe "logging security violations" do
 
-      it "should use the Rails logger if it's available" do
-        require 'support/mock_rails'
+      it "should log to standard error by default" do
         Authority.instance_variable_set :@configuration, nil
-        Authority.configure
-        Authority.configuration.logger.should eq(Rails.logger)
-        undefine_rails
-      end
-
-      it "should log to standard error if the Rails logger isn't available" do
-        Authority.instance_variable_set :@configuration, nil
-        Logger.should_receive(:new).with(STDERR)
+        null = File.exists?('/dev/null') ? '/dev/null' : 'NUL:' # Allow for Windows
+        @logger = Logger.new(null)
+        Logger.should_receive(:new).with(STDERR).and_return(@logger)
         Authority.configure
         Authority.configuration.logger
       end

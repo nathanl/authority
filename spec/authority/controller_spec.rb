@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'support/ability_model'
 require 'support/example_controller'
+require 'support/mock_rails'
 require 'support/user'
 
 describe Authority::Controller do
@@ -70,15 +71,21 @@ describe Authority::Controller do
       end
 
       describe "authority_forbidden action" do
-        it "should log an error"
+
+        before :each do
+          @mock_error = mock(:message => 'oh noes! an error!')
+        end
+
+        it "should log an error" do
+          Authority.configuration.logger.should_receive(:warn)
+          @controller.stub(:render)
+          @controller.send(:authority_forbidden, @mock_error)
+        end
 
         it "should render the public/403.html file" do
-          require 'support/mock_rails'
-          mock_error = mock(:message => 'oh noes! an error!')
           forbidden_page = Rails.root.join('public/403.html')
           @controller.should_receive(:render).with(:file => forbidden_page, :status => 403)
-          @controller.send(:authority_forbidden, mock_error)
-          undefine_rails
+          @controller.send(:authority_forbidden, @mock_error)
         end
       end
     end

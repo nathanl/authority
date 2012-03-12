@@ -23,6 +23,7 @@ module Authority
     protected
 
     def authority_forbidden(error)
+      Authority.configuration.logger.warn(error.message)
       render :file => Rails.root.join('public', '403.html'), :status => 403
     end
 
