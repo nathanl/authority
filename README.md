@@ -52,7 +52,7 @@ In broad terms, the authorization process flows like this:
 
 ### Users
 
-Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_edit?(resource)`, which are just nice shortcuts for `resource.editable_by?(user)`. (TODO: Add this module).
+Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_edit?(resource)`, which are just nice shortcuts for `resource.editable_by?(user)`.
 
 ### Models
 
@@ -121,7 +121,6 @@ If you update your authorizer as follows:
 
 ## TODO
 
-- Add a module, to be included in whatever user class an app has, which defines all the `can_(verb)` methods.
 - Determine exact syntax for checking rules during a controller action.
 - Add customizable logger for authorization violations
 - Add generators or hook into existing rails generators
