@@ -1,7 +1,7 @@
 module Authority
   class Configuration
 
-    attr_accessor :default_strategy, :abilities, :authority_actions, :user_method
+    attr_accessor :default_strategy, :abilities, :authority_actions, :user_method, :logger
 
     def initialize
       @default_strategy = Proc.new { |able, authorizer, user|
@@ -26,6 +26,8 @@ module Authority
       }
 
       @user_method = :current_user
+
+      @logger = defined?(Rails) ? Rails.logger : Logger.new(STDERR)
     end
 
   end
