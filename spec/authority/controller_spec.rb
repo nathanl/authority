@@ -51,12 +51,12 @@ describe Authority::Controller do
       before :each do 
         @user       = User.new
         @controller = ExampleController.new
-        @controller.stub!(:action_name).and_return(:index)
+        @controller.stub!(:action_name).and_return(:edit)
         @controller.stub!(Authority.configuration.user_method).and_return(@user)
       end
 
       it "should check authorization on the model specified" do
-        @controller.should_receive(:check_authorization_for).with(:index, AbilityModel, @user)
+        @controller.should_receive(:check_authorization_for).with(AbilityModel, @user)
         @controller.send(:run_authorization_check)
       end
 
@@ -64,7 +64,10 @@ describe Authority::Controller do
         expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::SecurityTransgression)
       end
 
-      it "should raise a MissingAuthorityAction if there is no corresponding action for the controller"
+      it "should raise a MissingAction if there is no corresponding action for the controller" do
+        @controller.stub(:action_name).and_return('sculpt')
+        expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::Controller::MissingAction)
+      end
 
       describe "forbidden action" do
         it "should log an error"

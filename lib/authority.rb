@@ -19,6 +19,15 @@ module Authority
     abilities.values
   end
 
+  def self.enforce(action, resource, user)
+    action_authorized = user.send("can_#{action}?", resource)
+    unless action_authorized
+      message = "#{user} is not authorized to #{action} this resource: #{resource.inspect}"
+      raise SecurityTransgression.new(message)
+    end
+    resource
+  end
+
   class << self
     attr_accessor :configuration
   end

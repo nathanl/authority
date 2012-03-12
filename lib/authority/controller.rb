@@ -23,12 +23,17 @@ module Authority
     protected
 
     def run_authorization_check
-      check_authorization_for action_name, self.class.authority_resource, send(Authority.configuration.user_method)
+      check_authorization_for self.class.authority_resource, send(Authority.configuration.user_method)
     end
 
-    def check_authorization_for(controller_action, authority_resource, user)
-      authority_action = self.class.authority_actions[controller_action.to_sym]
-      raise SecurityTransgression.new("") unless user.send("can_#{authority_action}?", authority_resource)
+    def check_authorization_for(authority_resource, user)
+      authority_action = self.class.authority_actions[action_name.to_sym]
+      if authority_action.nil?
+        raise MissingAction.new("No authority action defined for #{action_name}")
+      end
+      Authority.enforce(authority_action, authority_resource, user)
     end
+
+    class MissingAction < StandardError ; end
   end
 end

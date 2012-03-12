@@ -1,18 +1,15 @@
 require 'spec_helper'
+require 'support/ability_model'
 require 'support/user'
 
 describe Authority do
-
-  before :each do
-    Authority.instance_variable_set(:@abilites, nil)
-  end
 
   it "should have a default list of abilities" do
     Authority.abilities.should be_a(Hash)
   end
 
   it "should not allow modification of the Authority.abilities hash directly" do
-    expect { Authority.abilities[:stab] = 'stablable' }.to raise_error(RuntimeError, "can't modify frozen Hash")
+    expect { Authority.abilities[:exchange] = 'fungible' }.to raise_error(RuntimeError, "can't modify frozen Hash")
   end
 
   it "should have a convenience accessor for the ability verbs" do
@@ -37,6 +34,22 @@ describe Authority do
       Authority.should_receive(:require_authority_internals!)
       Authority.configure
     end
+  end
+
+  describe "enforcement" do
+
+    before :each do
+      @user = User.new
+    end
+
+    it "should raise a SecurityTransgression if the action is unauthorized" do
+      expect { Authority.enforce(:update, AbilityModel, @user) }.to raise_error(Authority::SecurityTransgression)
+    end
+
+    it "should not raise a SecurityTransgression if the action is authorized" do
+      expect { Authority.enforce(:read, AbilityModel, @user) }.not_to raise_error(Authority::SecurityTransgression)
+    end
+
   end
 
 end

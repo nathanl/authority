@@ -84,8 +84,9 @@ Authorizers should be added under `app/authorizers`, one for each of your models
 
 These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
 
-- All class-level methods defined on `Authority::Authorizer` return false by default; you must override them in your Authorizers to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
-- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default.
+- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
+- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration.
+- The **default** default strategies all return false by default; you must override them in your Authorizers to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
 
 This combination means that, with this code:
 
@@ -121,10 +122,13 @@ If you update your authorizer as follows:
 
 ## TODO
 
-- Determine exact syntax for checking rules during a controller action.
+- Determine exact syntax for checking rules during a controller action
 - Add customizable logger for authorization violations
-- Add generators or hook into existing rails generators
-- Generate default configuration file and 403.html
+- Generator
+  - Add generators or hook into existing rails generators
+  - Add generator to installation instructions
+  - Generate well-commented default configuration file like Devise does (shout out!)
+  - Generate 403.html, with option to skip if exists
 
 ## Contributing
 

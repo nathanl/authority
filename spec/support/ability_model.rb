@@ -3,4 +3,7 @@ class AbilityModel
 end
 
 class AbilityModelAuthorizer < Authority::Authorizer
+  def self.readable_by?(user)
+    true
+  end
 end
