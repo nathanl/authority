@@ -86,7 +86,7 @@ These are where your actual authorization logic goes. You do have to specify you
 
 - All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
 - All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration.
-- The **default** default strategies all return false by default; you must override them in your Authorizers to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
+- The **default** default strategy simply returns false; you must override it in your configuration and/or write methods on your individual `Authorizer` classes to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
 
 This combination means that, with this code:
 
@@ -119,6 +119,10 @@ If you update your authorizer as follows:
     current_user.can_create?(LaserCannon)    # true, per class method above
     current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
     current_user.can_delete?(@laser_cannon)  # Only Larry, and only on Fridays
+
+## Misc notes
+
+- If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "Harvey Johnson is not allowed to delete this resource:..."
 
 ## TODO
 
