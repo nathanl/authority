@@ -1,3 +1,5 @@
+require 'rails'
+
 module Authority
   class Railtie < ::Rails::Railtie
 
@@ -7,3 +9,4 @@ module Authority
 
   end
 end
+
