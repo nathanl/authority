@@ -1,8 +1,21 @@
 # Authority
 
-## SUPER ALPHA VERSION
+## SUPER BETA VERSION. Stabler release coming soon.
+
+## TL;DR
+
+No time for reading! Reading is for chumps! Here's the skinny:
+
+- Install in your Rails project
+- Put this in your controllers: `check_authorization_on ModelName`
+- Put this in your models:  `include Authority::Abilities`
+- For each model you have, create a corresponding Authorization file. For example, for `app/models/lolcat.rb`, create `app/authorizations/lolcat_authorization.rb` with an empty class inheriting from `Authorization`.
+- Add class methods to that authorization to set rules that can be enforced just by looking at the resource class, like "this user cannot create Lolcats, period."
+- Add instance methods to that authorization to set rules that need to look at a resource instance, like "a user can only edit a Lolcat if it belongs to that user and has not been marked as 'classic'".
 
 ## Overview
+
+Still here? Reading is fun! You always knew that. Time for a deeper look at things.
 
 Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
 
@@ -25,6 +38,15 @@ The goals of Authority are:
 
 - To do all of this **without cluttering** either your controllers or your models. This is done by letting Authorizer classes do most of the work. More on that below.
 
+## The flow of Authority
+
+In broad terms, the authorization process flows like this:
+
+- A request comes to a model, either the class or an instance, saying "can this user do this action to you?"
+- The model passes that question to its Authorizer
+- The Authorizer checks whatever user properties and business rules are relevant to answer that question.
+- The answer is passed back up to the model, then back to the original caller
+
 ## Installation
 
 First, check in whatever changes you've made to your app already. You want to see what we're doing to your app, don't you?
@@ -46,23 +68,6 @@ Then run the generator:
     $ rails g authority:install
 
 Hooray! New files! Go look at them.
-
-## TL;DR
-
-No time for reading! Reading is for chumps! Here's the skinny:
-
-(TODO: fill this in)
-
-## How it works
-
-Still here? Reading is fun! You always knew that. Time for a deeper look at things.
-
-In broad terms, the authorization process flows like this:
-
-- A request comes to a model, either the class or an instance, saying "can this user do this action to you?"
-- The model passes that question to its Authorizer
-- The Authorizer checks whatever user properties and business rules are relevant to answer that question.
-- The answer is passed back up to the model, then back to the original caller
 
 ## Usage
 
@@ -136,21 +141,22 @@ If you update your authorizer as follows:
     current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
     current_user.can_delete?(@laser_cannon)  # Only Larry, and only on Fridays
 
-## Misc notes
+## Integration Notes
 
 - If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "Harvey Johnson is not allowed to delete this resource:..."
 
 ## TODO
 
-- Add a TL;DR section at the top of this file
-- Determine exact syntax for checking rules during a controller action
-- Add customizable logger for authorization violations
+- Document syntax for checking rules during a controller action
+- Rename Authorization to Authorizer
+- Update generator to create an authorizer for every model
 - Generator
   - Add generators or hook into existing rails generators
   - Add generator to installation instructions
   - Generate well-commented default configuration file like Devise does (shout out!)
   - Generate 403.html, with option to skip if exists
-- Write about configuration file and options. Note that you MUST call configure; internals aren't included until you do.
+- Note that you MUST call configure; internals aren't included until you do.
+- Write about configuration file and options in Configuration section.
 
 ## Contributing
 
