@@ -137,7 +137,7 @@ If you update your authorizer as follows:
     current_user.can_create?(LaserCannon)    # true, per class method above
     current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
     current_user.can_delete?(@laser_cannon)  # false
-    current_user.can_update?(@laser_cannon)    # Only Larry, and only on Fridays (weapons maintenance day)
+    current_user.can_update?(@laser_cannon)  # Only Larry, and only on Fridays (weapons maintenance day)
 
 ### Controllers
 
@@ -190,9 +190,9 @@ Finally, if you want to update this hash for **all** your controllers, you can d
 
 ## Configuration
 
-Configuration should be done from `config/initializers/authority.rb`, which will be generated for you by `rails g authority:install`. That file includes copious documentation.
+Configuration should be done from `config/initializers/authority.rb`, which will be generated for you by `rails g authority:install`. That file includes copious documentation. Copious, do you hear me?!
 
-Note that the configuration block in that file **must** run in your application. Authority metaprograms its methods on boot, but waits until your configuration block has run to do so. If you want the default settings, you don't have to put anything in your configure block, but you must at least run `Authority.configure`.
+Ahem. Note that the configuration block in that file **must** run in your application. Authority metaprograms its methods on boot, but waits until your configuration block has run to do so. If you want the default settings, you don't have to put anything in your configure block, but you must at least run `Authority.configure`.
 
 Some of the things you can configure which haven't already been mentioned are...
 
@@ -226,7 +226,7 @@ Require that file in an `after_initialize` block, and have all your other author
 
 ## Integration Notes
 
-- If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "Harvey Johnson is not allowed to delete this resource:..."
+- If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "**Regina Johnson** is not allowed to delete this resource:..."
 
 ## Credits, AKA 'Shout-Outs'
 
@@ -249,7 +249,6 @@ Require that file in an `after_initialize` block, and have all your other author
 
 - Integrate Travis CI
 - Add YARD docs everywhere
+- Test generators
 - Test view helpers
 - Make TL;DR examples link to examples further down in README
-- Test generators
-- Explain how to create custom authorizer; require in `after_initialize`
