@@ -19,23 +19,19 @@ Still here? Reading is fun! You always knew that. Time for a deeper look at thin
 
 Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
 
-It assumes that you already have some kind of user object in your application.
+It requires that you already have some kind of user object in your application, accessible from all controllers (like `current_user`).
 
 The goals of Authority are:
 
 - To allow broad, class-level rules. Examples: 
   - "Basic users cannot delete **any** Widget."
   - "Only admin users can create Offices."
-
 - To allow fine-grained, instance-level rules. Examples: 
   - "Management users can only edit schedules in their jurisdiction."
   - "Users can't create playlists more than 20 songs long unless they've paid."
-
 - To provide a clear syntax for permissions-based views. Example:
   - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_edit?(@widget)`
-
 - To gracefully handle any access violations: display a "you can't do that" screen and log the violation.
-
 - To do all of this **without cluttering** either your controllers or your models. This is done by letting Authorizer classes do most of the work. More on that below.
 
 ## The flow of Authority
@@ -73,11 +69,75 @@ Hooray! New files! Go look at them.
 
 ### Users
 
-Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_edit?(resource)`, which are just nice shortcuts for `resource.editable_by?(user)`.
+Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_edit?(resource)`. This is purely syntactic sugar; these methods do nothing but pass the question on to the resource itself. For example, `resource.editable_by?(user)`.
 
 ### Models
 
-In your models, simply `include Authority::Abilities`. This sets up both class-level and instance-level methods like `creatable_by?(user)`, etc, all of which delegate to the model's corresponding authorizer. For example, the `Rabbit` model would delegate to `RabbitAuthorizer`.
+In your models, `include Authority::Abilities`. This sets up both class-level and instance-level methods like `creatable_by?(user)`, etc. 
+
+You **could** define those methods yourself on the model, but to keep things organized, we want to put all our authorization logic in authorizer classes. Therefore, these methods, too, are pass-through, which delegate to corresponding methods on the model's authorizer. For example, the `Rabbit` model would delegate to `RabbitAuthorizer`.
+
+Which leads us to...
+
+### Authorizers
+
+Authorizers should be added under `app/authorizers`, one for each of your models. So if you have a `LaserCannon` model, you should have, at minimum:
+
+    # app/authorizers/laser_cannon_authorizer.rb
+    class LaserCannonAuthorizer < Authority::Authorizer
+      # Nothing defined - just use the default strategy
+    end
+
+These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
+
+- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
+- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration (more on that later).
+- The **default** default strategy simply returns false, so unless you redefine it or write methods in your Authorizer classes, **everything is forbidden**. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
+
+Let's work our way up from the simplest possible authorizer to see how you can customize your rules.
+
+If your authorizer looks like this:
+
+    # app/authorizers/laser_cannon_authorizer.rb
+    class LaserCannonAuthorizer < Authority::Authorizer
+    end
+
+... you will find that everything is forbidden:
+
+    current_user.can_create?(LaserCannon)    # false; you haven't defined a class-level `can_create?`, so the 
+                                             # `default_strategy` is used. It returns false.
+    current_user.can_create?(@laser_cannon)  # false; instance-level permissions check class-level ones by default,
+                                             # so this is the same as the previous example.
+
+If you update your authorizer as follows:
+
+    # app/authorizers/laser_cannon_authorizer.rb
+    class LaserCannonAuthorizer < Authority::Authorizer
+
+      # Class-level permissions
+      #
+      def self.creatable_by?(user)
+        true # blanket true means that **any** user can create a laser cannon
+      end
+
+      def self.deletable_by?(user)
+        false # blanket false means that **no** user can delete a laser cannon
+      end
+
+      # Instance-level permissions
+      #
+      def editable_by?(user)      # instance_level permission
+        user.first_name == 'Larry' && Date.today.friday?
+      end
+
+    end
+
+... you can now do the following:
+
+    current_user.can_create?(LaserCannon)    # true, per class method above
+    current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
+    current_user.can_delete?(@laser_cannon)  # false
+    current_user.can_edit?(@laser_cannon)    # Only Larry, and only on Fridays (weapons maintenance day)
 
 ### Controllers
 
@@ -95,51 +155,6 @@ If that's all you need, one line does it.
 
 If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(:action, @model_instance, @user)`
 
-### Authorizers
-
-Authorizers should be added under `app/authorizers`, one for each of your models. Each authorizer should correspond to a single model. So if you have `app/models/laser_cannon.rb`, you should have, at minimum:
-
-    # app/authorizers/laser_cannon_authorizer.rb
-    class LaserCannonAuthorizer < Authority::Authorizer
-    end
-
-These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
-
-- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
-- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration.
-- The **default** default strategy simply returns false; you must override it in your configuration and/or write methods on your individual `Authorizer` classes to grant permissions. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
-
-This combination means that, with this code:
-
-    # app/authorizers/laser_cannon_authorizer.rb
-    class LaserCannonAuthorizer < Authority::Authorizer
-    end
-
-... you can already do the following:
-
-    current_user.can_create?(LaserCannon)    # false; all inherited class-level permissions are false
-    current_user.can_create?(@laser_cannon)  # false; instance-level permissions check class-level ones by default
-
-If you update your authorizer as follows:
-
-    # app/authorizers/laser_cannon_authorizer.rb
-    class LaserCannonAuthorizer < Authority::Authorizer
-
-      def self.creatable_by?(user) # class-level permission
-        true
-      end
-
-      def deletable_by?(user)      # instance_level permission
-        user.first_name == 'Larry' && Date.today.friday?
-      end
-
-    end
-
-... you can now do this following:
-
-    current_user.can_create?(LaserCannon)    # true, per class method above
-    current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
-    current_user.can_delete?(@laser_cannon)  # Only Larry, and only on Fridays
 
 ## Integration Notes
 
