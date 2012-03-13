@@ -9,9 +9,9 @@ No time for reading! Reading is for chumps! Here's the skinny:
 - Install in your Rails project
 - Put this in your controllers: `check_authorization_on YourModelNameHere` (the model that controller works with)
 - Put this in your models:  `include Authority::Abilities`
-- For each model you have, create a corresponding Authorization file. For example, for `app/models/lolcat.rb`, create `app/authorizations/lolcat_authorization.rb` with an empty class inheriting from `Authorization`.
-- Add class methods to that authorization to set rules that can be enforced just by looking at the resource class, like "this user cannot create Lolcats, period."
-- Add instance methods to that authorization to set rules that need to look at a resource instance, like "a user can only edit a Lolcat if it belongs to that user and has not been marked as 'classic'".
+- For each model you have, create a corresponding `YourModelNameHereAuthorizer`. For example, for `app/models/lolcat.rb`, create `app/authorizers/lolcat_authorizer.rb` with an empty class inheriting from `Authority::Authorizer`.
+- Add class methods to that authorizer to set rules that can be enforced just by looking at the resource class, like "this user cannot create Lolcats, period."
+- Add instance methods to that authorizer to set rules that need to look at a resource instance, like "a user can only edit a Lolcat if it belongs to that user and has not been marked as 'classic'".
 
 ## Overview
 
@@ -148,7 +148,6 @@ If you update your authorizer as follows:
 ## TODO
 
 - Document syntax for checking rules during a controller action
-- Rename Authorization to Authorizer
 - Update generator to create an authorizer for every model
 - Generator
   - Add generators or hook into existing rails generators
