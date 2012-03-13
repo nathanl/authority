@@ -6,7 +6,7 @@
 
 No time for reading! Reading is for chumps! Here's the skinny:
 
-- Install in your Rails project: `bundle install` and `rails g authority:install`
+- Install in your Rails project: add to Gemfile, `bundle`, then `rails g authority:install`
 - Put this in your controllers: `check_authorization_on YourModelNameHere` (the model that controller works with)
 - Put this in your models:  `include Authority::Abilities`
 - For each model you have, create a corresponding `YourModelNameHereAuthorizer`. For example, for `app/models/lolcat.rb`, create `app/authorizers/lolcat_authorizer.rb` with an empty class inheriting from `Authority::Authorizer`.
@@ -24,13 +24,13 @@ It requires that you already have some kind of user object in your application, 
 The goals of Authority are:
 
 - To allow broad, class-level rules. Examples: 
-  - "Basic users cannot delete **any** Widget."
+  - "Basic users cannot delete any Widget."
   - "Only admin users can create Offices."
 - To allow fine-grained, instance-level rules. Examples: 
-  - "Management users can only edit schedules in their jurisdiction."
+  - "Management users can only edit schedules with date ranges in the future."
   - "Users can't create playlists more than 20 songs long unless they've paid."
 - To provide a clear syntax for permissions-based views. Example:
-  - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_edit?(@widget)`
+  - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
 - To gracefully handle any access violations: display a "you can't do that" screen and log the violation.
 - To do all of this **without cluttering** either your controllers or your models. This is done by letting Authorizer classes do most of the work. More on that below.
 
@@ -69,7 +69,7 @@ Hooray! New files! Go look at them.
 
 ### Users
 
-Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_edit?(resource)`. This is purely syntactic sugar; these methods do nothing but pass the question on to the resource itself. For example, `resource.editable_by?(user)`.
+Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_update?(resource)`. These methods do nothing but pass the question on to the resource itself. For example, `resource.updatable_by?(user)`.
 
 ### Models
 
@@ -91,7 +91,7 @@ Authorizers should be added under `app/authorizers`, one for each of your models
 These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
 
 - All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
-- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration (more on that later).
+- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration (see the notes in the generated file).
 - The **default** default strategy simply returns false, so unless you redefine it or write methods in your Authorizer classes, **everything is forbidden**. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
 
 Let's work our way up from the simplest possible authorizer to see how you can customize your rules.
@@ -126,7 +126,7 @@ If you update your authorizer as follows:
 
       # Instance-level permissions
       #
-      def editable_by?(user)      # instance_level permission
+      def updatable_by?(user)
         user.first_name == 'Larry' && Date.today.friday?
       end
 
@@ -137,7 +137,7 @@ If you update your authorizer as follows:
     current_user.can_create?(LaserCannon)    # true, per class method above
     current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
     current_user.can_delete?(@laser_cannon)  # false
-    current_user.can_edit?(@laser_cannon)    # Only Larry, and only on Fridays (weapons maintenance day)
+    current_user.can_update?(@laser_cannon)    # Only Larry, and only on Fridays (weapons maintenance day)
 
 ### Controllers
 
@@ -147,7 +147,7 @@ In your controllers, add this method call:
 
 `check_authorization_on ModelName`
 
-That sets up a `:before_filter` that calls your class-level methods before each action. For instance, before running the `update` action, it will check whether `ModelName` is `updatable_by?` the current user at a class level. A return value of false means "this user can never update models of this class."
+That sets up a `before_filter` that calls your class-level methods before each action. For instance, before running the `update` action, it will check whether `ModelName` is `updatable_by?` the current user at a class level. A return value of false means "this user can never update models of this class."
 
 If that's all you need, one line does it.
 
@@ -186,3 +186,9 @@ Note that the configuration block in that file **must** run in your application.
 
 - Integrate Travis CI
 - Add YARD docs everywhere
+- Explain custom controller actions
+- Test view helpers
+- Make TLD link to examples
+- Have generator create `app/authorizers` directory if it doesn't exist
+- Test generators
+- Explain how to create custom authorizer; require in `after_initialize`

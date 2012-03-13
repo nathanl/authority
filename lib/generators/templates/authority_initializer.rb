@@ -17,8 +17,8 @@ Authority.configure do |config|
   #
   # The arguments passed to this proc will be:
   #
-  # able       - symbol name of 'able', like `:creatable`, or `deletable`
-  # authorizer - constant name of authorizer. Ex: `WidgetAuthorizer` or `UserAuthorizer`
+  # able       - symbol name of 'able', like `:creatable`, or `:deletable`
+  # authorizer - authorizer constant. Ex: `WidgetAuthorizer` or `UserAuthorizer`
   # user       - user object (whatever that is in your application; found using config.user_method)
   #
   # For example:
@@ -31,10 +31,10 @@ Authority.configure do |config|
   # OR
   #
   # config.default_strategy = Proc.new { |able, authorizer, user|
-  #   able != 'implodable_by?' && user.has_hairstyle?('pompadour')
+  #   able != :implodable && user.has_hairstyle?('pompadour')
   # }
   #
-  # Default strategy simply returns false, as follows:
+  # Default default strategy simply returns false, as follows:
   #
   # config.default_strategy =  Proc.new { |able, authorizer, user| false }
   
