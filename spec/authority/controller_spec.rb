@@ -9,7 +9,7 @@ describe Authority::Controller do
   describe "when including" do
     it "should specify rescuing security transgressions" do
       class DummyController < ExampleController ; end
-      DummyController.should_receive(:rescue_from).with(Authority::SecurityTransgression, :with => 'forbidden')
+      DummyController.should_receive(:rescue_from).with(Authority::SecurityTransgression, :with => :authority_forbidden)
       DummyController.send(:include, Authority::Controller)
     end
   end
