@@ -1,5 +1,7 @@
 # Authority
 
+[![Build Status](https://secure.travis-ci.org/nathanl/authority.png)](http://travis-ci.org/nathanl/authority)
+
 ## TL;DR
 
 No time for reading! Reading is for chumps! Here's the skinny:
