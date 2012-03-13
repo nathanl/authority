@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'support/ability_model'
+require 'support/no_authorizer_model'
 require 'support/user'
 
 describe Authority::Abilities do
@@ -32,6 +33,10 @@ describe Authority::Abilities do
       AbilityModel.authorizer
       AbilityModel.authorizer_name.should_not_receive(:constantize)
       AbilityModel.authorizer
+    end
+
+    it "should raise a friendly error if the authorizer doesn't exist" do
+      expect { NoAuthorizerModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
     end
 
   end

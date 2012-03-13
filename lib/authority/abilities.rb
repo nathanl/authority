@@ -21,7 +21,15 @@ module Authority
       end
 
       def authorizer
-        @authorizer ||= authorizer_name.constantize
+        begin
+          @authorizer ||= authorizer_name.constantize
+        rescue StandardError => e
+          if e.is_a?(NameError)
+            raise Authority::NoAuthorizerError.new("#{authorizer_name} does not exist in your application")
+          else
+            raise e
+          end
+        end
       end
     end
 

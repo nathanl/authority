@@ -24,4 +24,6 @@ module Authority
     end
 
   end
+
+  class NoAuthorizerError < StandardError ; end ;
 end
