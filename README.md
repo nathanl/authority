@@ -153,8 +153,13 @@ If that's all you need, one line does it.
 
 #### In-action usage
 
-If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(:action, @model_instance, @user)`
+If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(@resource_instance, @user)`. This will check the proper instance method on the authorizer, based on which controller action you're currently in.
 
+## Configuration
+
+Configuration should be done from `config/initializers/authority.rb`, which will be generated for you by `rails g authority:install`. That file includes copious documentation.
+
+Note that the configuration block in that file **must** run in your application. Authority metaprograms its methods on boot, but waits until your configuration block has run to do so. If you want the default settings, you don't have to put anything in your configure block, but you must at least run `Authority.configure`.
 
 ## Integration Notes
 
@@ -179,12 +184,5 @@ If you need to check some attributes of a model instance to decide if an action 
 
 ## TODO
 
-- Document syntax for checking rules during a controller action
-- Update generator to create an authorizer for every model
-- Generator
-  - Add generators or hook into existing rails generators
-  - Add generator to installation instructions
-  - Generate well-commented default configuration file like Devise does (shout out!)
-  - Generate 403.html, with option to skip if exists
-- Note that you MUST call configure; internals aren't included until you do.
-- Write about configuration file and options in Configuration section.
+- Integrate Travis CI
+- Add YARD docs everywhere
