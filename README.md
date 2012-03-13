@@ -145,17 +145,11 @@ If you update your authorizer as follows:
 
 - If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "Harvey Johnson is not allowed to delete this resource:..."
 
-## TODO
+## Credits AKA Shout-Outs
 
-- Document syntax for checking rules during a controller action
-- Update generator to create an authorizer for every model
-- Generator
-  - Add generators or hook into existing rails generators
-  - Add generator to installation instructions
-  - Generate well-commented default configuration file like Devise does (shout out!)
-  - Generate 403.html, with option to skip if exists
-- Note that you MUST call configure; internals aren't included until you do.
-- Write about configuration file and options in Configuration section.
+- @adamhunter for pairing with me on this gem.
+- @nkallen for [this lovely blog on access control](http://pivotallabs.com/users/nick/blog/articles/272-access-control-permissions-in-rails) when he worked at Pivotal Labs.
+- @jnunemaker for creating Canable, another inspiration for Authority.
 
 ## Contributing
 
@@ -167,3 +161,15 @@ If you update your authorizer as follows:
 6. Commit your changes (`git commit -am 'Added some feature'`)
 7. Push to the branch (`git push origin my-new-feature`)
 8. Create new Pull Request
+
+## TODO
+
+- Document syntax for checking rules during a controller action
+- Update generator to create an authorizer for every model
+- Generator
+  - Add generators or hook into existing rails generators
+  - Add generator to installation instructions
+  - Generate well-commented default configuration file like Devise does (shout out!)
+  - Generate 403.html, with option to skip if exists
+- Note that you MUST call configure; internals aren't included until you do.
+- Write about configuration file and options in Configuration section.
