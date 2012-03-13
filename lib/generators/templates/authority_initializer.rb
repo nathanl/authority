@@ -17,8 +17,7 @@ Authority.configure do |config|
   #
   # The arguments passed to this proc will be:
   #
-  # able       - symbol name of class method being called on the Authorizer. 
-  #              Ex: `:deletable_by?` or `:updatable_by?`
+  # able       - symbol name of 'able', like `:creatable`, or `deletable`
   # authorizer - constant name of authorizer. Ex: `WidgetAuthorizer` or `UserAuthorizer`
   # user       - user object (whatever that is in your application; found using config.user_method)
   #
