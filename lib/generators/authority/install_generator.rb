@@ -16,6 +16,10 @@ module Authority
         template "403.html", "public/403.html"
       end
 
+      def create_authorizers_directory
+        empty_directory "app/authorizers" # creates empty directory if none; doesn't empty the directory
+      end
+
     end
   end
 end

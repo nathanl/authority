@@ -189,6 +189,5 @@ Note that the configuration block in that file **must** run in your application.
 - Explain custom controller actions
 - Test view helpers
 - Make TLD link to examples
-- Have generator create `app/authorizers` directory if it doesn't exist
 - Test generators
 - Explain how to create custom authorizer; require in `after_initialize`
