@@ -31,13 +31,13 @@ module Authority
 
       # Metaprogram needed methods, allowing for nice backtraces
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{adjective}_by?(user)
-            authorizer.#{adjective}_by?(user)
-          end
+        def #{adjective}_by?(user)
+          authorizer.#{adjective}_by?(user)
+        end
 
-          def authorizer
-            self.class.authorizer.new(self)
-          end
+        def authorizer
+          self.class.authorizer.new(self)
+        end
       RUBY
     end
 
