@@ -7,7 +7,7 @@
 No time for reading! Reading is for chumps! Here's the skinny:
 
 - Install in your Rails project
-- Put this in your controllers: `check_authorization_on ModelName`
+- Put this in your controllers: `check_authorization_on YourModelNameHere` (the model that controller works with)
 - Put this in your models:  `include Authority::Abilities`
 - For each model you have, create a corresponding Authorization file. For example, for `app/models/lolcat.rb`, create `app/authorizations/lolcat_authorization.rb` with an empty class inheriting from `Authorization`.
 - Add class methods to that authorization to set rules that can be enforced just by looking at the resource class, like "this user cannot create Lolcats, period."
