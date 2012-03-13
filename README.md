@@ -1,7 +1,5 @@
 # Authority
 
-## SUPER BETA VERSION. Stabler release coming soon.
-
 ## TL;DR
 
 No time for reading! Reading is for chumps! Here's the skinny:
