@@ -6,7 +6,7 @@
 
 No time for reading! Reading is for chumps! Here's the skinny:
 
-- Install in your Rails project: `bundle install` and `rake authority:install`
+- Install in your Rails project: `bundle install` and `rails g authority:install`
 - Put this in your controllers: `check_authorization_on YourModelNameHere` (the model that controller works with)
 - Put this in your models:  `include Authority::Abilities`
 - For each model you have, create a corresponding `YourModelNameHereAuthorizer`. For example, for `app/models/lolcat.rb`, create `app/authorizers/lolcat_authorizer.rb` with an empty class inheriting from `Authority::Authorizer`.
@@ -148,7 +148,7 @@ If you update your authorizer as follows:
 ## Credits AKA Shout-Outs
 
 - @adamhunter for pairing with me on this gem.
-- @nkallen for [this lovely blog on access control](http://pivotallabs.com/users/nick/blog/articles/272-access-control-permissions-in-rails) when he worked at Pivotal Labs.
+- @nkallen for [this lovely blog post on access control](http://pivotallabs.com/users/nick/blog/articles/272-access-control-permissions-in-rails) when he worked at Pivotal Labs.
 - @jnunemaker for creating Canable, another inspiration for Authority.
 
 ## Contributing
