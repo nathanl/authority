@@ -84,7 +84,7 @@ describe Authority::Controller do
 
         it "should render the public/403.html file" do
           forbidden_page = Rails.root.join('public/403.html')
-          @controller.should_receive(:render).with(:file => forbidden_page, :status => 403)
+          @controller.should_receive(:render).with(:file => forbidden_page, :status => 403, :layout => false)
           @controller.send(:authority_forbidden, @mock_error)
         end
       end
