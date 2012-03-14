@@ -90,8 +90,8 @@ Authorizers should be added under `app/authorizers`, one for each of your models
 
 These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
 
-- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
-- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration (see the notes in the generated file).
+- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget. (To refer to the resource instance, use `resource`.)
+- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration (see the notes in the generated `config/initializers/authority.rb`).
 - The **default** default strategy simply returns false, so unless you redefine it or write methods in your Authorizer classes, **everything is forbidden**. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
 
 Let's work our way up from the simplest possible authorizer to see how you can customize your rules.
@@ -127,7 +127,7 @@ If you update your authorizer as follows:
       # Instance-level permissions
       #
       def updatable_by?(user)
-        user.first_name == 'Larry' && Date.today.friday?
+        resource.color == 'blue' && user.first_name == 'Larry' && Date.today.friday?
       end
 
     end
@@ -137,7 +137,8 @@ If you update your authorizer as follows:
     current_user.can_create?(LaserCannon)    # true, per class method above
     current_user.can_create?(@laser_cannon)  # true; inherited instance method calls class method
     current_user.can_delete?(@laser_cannon)  # false
-    current_user.can_update?(@laser_cannon)  # Only Larry, and only on Fridays (weapons maintenance day)
+    current_user.can_update?(@laser_cannon)  # Only Larry, only blue laser cannons, and only on 
+                                             # Fridays (weapons maintenance day)
 
 ### Controllers
 
@@ -247,7 +248,6 @@ Require that file in an `after_initialize` block, and have all your other author
 
 ## TODO
 
-- Integrate Travis CI
 - Add YARD docs everywhere
 - Test generators
 - Test view helpers
