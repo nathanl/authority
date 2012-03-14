@@ -9,12 +9,17 @@ module Authority
     end
 
     module ClassMethods
+
+      # @param [Class] model_class - class whose authorizer should be consulted
+      # @param [Hash] options - can contain :actions to be merged with existing
+      # ones and any other options applicable to a before_filter
       def check_authorization_on(model_class, options = {})
         self.authority_resource = model_class
         self.authority_actions  = Authority.configuration.authority_actions.merge(options[:actions] || {}).symbolize_keys
         before_filter :run_authorization_check, options
       end
 
+      # @param [Hash] action_map - controller actions and methods, to be merged with existing action_map
       def authority_action(action_map)
         self.authority_actions.merge!(action_map).symbolize_keys
       end

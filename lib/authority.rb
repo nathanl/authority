@@ -8,18 +8,26 @@ module Authority
 
   # NOTE: once this method is called, the library has started meta programming
   # and abilities should no longer be modified
+  # @return [Hash] list of abilities, mapping verbs and adjectives, like :create => 'creatable'
   def self.abilities
     configuration.abilities.freeze
   end
 
+  # @return [Array] keys from adjectives method
   def self.verbs
     abilities.keys
   end
 
+  # @return [Array] values from adjectives method
   def self.adjectives
     abilities.values
   end
 
+  # @param [Symbol] action
+  # @param [Model] resource instance
+  # @param [User] user instance
+  # @raise [SecurityTransgression] if user is not allowed to perform action on resource
+  # @return [Model] resource instance
   def self.enforce(action, resource, user)
     action_authorized = user.send("can_#{action}?", resource)
     unless action_authorized
