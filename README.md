@@ -1,5 +1,9 @@
 # Authority
 
+Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
+
+It requires that you already have some kind of user object in your application, accessible from all controllers (like `current_user`).
+
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png)](http://travis-ci.org/nathanl/authority)
 
 ## TL;DR
@@ -16,10 +20,6 @@ No time for reading! Reading is for chumps! Here's the skinny:
 ## Overview
 
 Still here? Reading is fun! You always knew that. Time for a deeper look at things.
-
-Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
-
-It requires that you already have some kind of user object in your application, accessible from all controllers (like `current_user`).
 
 The goals of Authority are:
 
@@ -38,10 +38,10 @@ The goals of Authority are:
 
 In broad terms, the authorization process flows like this:
 
-- A request comes to a model, either the class or an instance, saying "can this user do this action to you?"
-- The model passes that question to its Authorizer
-- The Authorizer checks whatever user properties and business rules are relevant to answer that question.
-- The answer is passed back up to the model, then back to the original caller
+- A user object is asked whether it can do some action to a resource class or instance, like `current_user.can_create?(Widget)` or `current_user.can_update?(@widget)`.
+- The user just asks the model the same question: `resource.creatable_by?(self)`.
+- The model passes that question to its Authorizer, which actually contains the logic to answer the question.
+- The Authorizer returns an answer back up the call chain to the original caller.
 
 ## Installation
 
@@ -63,7 +63,7 @@ Then run the generator:
 
     $ rails g authority:install
 
-Hooray! New files! Go look at them.
+Hooray! New files! Go look at them. Look look look.
 
 ## Usage
 
@@ -71,9 +71,13 @@ Hooray! New files! Go look at them.
 
 Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_update?(resource)`. These methods do nothing but pass the question on to the resource itself. For example, `resource.updatable_by?(user)`.
 
+The list of methods that get defined comes from `config.abilities`.
+
 ### Models
 
 In your models, `include Authority::Abilities`. This sets up both class-level and instance-level methods like `creatable_by?(user)`, etc. 
+
+The list of methods that get defined comes from `config.abilities`.
 
 You **could** define those methods yourself on the model, but to keep things organized, we want to put all our authorization logic in authorizer classes. Therefore, these methods, too, are pass-through, which delegate to corresponding methods on the model's authorizer. For example, the `Rabbit` model would delegate to `RabbitAuthorizer`.
 
@@ -168,7 +172,7 @@ The default map from controller actions to authorizations is as follows:
       :destroy => 'delete'
     }
 
-Each controller gets its own copy of this hash.
+Each controller gets its own copy of this hash, which comes from `config.authority_actions`.
 
 If you want to edit a **single** controller's action map, you can either pass a hash into `check_authorization_on`, which will get merged into the existing actions hash...
 
@@ -187,7 +191,7 @@ If you want to edit a **single** controller's action map, you can either pass a 
       ...
     end
 
-Finally, if you want to update this hash for **all** your controllers, you can do that in `config.authority_actions` in the initializer.
+Finally, if you want to update this hash for **all** your controllers, you can do that with `config.authority_actions` in the initializer.
 
 ## Configuration
 
