@@ -214,9 +214,9 @@ Authority will log a message any time a user tries to access a resource for whic
 
 ## Further customization of authorizers
 
-If you want to customize your authorizers even further - for example, maybe you want them to have a method like `has_permission?(user, permission_name)` - just add an extra class into their hierarchy.
+If you want to customize your authorizers even further - for example, maybe you want them to have a method like `has_permission?(user, permission_name)` - just insert a custom into the inheritance chain.
 
-    # lib/my_app/authorizer
+    # lib/my_app/authorizer.rb
     module MyApp
       class Authorizer < Authority::Authorizer
       
@@ -226,8 +226,13 @@ If you want to customize your authorizers even further - for example, maybe you 
 
       end
     end
+  
+    #app/authorizers/badger_authorizer.rb
+    class BadgerAuthorizer < MyApp::Authorizer
+      # contents
+    end
 
-Require that file in an `after_initialize` block, and have all your other authorizers subclass `MyApp::Authorizer` instead of `Authority::Authorizer`.
+If you decide to place your custom class in `lib` as shown above (as opposed to putting it in `app`), you should require it at the bottom of `config/initializers/authority.rb`.
 
 ## Integration Notes
 
