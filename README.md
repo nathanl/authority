@@ -261,3 +261,4 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 - Test generators
 - Test view helpers
 - Make TL;DR examples link to examples further down in README
+- Give more thorough example of usage mid controller action.

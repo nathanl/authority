@@ -9,11 +9,13 @@ describe Authority do
   end
 
   it "should not allow modification of the Authority.abilities hash directly" do
-    expect { Authority.abilities[:exchange] = 'fungible' }.to raise_error(RuntimeError, "can't modify frozen Hash")
+    expect { Authority.abilities[:exchange] = 'fungible' }.to raise_error(
+      StandardError, /modify frozen/
+    ) # can't modify frozen hash - exact error type and message depends on Ruby version
   end
 
   it "should have a convenience accessor for the ability verbs" do
-    Authority.verbs.sort.should eq([:create, :delete, :read, :update])
+    Authority.verbs.map(&:to_s).sort.should eq(['create', 'delete', 'read', 'update'])
   end
 
   it "should have a convenience accessor for the ability adjectives" do
