@@ -9,12 +9,9 @@ describe Authority do
   end
 
   it "should not allow modification of the Authority.abilities hash directly" do
-    case RUBY_VERSION
-    when "1.8.7"
-      expect { Authority.abilities[:exchange] = 'fungible' }.to raise_error(TypeError, "can't modify frozen hash")
-    when "1.9.3"
-      expect { Authority.abilities[:exchange] = 'fungible' }.to raise_error(RuntimeError, "can't modify frozen Hash")
-    end
+    expect { Authority.abilities[:exchange] = 'fungible' }.to raise_error(
+      StandardError, /modify frozen/
+    ) # can't modify frozen hash - exact error type and message depends on Ruby version
   end
 
   it "should have a convenience accessor for the ability verbs" do
