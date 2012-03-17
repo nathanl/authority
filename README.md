@@ -277,5 +277,6 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 ## TODO
 
 - Test generators
+- Add separate generator to make an empty authorizer for each file in `app/models`
 - Make TL;DR examples link to examples further down in README
 - Test view helpers
