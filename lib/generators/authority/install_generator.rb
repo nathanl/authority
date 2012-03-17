@@ -17,7 +17,8 @@ module Authority
       end
 
       def create_authorizers_directory
-        empty_directory "app/authorizers" # creates empty directory if none; doesn't empty the directory
+        # creates empty directory if none; doesn't empty the directory
+        empty_directory "app/authorizers" 
       end
 
     end

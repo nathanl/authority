@@ -1,6 +1,8 @@
 module Authority
   class Configuration
 
+    # Has default settings, overrideable in the initializer.
+
     attr_accessor :default_strategy, :abilities, :authority_actions, :user_method, :logger
 
     def initialize
