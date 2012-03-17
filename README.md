@@ -240,9 +240,9 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 ## Credits, AKA 'Shout-Outs'
 
-- @adamhunter for pairing with me on this gem.
-- @nkallen for [this lovely blog post on access control](http://pivotallabs.com/users/nick/blog/articles/272-access-control-permissions-in-rails) when he worked at Pivotal Labs.
-- @jnunemaker for creating Canable, another inspiration for Authority.
+- @adamhunter for pairing with me on this gem. The only thing faster than his typing is his brain.
+- @nkallen for [this lovely blog post on access control](http://pivotallabs.com/users/nick/blog/articles/272-access-control-permissions-in-rails) when he worked at Pivotal Labs. I cried sweet tears of joy when I read that article a couple of years ago.
+- @jnunemaker for later creating Canable, another inspiration for Authority.
 
 ## Contributing
 
