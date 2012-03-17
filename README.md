@@ -79,7 +79,7 @@ In your models, `include Authority::Abilities`. This sets up both class-level an
 
 The list of methods that get defined comes from `config.abilities`.
 
-You **could** define those methods yourself on the model, but to keep things organized, we want to put all our authorization logic in authorizer classes. Therefore, these methods, too, are pass-through, which delegate to corresponding methods on the model's authorizer. For example, the `Rabbit` model would delegate to `RabbitAuthorizer`.
+You **could** define those methods yourself on the model, but to keep things organized, we want to put all our authorization logic in authorizer classes. Therefore, these methods, too, are pass-through, which delegate to corresponding methods on the model's authorizer. For example, the `Rabbit` model's `editable_by?(user)` would delegate to `RabbitAuthorizer.editable_by?(user)`.
 
 Which leads us to...
 
@@ -156,9 +156,13 @@ That sets up a `before_filter` that calls your class-level methods before each a
 
 If that's all you need, one line does it.
 
-#### In-action usage
+By the way, any options you pass in will be used on the `before_filter` that gets created, so you can do things like this:
 
-If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(@resource_instance, @user)`. This will check the proper instance method on the authorizer, based on which controller action you're currently in.
+    check_authorization_on InvisibleSwordsman, :only => :show
+
+#### Usage within a controller action
+
+If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(@resource_instance, @user)`. This method will determine which controller action it was called from, look at the controller action map, determine which method should be checked on the model, and check it.
 
 The default map from controller actions to authorizations is as follows: 
 
@@ -171,6 +175,21 @@ The default map from controller actions to authorizations is as follows:
       :update  => 'update',
       :destroy => 'delete'
     }
+
+So, for example, if you did this:
+
+    class MessageController < ApplicationController
+    ...
+
+      def edit
+        @message = Message.find(params[:id])
+        check_authorization_on(@message, current_user)
+      end
+      ...
+
+    end
+
+... Authority would determine that it was called from within `edit`, that the `edit` controller action requires permission to `update`, and check whether the user `can_update?(@message)`.
 
 Each controller gets its own copy of this hash, which comes from `config.controller_action_map`.
 
@@ -236,7 +255,7 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 ## Integration Notes
 
-- If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "**Regina Johnson** is not allowed to delete this resource:..."
+- If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "**Kenneth Lay** is not allowed to delete this resource:..."
 
 ## Credits, AKA 'Shout-Outs'
 
@@ -257,8 +276,6 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 ## TODO
 
-- Add YARD docs everywhere
 - Test generators
-- Test view helpers
 - Make TL;DR examples link to examples further down in README
-- Give more thorough example of usage mid controller action.
+- Test view helpers
