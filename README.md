@@ -152,7 +152,7 @@ In your controllers, add this method call:
 
 `check_authorization_on ModelName`
 
-That sets up a `before_filter` that calls your class-level methods before each action. For instance, before running the `update` action, it will check whether `ModelName` is `updatable_by?` the current user at a class level. A return value of false means "this user can never update models of this class."
+That sets up a `before_filter` that calls your class-level methods before each action. For instance, before running the `update` action, it will check whether the current user (determined using the configurable `user_method`) `can_update?(ModelName)` at a class level. A return value of false means "this user can never update models of this class."
 
 If that's all you need, one line does it.
 
@@ -164,11 +164,11 @@ By the way, any options you pass in will be used on the `before_filter` that get
 
 If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(@resource_instance, @user)`. This method will determine which controller action it was called from, look at the controller action map, determine which method should be checked on the model, and check it.
 
-The default map from controller actions to authorizations is as follows: 
+The default controller action map is as follows:
 
     {
-      :index   => 'read',
-      :show    => 'read',
+      :index   => 'read',   # index action requires that the user can_read?(resource)
+      :show    => 'read',   # etc
       :new     => 'create',
       :create  => 'create',
       :edit    => 'update',
@@ -191,9 +191,7 @@ So, for example, if you did this:
 
 ... Authority would determine that it was called from within `edit`, that the `edit` controller action requires permission to `update`, and check whether the user `can_update?(@message)`.
 
-Each controller gets its own copy of this hash, which comes from `config.controller_action_map`.
-
-If you want to edit a **single** controller's action map, you can either pass a hash into `check_authorization_on`, which will get merged into the existing actions hash...
+Each controller gets its own copy of the controller action map. If you want to edit a **single** controller's action map, you can either pass a hash into `check_authorization_on`, which will get merged into the existing actions hash...
 
     class BadgerController < ApplicationController
       check_authorization_on Badger, :actions => {:neuter => 'update'}
