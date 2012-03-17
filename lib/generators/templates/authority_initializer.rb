@@ -76,8 +76,10 @@ Authority.configure do |config|
   #
   # config.logger = Logger.new(STDERR)
   #
-  # Suggested setting for a Rails app is:
-  config.logger = Rails.logger
+  # Some possible settings:
+  # config.logger = Rails.logger
+  # config.logger = Logger.new('logs/authority.log')
+  # config.logger = Logger.new('/dev/null')
 
 end
 
