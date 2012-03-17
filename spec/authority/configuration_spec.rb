@@ -12,7 +12,7 @@ describe Authority::Configuration do
     end
 
     it "should have a default authority controller actions map" do
-      Authority.configuration.authority_actions.should be_a(Hash)
+      Authority.configuration.controller_action_map.should be_a(Hash)
     end
 
     it "should have a default controller method for accessing the user object" do

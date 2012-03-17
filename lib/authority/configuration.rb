@@ -3,7 +3,7 @@ module Authority
 
     # Has default settings, overrideable in the initializer.
 
-    attr_accessor :default_strategy, :abilities, :authority_actions, :user_method, :logger
+    attr_accessor :default_strategy, :abilities, :controller_action_map, :user_method, :logger
 
     def initialize
       @default_strategy = Proc.new { |able, authorizer, user|
@@ -17,7 +17,7 @@ module Authority
         :delete => 'deletable'
       }
 
-      @authority_actions = {
+      @controller_action_map = {
         :index   => 'read',
         :show    => 'read',
         :new     => 'create',

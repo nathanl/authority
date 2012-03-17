@@ -33,18 +33,18 @@ describe Authority::Controller do
 
       it "should give the controller its own copy of the authority actions map" do
         ExampleController.check_authorization_on AbilityModel
-        ExampleController.authority_actions.should be_a(Hash)
-        ExampleController.authority_actions.should_not be(Authority.configuration.authority_actions)
+        ExampleController.controller_action_map.should be_a(Hash)
+        ExampleController.controller_action_map.should_not be(Authority.configuration.controller_action_map)
       end
 
       it "should allow specifying the authority action map in the `check_authorization_on` declaration" do
         ExampleController.check_authorization_on AbilityModel, :actions => {:eat => 'delete'}
-        ExampleController.authority_actions[:eat].should eq('delete')
+        ExampleController.controller_action_map[:eat].should eq('delete')
       end
 
       it "should have a write into the authority actions map usuable in a DSL format" do
         ExampleController.authority_action :smite => 'delete'
-        ExampleController.authority_actions[:smite].should eq('delete')
+        ExampleController.controller_action_map[:smite].should eq('delete')
       end
     end
 

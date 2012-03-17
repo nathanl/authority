@@ -38,13 +38,13 @@ Authority.configure do |config|
   #
   # config.default_strategy =  Proc.new { |able, authorizer, user| false }
   
-  # AUTHORITY_ACTIONS
+  # CONTROLLER_ACTION_MAP
   # For a given controller method, what verb must a user be able to do?
   # For example, a user can access 'show' if they 'can_read' the resource.
   #
   # Defaults are as follows:
   #
-  # config.authority_actions = {
+  # config.controller_action_map = {
   #   :index   => 'read',
   #   :show    => 'read',
   #   :new     => 'create',

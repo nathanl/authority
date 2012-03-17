@@ -172,7 +172,7 @@ The default map from controller actions to authorizations is as follows:
       :destroy => 'delete'
     }
 
-Each controller gets its own copy of this hash, which comes from `config.authority_actions`.
+Each controller gets its own copy of this hash, which comes from `config.controller_action_map`.
 
 If you want to edit a **single** controller's action map, you can either pass a hash into `check_authorization_on`, which will get merged into the existing actions hash...
 
@@ -191,7 +191,7 @@ If you want to edit a **single** controller's action map, you can either pass a 
       ...
     end
 
-Finally, if you want to update this hash for **all** your controllers, you can do that with `config.authority_actions` in the initializer.
+Finally, if you want to update this hash for **all** your controllers, you can do that with `config.controller_action_map` in the initializer.
 
 ## Configuration
 
