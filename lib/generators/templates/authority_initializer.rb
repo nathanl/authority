@@ -24,8 +24,8 @@ Authority.configure do |config|
   # For example:
   #
   # config.default_strategy = Proc.new { |able, authorizer, user|
-  #   # Does the user have any roles which give this permission?
-  #   (Permissions.find_by_name_and_authorizer(able, authorizer).roles & user.roles).any?
+  #   # Does the user have any of the roles which give this permission?
+  #   (roles_which_grant(able, authorizer) & user.roles).any?
   # }
   #
   # OR
