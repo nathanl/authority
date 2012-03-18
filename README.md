@@ -1,6 +1,6 @@
 # Authority
 
-Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models.
+Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models. Unauthorized actions get a warning and an entry in a log file.
 
 It requires that you already have some kind of user object in your application, accessible from all controllers (like `current_user`).
 
@@ -11,11 +11,13 @@ It requires that you already have some kind of user object in your application, 
 No time for reading! Reading is for chumps! Here's the skinny:
 
 - Install in your Rails project: add to Gemfile, `bundle`, then `rails g authority:install`
-- Put this in your controllers: `check_authorization_on YourModelNameHere` (the model that controller works with)
-- Put this in your models:  `include Authority::Abilities`
-- For each model you have, create a corresponding `YourModelNameHereAuthorizer`. For example, for `app/models/lolcat.rb`, create `app/authorizers/lolcat_authorizer.rb` with an empty class inheriting from `Authority::Authorizer`.
-- Add class methods to that authorizer to set rules that can be enforced just by looking at the resource class, like "this user cannot create Lolcats, period."
-- Add instance methods to that authorizer to set rules that need to look at a resource instance, like "a user can only edit a Lolcat if it belongs to that user and has not been marked as 'classic'".
+- For each model you have, create a corresponding [authorizer](#authorizers). For example, for `app/models/lolcat.rb`, create `app/authorizers/lolcat_authorizer.rb` with an empty `class LolcatAuthorizer < Authority::Authorizer`.
+  - Add class methods to that authorizer to set rules that can be enforced just by looking at the resource class, like "this user cannot create Lolcats, period."
+  - Add instance methods to that authorizer to set rules that need to look at a resource instance, like "a user can only edit a Lolcat if it belongs to that user and has not been marked as 'classic'".
+- Wire up your user, models and controllers to work with your authorizers:
+  - In your [user class](#users), `include Authority::UserAbilities`.
+  - Put this in your [controllers](#controllers): `check_authorization_on YourModelNameHere` (the model that controller works with)
+  - Put this in your [models](#models):  `include Authority::Abilities`
 
 ## Overview
 
@@ -67,12 +69,14 @@ Hooray! New files! Go look at them. Look look look.
 
 ## Usage
 
+<a name="users">
 ### Users
 
 Your user model (whatever you call it) should `include Authority::UserAbilities`. This defines methods like `can_update?(resource)`. These methods do nothing but pass the question on to the resource itself. For example, `resource.updatable_by?(user)`.
 
 The list of methods that get defined comes from `config.abilities`.
 
+<a name="models">
 ### Models
 
 In your models, `include Authority::Abilities`. This sets up both class-level and instance-level methods like `creatable_by?(user)`, etc. 
@@ -83,6 +87,7 @@ You **could** define those methods yourself on the model, but to keep things org
 
 Which leads us to...
 
+<a name="authorizers">
 ### Authorizers
 
 Authorizers should be added under `app/authorizers`, one for each of your models. So if you have a `LaserCannon` model, you should have, at minimum:
@@ -92,11 +97,25 @@ Authorizers should be added under `app/authorizers`, one for each of your models
       # Nothing defined - just use the default strategy
     end
 
-These are where your actual authorization logic goes. You do have to specify your own business rules, but Authority comes with the following baked in:
+These are where your actual authorization logic goes. Here's how you do it:
 
-- All instance-level methods defined on `Authority::Authorizer` call their corresponding class-level method by default. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget. (To refer to the resource instance, use `resource`.)
-- All class-level methods defined on `Authority::Authorizer` will use the `default_strategy` you define in your configuration (see the notes in the generated `config/initializers/authority.rb`).
-- The **default** default strategy simply returns false, so unless you redefine it or write methods in your Authorizer classes, **everything is forbidden**. This whitelisting approach will keep you from accidentally allowing things you didn't intend.
+- Class methods answer questions about model classes, like "is it **ever** permissible for this user to update a widget?"
+  - Any class method you don't define (for example, if you didn't make a `def self.updatable_by?(user)`) will fall back to your [configurable default strategy](#default_strategies).
+- Instance methods answer questions about model instances, like "can this user update this **particular** widget?" (Within an instance method, you can get the model instance with `resource`).
+  - Any instance method you don't define (for example, if you didn't make a `def deletable_by?(user)`) will fall back to the corresponding class method. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
+
+So, suppose you've got the empty `LaserCannonAuthorizer` above and haven't supplied a default strategy. Then you ask the authorizer "is `@laser_cannon_x.deletable_by?(@user_y)`?" It will ask itself:
+
+- "Do I have a `deletable_by?` method, to tell me whether this particular laser cannon can be deleted by this user? ... No."
+- "OK, do I have a `self.deletable_by?` method, to tell me whether **any** laser cannon can be deleted by this user? ... No."
+- "OK, did the user define a default strategy for deciding whether any resource can be deleted by a user? ... No."
+- "Well, I do have a **default** default strategy, which always returns false. So the answer is 'false' - the user can't delete this laser cannon."
+
+As you can see, **you can specify different logic for every method on every model, or [supply a single default strategy](#default_strategies) that covers them all, or anything in between**.
+
+And because the **default** default strategy returns false, we start by assuming that **everything is forbidden**. This whitelisting approach will keep you from accidentally allowing things you didn't intend. 
+
+#### An Authorizer Tutorial
 
 Let's work our way up from the simplest possible authorizer to see how you can customize your rules.
 
@@ -143,7 +162,20 @@ If you update your authorizer as follows:
     current_user.can_delete?(@laser_cannon)  # false
     current_user.can_update?(@laser_cannon)  # Only Larry, only blue laser cannons, and only on 
                                              # Fridays (weapons maintenance day)
+<a name="default_strategies">
+#### Default Strategies
 
+To take a different approach, if you wanted to answer all these questions in a uniform way - perhaps by looking up permissions in a database table - you could just supply a default strategy that does that.
+
+    # In config/initializers/authority.rb
+    config.default_strategy = Proc.new { |able, authorizer, user|
+     # Does the user have any of the roles which give this permission?
+     (roles_which_grant(able, authorizer) & user.roles).any?
+    }
+
+That's it! All your authorizer classes could be left empty.
+
+<a name="controllers">
 ### Controllers
 
 #### Basic Usage
@@ -152,9 +184,7 @@ In your controllers, add this method call:
 
 `check_authorization_on ModelName`
 
-That sets up a `before_filter` that calls your class-level methods before each action. For instance, before running the `update` action, it will check whether the current user (determined using the configurable `user_method`) `can_update?(ModelName)` at a class level. A return value of false means "this user can never update models of this class."
-
-If that's all you need, one line does it.
+That sets up a `before_filter` that **calls your class-level methods before each action**. For instance, before running the `update` action, it will check whether the current user (determined using the configurable `user_method`) `can_update?(ModelName)` at a class level. A return value of false means "this user can never update models of this class."
 
 By the way, any options you pass in will be used on the `before_filter` that gets created, so you can do things like this:
 
@@ -210,6 +240,23 @@ Each controller gets its own copy of the controller action map. If you want to e
 
 Finally, if you want to update this hash for **all** your controllers, you can do that with `config.controller_action_map` in the initializer.
 
+## Views
+
+Assuming your user object is available in your views, you can do all kinds of conditional rendering. For example:
+
+    `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
+
+If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a... **SECURITY VIOLATION** (cue cheesy, dramatic music).
+
+## Security Violations
+
+Anytime a user attempts an unauthorized action, Authority does two things:
+
+- Renders your `public/403.html`
+- Logs the violation to whatever logger you configured.
+
+If you want to set up a `cron` job to watch the log file, look up the user's name and address, and dispatch minions to fill their mailbox with goose droppings, that's really up to you. I got nothing to do with it, man.
+
 ## Configuration
 
 Configuration should be done from `config/initializers/authority.rb`, which will be generated for you by `rails g authority:install`. That file includes copious documentation. Copious, do you hear me?!
@@ -229,9 +276,9 @@ Authority will log a message any time a user tries to access a resource for whic
     config.logger = Rails.logger
     config.logger = Logger.new('logs/authority.log') # From Ruby standard library
 
-## Further customization of authorizers
+## Custom authorizer inheritence
 
-If you want to customize your authorizers even further - for example, maybe you want them to have a method like `has_permission?(user, permission_name)` - just insert a custom into the inheritance chain.
+If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - you can insert a custom class into the inheritance chain.
 
     # lib/my_app/authorizer.rb
     module MyApp
@@ -276,5 +323,4 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 - Test generators
 - Add separate generator to make an empty authorizer for each file in `app/models`
-- Make TL;DR examples link to examples further down in README
 - Test view helpers
