@@ -310,17 +310,18 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 ## Contributing
 
-1. Fork it
+What should you contribute? Some ideas:
+
+- Documentation improvements will always be welcome (though of course, whether something is an improvement will be up to me to decide).
+- Look in the separate TODO file or grep the project for 'TODO' for other ideas.
+
+How can you contribute?
+
+1. Fork this project
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. `bundle install` to get all dependencies
 4. `rspec spec` to run all tests.
-5. Make your changes and update/add tests as necessary.
+5. Update/add tests for your changes and code until they pass.
 6. Commit your changes (`git commit -am 'Added some feature'`)
 7. Push to the branch (`git push origin my-new-feature`)
-8. Create new Pull Request
-
-## TODO
-
-- Test generators
-- Add separate generator to make an empty authorizer for each file in `app/models`
-- Test view helpers
+8. Create a new Pull Request
