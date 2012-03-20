@@ -46,7 +46,15 @@ module Authority
     end
 
     def run_authorization_check
-      authorize_action_for self.class.authority_resource, send(Authority.configuration.user_method)
+      authorize_action_for self.class.authority_resource, authority_user
+    end
+
+    # Convencience wrapper for sending configured user_method to extract the
+    # request's current user
+    #
+    # @return [Object] the user object returned from sending the user_method
+    def authority_user
+      send(Authority.configuration.user_method)
     end
 
     # To be run in a before_filter; ensure this controller action is allowed for the user

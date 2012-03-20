@@ -70,6 +70,11 @@ describe Authority::Controller do
         expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::Controller::MissingAction)
       end
 
+      it "should return the authority_user for the current request by using the configured user_method" do
+        @controller.should_receive(Authority.configuration.user_method)
+        @controller.send(:authority_user)
+      end
+
       describe "in controllers that inherited from a controller including authority, but don't call any class method" do
         it "should automatically have a new copy of the authority_action_map" do
           @controller = InstanceController.new
