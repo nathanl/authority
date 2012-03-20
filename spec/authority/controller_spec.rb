@@ -70,7 +70,7 @@ describe Authority::Controller do
         expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::Controller::MissingAction)
       end
 
-      describe "in controllers not using any class methods that inherited from a controller including authority" do
+      describe "in controllers that inherited from a controller including authority, but don't call any class method" do
         it "should automatically have a new copy of the authority_action_map" do
           @controller = InstanceController.new
           @controller.class.authority_action_map.should eq(Authority.configuration.controller_action_map)
@@ -99,7 +99,7 @@ describe Authority::Controller do
   end
 
   describe "when extending" do
-    it "should allow the child class to edit the controller action map without effecting the parent class" do
+    it "should allow the child class to edit the controller action map without affecting the parent class" do
       DummyController.authority_action :erase => 'delete'
       ExampleController.authority_action_map[:erase].should be_nil
     end
