@@ -16,7 +16,7 @@ No time for reading! Reading is for chumps! Here's the skinny:
   - Add instance methods to that authorizer to set rules that need to look at a resource instance, like "a user can only edit a Lolcat if it belongs to that user and has not been marked as 'classic'".
 - Wire up your user, models and controllers to work with your authorizers:
   - In your [user class](#users), `include Authority::UserAbilities`.
-  - Put this in your [controllers](#controllers): `check_authorization_on YourModelNameHere` (the model that controller works with)
+  - Put this in your [controllers](#controllers): `authorize_actions_on YourModelNameHere` (the model that controller works with)
   - Put this in your [models](#models):  `include Authority::Abilities`
 
 ## Overview
@@ -182,17 +182,17 @@ That's it! All your authorizer classes could be left empty.
 
 In your controllers, add this method call:
 
-`check_authorization_on ModelName`
+    authorize_actions_on ModelName
 
 That sets up a `before_filter` that **calls your class-level methods before each action**. For instance, before running the `update` action, it will check whether the current user (determined using the configurable `user_method`) `can_update?(ModelName)` at a class level. A return value of false means "this user can never update models of this class."
 
 By the way, any options you pass in will be used on the `before_filter` that gets created, so you can do things like this:
 
-    check_authorization_on InvisibleSwordsman, :only => :show
+    authorize_actions_on InvisibleSwordsman, :only => :show
 
 #### Usage within a controller action
 
-If you need to check some attributes of a model instance to decide if an action is permissible, you can use `check_authorization_for(@resource_instance, @user)`. This method will determine which controller action it was called from, look at the controller action map, determine which method should be checked on the model, and check it.
+If you need to check some attributes of a model instance to decide if an action is permissible, you can use the **singular** `authorize_action_on(@resource_instance, @user)`. This method will determine which controller action it was called from, look at the controller action map, determine which method should be checked on the model, and check it.
 
 The default controller action map is as follows:
 
@@ -213,7 +213,7 @@ So, for example, if you did this:
 
       def edit
         @message = Message.find(params[:id])
-        check_authorization_on(@message, current_user)
+        authorize_action_on(@message, current_user)
       end
       ...
 
@@ -221,17 +221,17 @@ So, for example, if you did this:
 
 ... Authority would determine that it was called from within `edit`, that the `edit` controller action requires permission to `update`, and check whether the user `can_update?(@message)`.
 
-Each controller gets its own copy of the controller action map. If you want to edit a **single** controller's action map, you can either pass a hash into `check_authorization_on`, which will get merged into the existing actions hash...
+Each controller gets its own copy of the controller action map. If you want to edit a **single** controller's action map, you can either pass a hash into `authorize_actions_on`, which will get merged into the existing actions hash...
 
     class BadgerController < ApplicationController
-      check_authorization_on Badger, :actions => {:neuter => 'update'}
+      authorize_actions_on Badger, :actions => {:neuter => 'update'}
       ...
     end
 
 ...or you can use a separate method call:
 
     class BadgerController < ApplicationController
-      check_authorization_on Badger
+      authorize_actions_on Badger
 
       authority_action :neuter => 'update'
 

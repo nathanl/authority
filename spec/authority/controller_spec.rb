@@ -21,24 +21,24 @@ describe Authority::Controller do
 
     describe "DSL (class) methods" do
       it "should allow specifying the model to protect" do
-        ExampleController.check_authorization_on AbilityModel
+        ExampleController.authorize_actions_on AbilityModel
         ExampleController.authority_resource.should eq(AbilityModel)
       end
 
       it "should pass the options provided to the before filter that is set up" do
         @options = {:only => [:show, :edit, :update]}
         ExampleController.should_receive(:before_filter).with(:run_authorization_check, @options)
-        ExampleController.check_authorization_on AbilityModel, @options
+        ExampleController.authorize_actions_on AbilityModel, @options
       end
 
       it "should give the controller its own copy of the authority actions map" do
-        ExampleController.check_authorization_on AbilityModel
+        ExampleController.authorize_actions_on AbilityModel
         ExampleController.controller_action_map.should be_a(Hash)
         ExampleController.controller_action_map.should_not be(Authority.configuration.controller_action_map)
       end
 
-      it "should allow specifying the authority action map in the `check_authorization_on` declaration" do
-        ExampleController.check_authorization_on AbilityModel, :actions => {:eat => 'delete'}
+      it "should allow specifying the authority action map in the `authorize_actions_on` declaration" do
+        ExampleController.authorize_actions_on AbilityModel, :actions => {:eat => 'delete'}
         ExampleController.controller_action_map[:eat].should eq('delete')
       end
 
@@ -57,7 +57,7 @@ describe Authority::Controller do
       end
 
       it "should check authorization on the model specified" do
-        @controller.should_receive(:check_authorization_for).with(AbilityModel, @user)
+        @controller.should_receive(:authorize_action_on).with(AbilityModel, @user)
         @controller.send(:run_authorization_check)
       end
 
