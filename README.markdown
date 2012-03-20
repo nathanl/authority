@@ -192,7 +192,7 @@ By the way, any options you pass in will be used on the `before_filter` that get
 
 #### Usage within a controller action
 
-If you need to check some attributes of a model instance to decide if an action is permissible, you can use the **singular** `authorize_action_for(@resource_instance, @user)`. This method will determine which controller action it was called from, look at the controller action map, determine which method should be checked on the model, and check it.
+If you need to check some attributes of a model instance to decide if an action is permissible, you can use the **singular** `authorize_action_for(@resource_instance)`. This method will determine which controller action it was called from, look at the controller action map, determine which method should be checked on the model, and check it.
 
 The default controller action map is as follows:
 
@@ -213,13 +213,13 @@ So, for example, if you did this:
 
       def edit
         @message = Message.find(params[:id])
-        authorize_action_for(@message, current_user)
+        authorize_action_for(@message)
       end
       ...
 
     end
 
-... Authority would determine that it was called from within `edit`, that the `edit` controller action requires permission to `update`, and check whether the user `can_update?(@message)`.
+... Authority would determine that it was called from within `edit`, that the `edit` controller action requires permission to `update`, and check whether the current user `can_update?(@message)`.
 
 Each controller gets its own copy of the controller action map. If you want to edit a **single** controller's action map, you can either pass a hash into `authorize_actions_for`, which will get merged into the existing actions hash...
 
