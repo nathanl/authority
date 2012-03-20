@@ -49,6 +49,10 @@ module Authority
       render :file => Rails.root.join('public', '403.html'), :status => 403, :layout => false
     end
 
+    private
+
+    # The before filter that will be setup to run when the class method
+    # `authorize_actions_for` is called
     def run_authorization_check
       authorize_action_for self.class.authority_resource
     end
