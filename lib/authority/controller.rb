@@ -27,7 +27,7 @@ module Authority
       #
       # @param [Hash] action_map - controller actions and methods, to be merged with existing action_map
       def authority_action(action_map)
-        self.authority_action_map.merge!(action_map.symbolize_keys)
+        authority_action_map.merge!(action_map.symbolize_keys)
       end
 
       # The controller action to authority action map used for determining
