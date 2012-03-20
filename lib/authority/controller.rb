@@ -30,6 +30,10 @@ module Authority
         self.authority_action_map.merge!(action_map.symbolize_keys)
       end
 
+      # The controller action to authority action map used for determining
+      # which Rails actions map to which authority actions (ex: index to read)
+      #
+      # @return [Hash] A duplicated copy of the configured controller_action_map
       def authority_action_map
         @authority_action_map ||= Authority.configuration.controller_action_map.dup
       end
