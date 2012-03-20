@@ -57,7 +57,7 @@ describe Authority::Controller do
       end
 
       it "should check authorization on the model specified" do
-        @controller.should_receive(:authorize_action_for).with(AbilityModel, @user)
+        @controller.should_receive(:authorize_action_for).with(AbilityModel)
         @controller.send(:run_authorization_check)
       end
 
