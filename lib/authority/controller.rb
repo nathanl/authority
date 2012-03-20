@@ -17,7 +17,7 @@ module Authority
       # @param [Class] model_class - class whose authorizer should be consulted
       # @param [Hash] options - can contain :actions to be merged with existing
       # ones and any other options applicable to a before_filter
-      def authorize_actions_on(model_class, options = {})
+      def authorize_actions_for(model_class, options = {})
         self.authority_resource = model_class
         authority_action(options[:actions] || {})
         before_filter :run_authorization_check, options
@@ -46,7 +46,7 @@ module Authority
     end
 
     def run_authorization_check
-      authorize_action_on self.class.authority_resource, send(Authority.configuration.user_method)
+      authorize_action_for self.class.authority_resource, send(Authority.configuration.user_method)
     end
 
     # To be run in a before_filter; ensure this controller action is allowed for the user
@@ -54,7 +54,7 @@ module Authority
     # @param authority_resource [Class], the model class associated with this controller
     # @param user, object representing the current user of the application
     # @raise [MissingAction] if controller action isn't a key in `config.controller_action_map`
-    def authorize_action_on(authority_resource, user)
+    def authorize_action_for(authority_resource, user)
       authority_action = self.class.authority_action_map[action_name.to_sym]
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
