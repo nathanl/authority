@@ -3,12 +3,17 @@
 ## Design
 
 - Carefully think through names of all public methods & see if they could be clearer or more intuitive
-- Consider making empty authorizers unnecessary: if one isn't defined, automatically define it as empty. This would reduce setup but slightly increase obfuscation of the workings.
-- Decide whether there's any reason why `authorizer_action_on` needs a user argument, when we already know the method to call to get the current user.
+- Rename `authorize_action_on` and `authorize_actions_on` to end in `_for`.
+- Remove user parameter in `authorize_action_on`; we already know the method to call to get the current user.
 
 ## Chores
 
-- Add separate generator to make an empty authorizer for each file in `app/models`
+- Add separate generator to make an empty authorizer for each file in `app/models` (prompt for each one)
 - Test generators
-- Test view helpers
-- Document how you can bypass creating an authorizer for each model - by setting authorizer name directly and having them share.
+
+## Documentation
+
+- Make README more concise, or at least more navigable.
+- How to bypass creating an authorizer for each model - by setting authorizer name directly and having them share.
+- For instance-level checks, ensuring that you don't call `update` first; use `attributes=` before calling `authorize_action_on`.
+- Example of checking clean/dirty attributes in instance-level checks. For example, if I'm only allowed to update blue laser cannons, can I make them red? Maybe I need to check whether the old value was blue?
