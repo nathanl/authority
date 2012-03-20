@@ -3,8 +3,6 @@
 ## Design
 
 - Carefully think through names of all public methods & see if they could be clearer or more intuitive
-- Rename `authorize_action_on` and `authorize_actions_on` to end in `_for`.
-- Remove user parameter in `authorize_action_on`; we already know the method to call to get the current user.
 
 ## Chores
 
