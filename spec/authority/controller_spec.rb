@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'support/ability_model'
-require 'support/example_controller'
+require 'support/example_controllers'
 require 'support/mock_rails'
 require 'support/user'
 
@@ -8,17 +8,17 @@ describe Authority::Controller do
 
   describe "when including" do
     it "should specify rescuing security transgressions" do
-      class DummyController < ExampleController ; end
-      DummyController.should_receive(:rescue_from).with(Authority::SecurityTransgression, :with => :authority_forbidden)
-      DummyController.send(:include, Authority::Controller)
+      SampleController.should_receive(:rescue_from).with(Authority::SecurityTransgression, :with => :authority_forbidden)
+      SampleController.send(:include, Authority::Controller)
+    end
+
+    it "should create a copy of the default controller action map" do
+      SampleController.send(:include, Authority::Controller)
+      Authority.configuration.controller_action_map.object_id.should_not eql(SampleController.authority_action_map.object_id)
     end
   end
 
   describe "after including" do
-    before :all do
-      ExampleController.send(:include, Authority::Controller)
-    end
-
     describe "DSL (class) methods" do
       it "should allow specifying the model to protect" do
         ExampleController.authorize_actions_on AbilityModel
@@ -33,18 +33,18 @@ describe Authority::Controller do
 
       it "should give the controller its own copy of the authority actions map" do
         ExampleController.authorize_actions_on AbilityModel
-        ExampleController.controller_action_map.should be_a(Hash)
-        ExampleController.controller_action_map.should_not be(Authority.configuration.controller_action_map)
+        ExampleController.authority_action_map.should be_a(Hash)
+        ExampleController.authority_action_map.should_not be(Authority.configuration.controller_action_map)
       end
 
       it "should allow specifying the authority action map in the `authorize_actions_on` declaration" do
         ExampleController.authorize_actions_on AbilityModel, :actions => {:eat => 'delete'}
-        ExampleController.controller_action_map[:eat].should eq('delete')
+        ExampleController.authority_action_map[:eat].should eq('delete')
       end
 
       it "should have a write into the authority actions map usuable in a DSL format" do
         ExampleController.authority_action :smite => 'delete'
-        ExampleController.controller_action_map[:smite].should eq('delete')
+        ExampleController.authority_action_map[:smite].should eq('delete')
       end
     end
 
@@ -70,6 +70,13 @@ describe Authority::Controller do
         expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::Controller::MissingAction)
       end
 
+      describe "in controllers not using any class methods that inherited from a controller including authority" do
+        it "should automatically have a new copy of the authority_action_map" do
+          @controller = InstanceController.new
+          @controller.class.authority_action_map.should eq(Authority.configuration.controller_action_map)
+        end
+      end
+
       describe "authority_forbidden action" do
 
         before :each do
@@ -88,6 +95,13 @@ describe Authority::Controller do
           @controller.send(:authority_forbidden, @mock_error)
         end
       end
+    end
+  end
+
+  describe "when extending" do
+    it "should allow the child class to edit the controller action map without effecting the parent class" do
+      DummyController.authority_action :erase => 'delete'
+      ExampleController.authority_action_map[:erase].should be_nil
     end
   end
 
