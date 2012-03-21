@@ -300,7 +300,7 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 ## Integration Notes
 
-- If you want to have nice log messages for security violations, you should ensure that your user object has a `to_s` method; this will control how it shows up in log messages saying things like "**Kenneth Lay** is not allowed to delete this resource:..."
+- If you want to have nice log messages for security violations, you should ensure that your user object and models have `to_s` methods; this will control how they show up in log messages saying things like "Kenneth Lay is not allowed to delete this resource: 'accounting\_tricks.doc'"
 
 ## Credits, AKA 'Shout-Outs'
 

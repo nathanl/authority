@@ -31,8 +31,9 @@ module Authority
   def self.enforce(action, resource, user)
     action_authorized = user.send("can_#{action}?", resource)
     unless action_authorized
-      message = "#{user} is not authorized to #{action} this resource: #{resource.inspect}"
-      raise SecurityTransgression.new(message)
+      raise SecurityTransgression.new(
+        "#{user} is not authorized to #{action} this resource: #{resource}"
+      )
     end
     resource
   end
