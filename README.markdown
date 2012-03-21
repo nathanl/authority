@@ -185,7 +185,7 @@ The relationship between controller actions and abilities - like checking `reada
 
 Assuming your user object is available in your views, you can do all kinds of conditional rendering. For example:
 
-    `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
+    link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)
 
 If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a [Security Violation](#security_violations_and_logging).
 
@@ -199,7 +199,7 @@ Anytime a user attempts an unauthorized action, Authority does two things:
 
 If you want to have nice log messages for security violations, you should ensure that your user object and models have `to_s` methods; this will control how they show up in log messages saying things like 
 
-    "Kenneth Lay is not allowed to delete this resource: 'accounting\_tricks.doc'"
+    "Kenneth Lay is not allowed to delete this resource: 'accounting_tricks.doc'"
 
 If you feel like setting up a `cron` job to watch the log file, look up the user's name and address, and dispatch minions to fill their mailbox with goose droppings, that's really up to you. I got nothing to do with it, man.
 
@@ -214,10 +214,7 @@ If you feel like setting up a `cron` job to watch the log file, look up the user
 <a name="contributing">
 ## Contributing
 
-What should you contribute? Some ideas:
-
-- Documentation improvements will always be welcome (though of course, whether something is an improvement will be up to me to decide).
-- Look in the separate TODO file or grep the project for 'TODO' for other ideas.
+What should you contribute? Try the TODO file for ideas, or grep the project for 'TODO' comments.
 
 How can you contribute?
 
