@@ -42,6 +42,9 @@ Authority.configure do |config|
   # For a given controller method, what verb must a user be able to do?
   # For example, a user can access 'show' if they 'can_read' the resource.
   #
+  # These can be modified on a per-controller basis; see README. This option
+  # applies to all controllers.
+  #
   # Defaults are as follows:
   #
   # config.controller_action_map = {
@@ -77,9 +80,9 @@ Authority.configure do |config|
   # config.logger = Logger.new(STDERR)
   #
   # Some possible settings:
-  # config.logger = Rails.logger
-  # config.logger = Logger.new('logs/authority.log')
-  # config.logger = Logger.new('/dev/null')
+  # config.logger = Rails.logger                     # Log with all your app's other messages
+  # config.logger = Logger.new('logs/authority.log') # Use this file
+  # config.logger = Logger.new('/dev/null')          # Don't log at all (on a Unix system)
 
 end
 

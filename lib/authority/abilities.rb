@@ -11,6 +11,7 @@ module Authority
     extend ActiveSupport::Concern
 
     # Let the Foo model know that its authorizer is called 'FooAuthorizer'
+    # (but let the user change that)
     included do
       class_attribute :authorizer_name
       self.authorizer_name = "#{name}Authorizer"
