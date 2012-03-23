@@ -8,22 +8,28 @@ It requires that you already have some kind of user object in your application, 
 
 ## Contents
 
-- [Overview](#overview)
-- [The flow of Authority](#flow_of_authority)
-- [Installation](#installation)
-- [Defining Your Abilities](#defining_your_abilities)
-- [Wiring It Together](#wiring_it_together)
-  - [Users](#users)
-  - [Models](#models)
-  - [Authorizers](#authorizers)
-    - [Custom Authorizers](#custom_authorizers)
-    - [Default strategies](#default_strategies)
-    - [Testing Authorizers](#testing_authorizers)
-  - [Controllers](#controllers)
-  - [Views](#views)
-- [Security Violations & Logging](#security_violations_and_logging)
-- [Credits](#credits)
-- [Contributing](#contributing)
+<ul>
+  <li><a href="#overview">Overview</a></li>
+  <li><a href="#flow_of_authority">The flow of Authority</a></li>
+  <li><a href="#installation">Installation</a></li>
+  <li><a href="#defining_your_abilities">Defining Your Abilities</a></li>
+  <li><a href="#wiring_it_together">Wiring It Together</a>
+  <ul>
+    <li><a href="#users">Users</a></li>
+    <li><a href="#models">Models</a></li>
+    <li><a href="#authorizers">Authorizers</a>
+    <ul>
+      <li><a href="#custom_authorizers">Custom Authorizers</a></li>
+      <li><a href="#default_strategies">Default strategies</a></li>
+      <li><a href="#testing_authorizers">Testing Authorizers</a></li>
+    </ul></li>
+    <li><a href="#controllers">Controllers</a></li>
+    <li><a href="#views">Views</a></li>
+  </ul></li>
+  <li><a href="#security_violations_and_logging">Security Violations &amp; Logging</a></li>
+  <li><a href="#credits">Credits</a></li>
+  <li><a href="#contributing">Contributing</a></li>
+</ul>
 
 <a name="overview">
 ## Overview
