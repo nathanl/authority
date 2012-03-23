@@ -6,7 +6,7 @@ module Authority
     extend ActiveSupport::Concern
 
     included do
-      rescue_from Authority::SecurityTransgression, :with => :authority_forbidden
+      rescue_from Authority::SecurityViolation, :with => :authority_forbidden
       class_attribute :authority_resource
     end
 

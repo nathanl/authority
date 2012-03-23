@@ -44,12 +44,12 @@ describe Authority do
       @user = User.new
     end
 
-    it "should raise a SecurityTransgression if the action is unauthorized" do
-      expect { Authority.enforce(:update, AbilityModel, @user) }.to raise_error(Authority::SecurityTransgression)
+    it "should raise a SecurityViolation if the action is unauthorized" do
+      expect { Authority.enforce(:update, AbilityModel, @user) }.to raise_error(Authority::SecurityViolation)
     end
 
-    it "should not raise a SecurityTransgression if the action is authorized" do
-      expect { Authority.enforce(:read, AbilityModel, @user) }.not_to raise_error(Authority::SecurityTransgression)
+    it "should not raise a SecurityViolation if the action is authorized" do
+      expect { Authority.enforce(:read, AbilityModel, @user) }.not_to raise_error(Authority::SecurityViolation)
     end
 
   end

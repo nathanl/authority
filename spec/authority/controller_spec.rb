@@ -8,7 +8,7 @@ describe Authority::Controller do
 
   describe "when including" do
     it "should specify rescuing security transgressions" do
-      SampleController.should_receive(:rescue_from).with(Authority::SecurityTransgression, :with => :authority_forbidden)
+      SampleController.should_receive(:rescue_from).with(Authority::SecurityViolation, :with => :authority_forbidden)
       SampleController.send(:include, Authority::Controller)
     end
   end
@@ -68,8 +68,8 @@ describe Authority::Controller do
         @controller.send(:run_authorization_check)
       end
 
-      it "should raise a SecurityTransgression if authorization fails" do
-        expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::SecurityTransgression)
+      it "should raise a SecurityViolation if authorization fails" do
+        expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::SecurityViolation)
       end
 
       it "should raise a MissingAction if there is no corresponding action for the controller" do

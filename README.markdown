@@ -58,7 +58,7 @@ The process generally flows like this:
 - The user just asks the model the same question: `resource.creatable_by?(self)`.
 - The model passes that question to its Authorizer, which actually contains the logic to answer the question.
 - The Authorizer returns an answer back up the call chain to the original caller.
-- If the answer is "no" and the original caller was a controller, this is treated as a `SecurityTransgression`. If it was a view, maybe you just don't show a link.
+- If the answer is "no" and the original caller was a controller, this is treated as a `SecurityViolation`. If it was a view, maybe you just don't show a link.
 
 <a name="installation">
 ## Installation
@@ -198,7 +198,7 @@ One nice thing about putting your authorization logic in authorizers is the ease
 <a name="controllers">
 ### Controllers
 
-Controllers get two ways to check permissions.
+Anytime a controller finds a user attempting something they're not authorized to do, a [Security Violation](#security_violations_and_logging) will result. Controllers get two ways to check authorization:
 
 - `authorize_actions_for Transaction` protects multiple controller actions with a `before_filter`, which performs a class-level check. If the current user is never allowed to delete a `Transaction`, they'll never even get to the controller's `destroy` method.
 - `authorize_action_for @transaction` can be called inside a single controller action, and performs an instance-level check. If called inside `update`, it will check whether the current user is allowed to update this particular `@transaction` instance.
@@ -219,7 +219,7 @@ The relationship between controller actions and abilities - like checking `reada
       def edit
         @llama = Llama.find(params[:id])
         @llama.attributes = params[:llama]  # Don't save the attributes before authorizing
-        authorize_action_for(@llama)        # failure == SecurityTransgression
+        authorize_action_for(@llama)        # failure == SecurityViolation
         if @llama.save?
         # etc
       end
@@ -233,7 +233,7 @@ Assuming your user object is available in your views, you can do all kinds of co
 
     link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)
 
-If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a [Security Violation](#security_violations_and_logging).
+If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a [Security Violation](#security_violations_and_logging) from the controller.
 
 <a name="security_violations_and_logging">
 ## Security Violations & Logging

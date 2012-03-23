@@ -26,12 +26,12 @@ module Authority
   # @param [Symbol] action
   # @param [Model] resource instance
   # @param [User] user instance
-  # @raise [SecurityTransgression] if user is not allowed to perform action on resource
+  # @raise [SecurityViolation] if user is not allowed to perform action on resource
   # @return [Model] resource instance
   def self.enforce(action, resource, user)
     action_authorized = user.send("can_#{action}?", resource)
     unless action_authorized
-      raise SecurityTransgression.new(
+      raise SecurityViolation.new(
         "#{user} is not authorized to #{action} this resource: #{resource}"
       )
     end
@@ -58,7 +58,7 @@ module Authority
     require 'authority/user_abilities'
   end
 
-  class SecurityTransgression < StandardError ; end
+  class SecurityViolation < StandardError ; end
 
 end
 
