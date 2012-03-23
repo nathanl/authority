@@ -31,9 +31,7 @@ module Authority
   def self.enforce(action, resource, user)
     action_authorized = user.send("can_#{action}?", resource)
     unless action_authorized
-      raise SecurityViolation.new(
-        "#{user} is not authorized to #{action} this resource: #{resource}"
-      )
+      raise SecurityViolation.new(user, action, resource)
     end
     resource
   end
@@ -58,7 +56,17 @@ module Authority
     require 'authority/user_abilities'
   end
 
-  class SecurityViolation < StandardError ; end
+  class SecurityViolation < StandardError
+    def initialize(user, action, resource)
+      @user = user
+      @action = action
+      @resource = resource
+    end
+
+    def message
+      "#{@user} is not authorized to #{@action} this resource: #{@resource}"
+    end
+  end
 
 end
 
