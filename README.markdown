@@ -16,7 +16,9 @@ It requires that you already have some kind of user object in your application, 
   - [Users](#users)
   - [Models](#models)
   - [Authorizers](#authorizers)
-  - [Default strategies](#default_strategies)
+    - [Custom Authorizers](#custom_authorizers)
+    - [Default strategies](#default_strategies)
+    - [Testing Authorizers](#testing_authorizers)
   - [Controllers](#controllers)
   - [Views](#views)
 - [Security Violations & Logging](#security_violations_and_logging)
@@ -137,7 +139,7 @@ If you want to customize your authorizers even further - for example, maybe you 
 If you decide to place your custom class in `lib` as shown above (as opposed to putting it in `app`), you should require it at the bottom of `config/initializers/authority.rb`.
 
 <a name="default_strategies">
-### Default Strategies
+#### Default Strategies
 
 Any class method you don't define on an authorizer will use your default strategy. The **default** default strategy simply returns false, meaning that everything is forbidden. This whitelisting approach will keep you from accidentally allowing things you didn't intend. 
 
@@ -148,6 +150,44 @@ You can configure a different default strategy. For example, you might want one 
       # Does the user have any of the roles which give this permission?
       (roles_which_grant(able, authorizer) & user.roles).any?
     }
+
+<a name="testing_authorizers">
+#### Testing Authorizers
+
+One nice thing about putting your authorization logic in authorizers is the ease of testing. Here's a brief example.
+
+    # An authorizer shared by several admin-only models
+    describe AdminAuthorizer do
+
+      before :each do 
+        @user  = Factory.build(:user)
+        @admin = Factory.build(:admin)
+      end
+
+      describe "class" do
+        it "should let admins update in bulk" do
+          AdminAuthorizer.should be_bulk_updatable_by(@admin)
+        end
+
+        it "should not let users update in bulk" do
+          AdminAuthorizer.should_not be_bulk_updatable_by(@user)
+        end
+      end
+
+      describe "instances" do
+
+        before :each do
+          # A mock model that uses AdminAuthorizer
+          @admin_resource_instance = mock_admin_resource
+        end
+
+        it "should not allow users to delete" do
+          @admin_resource_instance.authorizer.should_not be_deletable_by(@user)
+        end
+
+      end
+
+    end
 
 <a name="controllers">
 ### Controllers

@@ -15,6 +15,3 @@
 ## Documentation
 
 - Example of checking clean/dirty attributes in instance-level checks. For example, if I'm only allowed to update blue laser cannons, can I make them red? Maybe I need to check whether the old value was blue?
-- Examples of testing authorizers
-  - Testing authorizer itself is more modular than testing same logic from the model
-  - Models may share an authorizer; only test once
