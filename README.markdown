@@ -94,7 +94,7 @@ In every model, `include Authority::Abilities`. Give every model an [Authorizer]
 <a name="authorizers">
 ### Authorizers
 
-Add your authorizers under `app/authorizers`, subclassing `Authority::Authorizer`.
+Add your authorizers under `app/authorizers`, subclassing `Authority::Authorizer` or your own authorizer class. (See `rails g authority::authorizers --help`.)
 
 These are where your actual authorization logic goes. Here's how it works:
 

@@ -6,9 +6,6 @@
 
 ## Chores
 
-- Add separate generator to make an empty authorizer for each file in `app/models`
-  - Prompt for each one
-  - Accept flag for parent class, like `rails g authority:authorizers --parent_class=MyApp::Authorizer`
 - Test generators
 - Configurable proc for logging method
 
