@@ -4,7 +4,7 @@ This is mainly to document major new features and backwards-incompatible changes
 
 ## v1.0.0.pre4
 
-Added generator to make blank authorizers. See `rails g authority::authorizers --help`.
+Added generator to make blank authorizers. See `rails g authority:authorizers --help`.
 
 ## v1.0.0.pre3
 
