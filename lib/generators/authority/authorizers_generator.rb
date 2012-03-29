@@ -6,6 +6,32 @@ module Authority
 
       argument :parentClass, type: :string, default: 'Authority::Authorizer', banner: 'Parent class'
 
+      def run
+        confirm_authorizers
+        make_authorizer_folder
+        make_authorizers
+      end
+
+      # Non-public generator methods aren't automatically called
+      private
+
+      def confirm_authorizers
+        message = <<-RUBY
+        Preparing to populate #{authorizer_folder} with the following:
+        #{authorizer_names.join(', ')}
+        Each authorizer will subclass #{parentClass}. 
+        RUBY
+
+        if parentClass == 'Authority::Authorizer'
+          message.concat("\n(You can specify something else with `rails g authority:authorizers MyClass`)")
+        end
+
+        message.concat("\nContinue? (Press 'y' or 'n')")
+
+        puts message.strip_heredoc
+        exit unless gets.chomp.strip.downcase == 'y'
+      end
+
       def make_authorizer_folder
         # creates empty directory if none; doesn't empty the directory
         empty_directory authorizer_folder
@@ -25,9 +51,6 @@ module Authority
           end
         end
       end
-
-      # Non-public generator methods aren't automatically called
-      private
 
       def authorizer_folder
         'app/authorizers'
