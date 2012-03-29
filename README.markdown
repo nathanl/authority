@@ -264,11 +264,12 @@ What should you contribute? Try the TODO file for ideas, or grep the project for
 
 How can you contribute?
 
-1. Fork this project
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. `bundle install` to get all dependencies
-4. `rspec spec` to run all tests.
-5. Update/add tests for your changes and code until they pass.
-6. Commit your changes (`git commit -am 'Added some feature'`)
-7. Push to the branch (`git push origin my-new-feature`)
-8. Create a new Pull Request
+1. Let's talk! Before you do a bunch of work, open an issue so we can be sure we agree.
+2. Fork this project
+3. Create your feature branch (`git checkout -b my-new-feature`)
+4. `bundle install` to get all dependencies
+5. `rspec spec` to run all tests.
+6. Update/add tests for your changes and code until they pass.
+7. Commit your changes (`git commit -am 'Added some feature'`)
+8. Push to the branch (`git push origin my-new-feature`)
+9. Create a new Pull Request
