@@ -5,14 +5,14 @@ module Authority
     class InstallGenerator < Rails::Generators::Base
 
       source_root File.expand_path("../../templates", __FILE__)
-
       desc "Creates an Authority initializer for your application." 
 
-      def run
+      def do_all
         copy_initializer
         copy_forbidden
         create_authorizers_directory
         message = <<-RUBY
+
         Install complete! See the README on Github for instructions on getting your
         app running with Authority.
 
@@ -21,7 +21,9 @@ module Authority
         If you don't, the `Article` model (for example) will look for `ArticleAuthorizer`.
 
         To generate one authorizer like that for each of your models, see
-        `rails g authority:authorizers --help`.
+        `rails g authority:authorizers`. If you also want to specify your own
+        parent class for them, use `rails g authority:authorizers MyClass`.
+
         RUBY
         puts message.strip_heredoc
         

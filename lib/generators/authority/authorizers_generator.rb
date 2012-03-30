@@ -5,8 +5,9 @@ module Authority
     class AuthorizersGenerator < Rails::Generators::Base
 
       argument :parentClass, type: :string, default: 'Authority::Authorizer', banner: 'Parent class'
+      desc "Generates one authorizer per model. Takes optional argument of parent class for authorizers." 
 
-      def run
+      def do_all
         confirm_authorizers
         make_authorizer_folder
         make_authorizers
@@ -17,19 +18,19 @@ module Authority
 
       def confirm_authorizers
         message = <<-RUBY
+
         Preparing to populate #{authorizer_folder} with the following:
         #{authorizer_names.join(', ')}
+        
         Each authorizer will subclass #{parentClass}. 
         RUBY
+        message = message.strip_heredoc
 
         if parentClass == 'Authority::Authorizer'
-          message.concat("\n(You can specify something else with `rails g authority:authorizers MyClass`)")
+          message.concat("(You can specify something else with `rails g authority:authorizers MyClass`)")
         end
 
-        message.concat("\nContinue? (Press 'y' or 'n')")
-
-        puts message.strip_heredoc
-        exit unless gets.chomp.strip.downcase == 'y'
+        puts message.concat("\n\n")
       end
 
       def make_authorizer_folder
@@ -37,7 +38,6 @@ module Authority
         empty_directory authorizer_folder
       end
 
-      desc "Generates one authorizer per model, with confirmation. Optionally, give name of parent class." 
       def make_authorizers
         authorizer_names.each do |authorizer_name|
           filename = File.join(authorizer_folder, authorizer_name.underscore).concat('.rb')
