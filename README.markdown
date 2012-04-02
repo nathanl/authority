@@ -2,7 +2,7 @@
 
 Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models. Unauthorized actions get a warning and an entry in a log file.
 
-It requires that you already have some kind of user object in your application, accessible from all controllers (like `current_user`).
+It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png)](http://travis-ci.org/nathanl/authority)
 
@@ -50,7 +50,7 @@ The goals of Authority are:
 <a name="flow_of_authority">
 ## The flow of Authority
 
-Authority encapsulates all authorization logic in `Authorizer` classes. Want to do something with a model? Ask its authorizer.
+Authority encapsulates all authorization logic in `Authorizer` classes. Want to do something with a model? **Ask its authorizer**.
 
 The process generally flows like this:
 
