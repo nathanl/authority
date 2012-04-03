@@ -132,7 +132,7 @@ This option determines what methods are added to your users, models and authoriz
       include Authority::Abilities
 
       # Without this, ArticleAuthorizer is assumed
-      authorizer_name AdminAuthorizer 
+      self.authorizer_name = 'AdminAuthorizer'
       ...
     end
 
