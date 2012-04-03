@@ -57,19 +57,19 @@ Authority encapsulates all authorization logic in `Authorizer` classes. Want to 
 You can group models under authorizers in any way you wish. For example:
 
 
-        +-------------+               +--------------+                                +-------------+
-        |Simplest case|               |Logical groups|                                |Most granular|
-        +-------------+               +--------------+                                +-------------+
+        +-------------+              +--------------+                               +-------------+
+        |Simplest case|              |Logical groups|                               |Most granular|
+        +-------------+              +--------------+                               +-------------+
 
-        default_strategy               default_strategy                               default_strategy
-               +                              +                                              +
-               |                     +--------+-------+                  +-------------------+-------------------+
-               +                     +                +                  +                   +                   +
-       EverythingAuthorizer   BasicAuthorizer   AdminAuthorizer   CommentAuthorizer  ArticleAuthorizer  EditionAuthorizer
-               +                     +                +                  +                   +                   +
-       +-------+-------+             +-+       +------+                  |                   |                   |
-       +       +       +               +       +      +                  +                   +                   +
-    Comment Article Edition         Comment Article Edition           Comment             Article             Edition
+        default_strategy              default_strategy                              default_strategy
+               +                             +                                             +
+               |                    +--------+-------+                 +-------------------+-------------------+
+               +                    +                +                 +                   +                   +
+       EverythingAuthorizer  BasicAuthorizer   AdminAuthorizer  CommentAuthorizer  ArticleAuthorizer  EditionAuthorizer
+               +                    +                +                 +                   +                   +
+       +-------+-------+            +-+       +------+                 |                   |                   |
+       +       +       +              +       +      +                 +                   +                   +
+    Comment Article Edition        Comment Article Edition          Comment             Article             Edition
 
 
 The process generally flows like this:
@@ -83,8 +83,8 @@ The process generally flows like this:
                                |
                                v
                MooseAuthorizer.creatable_by?(current_user)           # *You define this method.*
-                               +                                     # If it's missing, the default strategy is used...
-                               |
+                               +                                     # If it's missing, the default
+                               |                                     # strategy is used...
                                v
     config.default_strategy.call(:creatable, MooseAuthorizer, user)  # *You define this strategy.*
 
