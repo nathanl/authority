@@ -19,9 +19,9 @@ It requires that you already have some kind of user object in your application, 
     <li><a href="#models">Models</a></li>
     <li><a href="#authorizers">Authorizers</a>
     <ul>
-      <li><a href="#custom_authorizers">Custom Authorizers</a></li>
       <li><a href="#default_strategies">Default strategies</a></li>
       <li><a href="#testing_authorizers">Testing Authorizers</a></li>
+      <li><a href="#custom_authorizers">Custom Authorizers</a></li>
     </ul></li>
     <li><a href="#controllers">Controllers</a></li>
     <li><a href="#views">Views</a></li>
@@ -47,18 +47,50 @@ The goals of Authority are:
 - To gracefully handle any access violations: display a "you can't do that" screen and log the violation.
 - To do all this with minimal effort and mess.
 
+Notably, Authority is **ORM-neutral** and has **no magical rules syntax**. Authority helps your classes communicate, but your authorization logic goes in normal Ruby methods.
+
 <a name="flow_of_authority">
 ## The flow of Authority
 
 Authority encapsulates all authorization logic in `Authorizer` classes. Want to do something with a model? **Ask its authorizer**.
 
+You can group models under authorizers in any way you wish. For example:
+
+
+        +-------------+               +--------------+                                +-------------+
+        |Simplest case|               |Logical groups|                                |Most granular|
+        +-------------+               +--------------+                                +-------------+
+
+        default_strategy               default_strategy                               default_strategy
+               +                              +                                              +
+               |                     +--------+-------+                  +-------------------+-------------------+
+               +                     +                +                  +                   +                   +
+       EverythingAuthorizer   BasicAuthorizer   AdminAuthorizer   CommentAuthorizer  ArticleAuthorizer  EditionAuthorizer
+               +                     +                +                  +                   +                   +
+       +-------+-------+             +-+       +------+                  |                   |                   |
+       +       +       +               +       +      +                  +                   +                   +
+    Comment Article Edition         Comment Article Edition           Comment             Article             Edition
+
+
 The process generally flows like this:
 
-- In a controller or view, a user object is asked whether it can do some action to a resource class or instance, like `current_user.can_create?(Widget)` or `current_user.can_update?(@widget)`.
-- The user just asks the model the same question: `resource.creatable_by?(self)`.
-- The model passes that question to its Authorizer, which actually contains the logic to answer the question.
-- The Authorizer returns an answer back up the call chain to the original caller.
-- If the answer is "no" and the original caller was a controller, this is treated as a `SecurityViolation`. If it was a view, maybe you just don't show a link.
+                   current_user.can_create?(Moose)                   # You ask this question, and the user
+                               +                                     # automatically asks the model...
+                               |
+                               v
+                   Moose.creatable_by?(current_user)                 # The model automatically asks
+                               +                                     # its authorizer...
+                               |
+                               v
+               MooseAuthorizer.creatable_by?(current_user)           # *You define this method.*
+                               +                                     # If it's missing, the default strategy is used...
+                               |
+                               v
+    config.default_strategy.call(:creatable, MooseAuthorizer, user)  # *You define this strategy.*
+
+If the answer is `false` and the original caller was a controller, this is treated as a `SecurityViolation`. If it was a view, maybe you just don't show a link.
+
+(Diagrams made with [AsciiFlow](http://asciiflow.com))
 
 <a name="installation">
 ## Installation
@@ -84,24 +116,37 @@ This option determines what methods are added to your users, models and authoriz
 
 <a name="users">
 ### Users
-In whatever class represents a logged-in user in your application, `include Authority::UserAbilities`.
+
+    # Whatever class represents a logged-in user in your app
+    class User 
+      # Adds `can_create?(resource)`, etc
+      include Authority::Abilities
+    ...
+    end
 
 <a name="models">
 ### Models
- 
-In every model, `include Authority::Abilities`. Give every model an [Authorizer](#authorizers). By default, the `Llama` model will look for a `LlamaAuthorizer`. To specify a different one, call `authorizer_name UngulateAuthorizer`; this way, the `UngulateAuthorizer` could also protect the `Zebra` and `Antelope` models, or the `AdminAuthorizer` could protect business-critical models.
+
+    class Article
+      # Adds `creatable_by?(user)`, etc
+      include Authority::Abilities
+
+      # Without this, ArticleAuthorizer is assumed
+      authorizer_name AdminAuthorizer 
+      ...
+    end
 
 <a name="authorizers">
 ### Authorizers
 
-Add your authorizers under `app/authorizers`, subclassing `Authority::Authorizer` or your own authorizer class. (See `rails g authority:authorizers --help`.)
+Add your authorizers under `app/authorizers`, subclassing `Authority::Authorizer`.
 
 These are where your actual authorization logic goes. Here's how it works:
 
 - Instance methods answer questions about model instances, like "can this user update this **particular** widget?" (Within an instance method, you can get the model instance with `resource`).
   - Any instance method you don't define (for example, if you didn't make a `def deletable_by?(user)`) will fall back to the corresponding class method. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
 - Class methods answer questions about model classes, like "is it **ever** permissible for this user to update a Widget?"
-  - Any class method you don't define (for example, if you didn't make a `def self.updatable_by?(user)`) will fall back to your [configurable default strategy](#default_strategies).
+  - Any class method you don't define (for example, if you didn't make a `def self.updatable_by?(user)`) will fall back to your configurable [default strategy](#default_strategies).
 
 For example:
 
@@ -122,32 +167,10 @@ For example:
 
 As you can see, you can specify different logic for every method on every model, if necessary. On the other extreme, you could simply supply a [default strategy](#default_strategies) that covers all your use cases.
 
-#### Custom Authorizers
-
-If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - you can insert a custom class into the inheritance chain.
-
-    # lib/my_app/authorizer.rb
-    module MyApp
-      class Authorizer < Authority::Authorizer
-      
-        def self.has_permission(user, permission_name)
-          # look that up somewhere
-        end
-
-      end
-    end
-  
-    #app/authorizers/badger_authorizer.rb
-    class BadgerAuthorizer < MyApp::Authorizer
-      # contents
-    end
-
-If you decide to place your custom class in `lib` as shown above (as opposed to putting it in `app`), you should require it at the bottom of `config/initializers/authority.rb`.
-
 <a name="default_strategies">
 #### Default Strategies
 
-Any class method you don't define on an authorizer will use your default strategy. The **default** default strategy simply returns false, meaning that everything is forbidden. This whitelisting approach will keep you from accidentally allowing things you didn't intend. 
+Any class method you don't define on an authorizer will use your default strategy. The **default** default strategy simply returns `false`, meaning that everything is forbidden. This whitelisting approach will keep you from accidentally allowing things you didn't intend. 
 
 You can configure a different default strategy. For example, you might want one that looks up permissions in your database:
 
@@ -156,6 +179,8 @@ You can configure a different default strategy. For example, you might want one 
       # Does the user have any of the roles which give this permission?
       (roles_which_grant(able, authorizer) & user.roles).any?
     }
+
+If your system is uniform enough, **this strategy alone might handle all the logic you need**.
 
 <a name="testing_authorizers">
 #### Testing Authorizers
@@ -166,8 +191,8 @@ One nice thing about putting your authorization logic in authorizers is the ease
     describe AdminAuthorizer do
 
       before :each do 
-        @user  = Factory.build(:user)
-        @admin = Factory.build(:admin)
+        @user  = FactoryGirl.build(:user)
+        @admin = FactoryGirl.build(:admin)
       end
 
       describe "class" do
@@ -194,6 +219,29 @@ One nice thing about putting your authorization logic in authorizers is the ease
       end
 
     end
+
+<a name="custom_authorizers">
+#### Custom Authorizers
+
+If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - you can insert a custom class into the inheritance chain.
+
+    # lib/my_app/authorizer.rb
+    module MyApp
+      class Authorizer < Authority::Authorizer
+      
+        def self.has_permission(user, permission_name)
+          # look that up somewhere
+        end
+
+      end
+    end
+  
+    #app/authorizers/badger_authorizer.rb
+    class BadgerAuthorizer < MyApp::Authorizer
+      # contents
+    end
+
+If you decide to place your custom class in `lib` as shown above (as opposed to putting it in `app`), you should require it at the bottom of `config/initializers/authority.rb`.
 
 <a name="controllers">
 ### Controllers
