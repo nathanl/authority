@@ -102,12 +102,14 @@ Starting from a clean commit status, add `authority` to your Gemfile, `bundle`, 
 
 Edit `config/initializers/authority.rb`. That file documents all your options, but one of particular interest is `config.abilities`, which defines the verbs and corresponding adjectives in your app. The defaults are:
 
+```ruby
     config.abilities =  {
       :create => 'creatable',
       :read   => 'readable',
       :update => 'updatable',
       :delete => 'deletable'
     }
+```
 
 This option determines what methods are added to your users, models and authorizers. If you need to ask `user.can_deactivate?(Satellite)` and `@satellite.deactivatable_by?(user)`, add those to the hash.
 
@@ -117,16 +119,19 @@ This option determines what methods are added to your users, models and authoriz
 <a name="users">
 ### Users
 
+```ruby
     # Whatever class represents a logged-in user in your app
     class User 
       # Adds `can_create?(resource)`, etc
       include Authority::Abilities
     ...
     end
+```
 
 <a name="models">
 ### Models
 
+```ruby
     class Article
       # Adds `creatable_by?(user)`, etc
       include Authority::Abilities
@@ -135,6 +140,7 @@ This option determines what methods are added to your users, models and authoriz
       authorizer_name AdminAuthorizer 
       ...
     end
+```
 
 <a name="authorizers">
 ### Authorizers
@@ -150,6 +156,7 @@ These are where your actual authorization logic goes. Here's how it works:
 
 For example:
 
+```ruby
     # app/authorizers/schedule_authorizer.rb
     class ScheduleAuthorizer < Authority::Authorizer
 
@@ -164,6 +171,7 @@ For example:
       end
 
     end
+```
 
 As you can see, you can specify different logic for every method on every model, if necessary. On the other extreme, you could simply supply a [default strategy](#default_strategies) that covers all your use cases.
 
@@ -174,11 +182,13 @@ Any class method you don't define on an authorizer will use your default strateg
 
 You can configure a different default strategy. For example, you might want one that looks up permissions in your database:
 
+```ruby
     # In config/initializers/authority.rb
     config.default_strategy = Proc.new { |able, authorizer, user|
       # Does the user have any of the roles which give this permission?
       (roles_which_grant(able, authorizer) & user.roles).any?
     }
+```
 
 If your system is uniform enough, **this strategy alone might handle all the logic you need**.
 
@@ -187,6 +197,7 @@ If your system is uniform enough, **this strategy alone might handle all the log
 
 One nice thing about putting your authorization logic in authorizers is the ease of testing. Here's a brief example.
 
+```ruby
     # An authorizer shared by several admin-only models
     describe AdminAuthorizer do
 
@@ -219,12 +230,14 @@ One nice thing about putting your authorization logic in authorizers is the ease
       end
 
     end
+```
 
 <a name="custom_authorizers">
 #### Custom Authorizers
 
 If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - you can insert a custom class into the inheritance chain.
 
+```ruby
     # lib/my_app/authorizer.rb
     module MyApp
       class Authorizer < Authority::Authorizer
@@ -240,6 +253,7 @@ If you want to customize your authorizers even further - for example, maybe you 
     class BadgerAuthorizer < MyApp::Authorizer
       # contents
     end
+```
 
 If you decide to place your custom class in `lib` as shown above (as opposed to putting it in `app`), you should require it at the bottom of `config/initializers/authority.rb`.
 
@@ -253,6 +267,7 @@ Anytime a controller finds a user attempting something they're not authorized to
 
 The relationship between controller actions and abilities - like checking `readable_by?` on the `index` action - is configurable both globally, using `config.controller_action_map`, and per controller, as below.
 
+```ruby
     class LlamaController < ApplicationController
 
       # Check class-level authorizations before all actions except :create
@@ -273,13 +288,16 @@ The relationship between controller actions and abilities - like checking `reada
       end
 
     end
+```
 
 <a name="views">
 ### Views
 
 Assuming your user object is available in your views, you can do all kinds of conditional rendering. For example:
 
+```ruby
     link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)
+```
 
 If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a [Security Violation](#security_violations_and_logging) from the controller.
 
