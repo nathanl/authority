@@ -1,6 +1,6 @@
 # Authority
 
-Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models. Unauthorized actions get a warning and an entry in a log file.
+Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models, and to handle and/or log unauthorized actions.
 
 It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
@@ -302,16 +302,30 @@ If the user isn't allowed to edit widgets, they won't see the link. If they're n
 <a name="security_violations_and_logging">
 ## Security Violations & Logging
 
-Anytime a user attempts an unauthorized action, Authority does two things:
+Anytime a user attempts an unauthorized action, Authority calls whatever controller method is specified by your `security_violation_handler` option, handing it the exception. The default handler is `authority_forbidden`, which Authority adds to your `ApplicationController`. It does the following:
 
-- Renders your `public/403.html`
+- Renders `public/403.html`
 - Logs the violation to whatever logger you configured.
 
-If you want to have nice log messages for security violations, you should ensure that your user object and models have `to_s` methods; this will control how they show up in log messages saying things like 
+You can specify a different handler like so:
 
-    "Kenneth Lay is not allowed to delete this resource: 'accounting_tricks.doc'"
+```ruby
+# config/initializers/authority.rb
+...
+config.security_violation_handler = :fire_ze_missiles
+...
 
-If you feel like setting up a `cron` job to watch the log file, look up the user's name and address, and dispatch minions to fill their mailbox with goose droppings, that's really up to you. I got nothing to do with it, man.
+# app/controllers/application_controller.rb
+class ApplicationController < ActionController::Base
+
+  def fire_ze_missiles(exception)
+    # Log? Set a flash message? Dispatch minions to fill their mailbox with goose droppings? It's up to you.
+  end
+...
+end
+```
+
+If you want different error handling per controller, define `fire_ze_missiles` on each of them.
 
 <a name="credits">
 ## Credits, AKA 'Shout-Outs'

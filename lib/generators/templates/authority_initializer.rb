@@ -70,10 +70,18 @@ Authority.configure do |config|
   #   :update => 'updatable',
   #   :delete => 'deletable'
   # }
+
+  # SECURITY_VIOLATION_HANDLER
+  # If a SecurityViolation is raised, what controller method should be used to rescue it?
+  #
+  # Default is:
+  #
+  # config.security_violation_handler = :authority_forbidden # Defined in controller.rb
   
   # LOGGER
   # If a user tries to perform an unauthorized action, where should we log that fact?
-  # Provide a logger object which responds to `.warn(message)`
+  # Provide a logger object which responds to `.warn(message)`, unless your 
+  # security_violation_handler calls a different method.
   #
   # Default is:
   #

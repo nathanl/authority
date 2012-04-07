@@ -3,14 +3,41 @@ require 'support/ability_model'
 require 'support/example_controllers'
 require 'support/mock_rails'
 require 'support/user'
+require 'active_support/core_ext/proc'
 
 describe Authority::Controller do
 
+  describe "the security violation callback" do
+
+    it "should call whatever method on the controller that the configuration specifies" do
+      # Here be dragons!
+      @fakeException = Exception.new
+      @sample_controller = SampleController.new
+      # If a callback is passed to a controller's `rescue_from` method as the value for 
+      # the `with` option (like `SomeController.rescue_from FooException, :with => some_callback`),
+      # Rails will use ActiveSupport's `Proc#bind` to ensure that when the proc refers to 
+      # `self`, it will be the controller, not the proc itself.
+      # I need this callback's `self` to be the controller for the purposes of
+      # this test, so I'm stealing that behavior.
+      @callback = Authority::Controller.security_violation_callback.bind(@sample_controller)
+
+      Authority.configuration.security_violation_handler = :fire_ze_missiles
+      @sample_controller.should_receive(:fire_ze_missiles).with(@fakeException)
+      @callback.call(@fakeException)
+    end
+  end
+
   describe "when including" do
-    it "should specify rescuing security transgressions" do
-      SampleController.should_receive(:rescue_from).with(Authority::SecurityViolation, :with => :authority_forbidden)
+
+    before :each do
+      Authority::Controller.stub(:security_violation_callback).and_return(Proc.new {|exception| })
+    end
+
+    it "should specify rescuing security violations with a standard callback" do
+      SampleController.should_receive(:rescue_from).with(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
       SampleController.send(:include, Authority::Controller)
     end
+
   end
 
   describe "after including" do
