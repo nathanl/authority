@@ -319,7 +319,8 @@ config.security_violation_handler = :fire_ze_missiles
 class ApplicationController < ActionController::Base
 
   def fire_ze_missiles(exception)
-    # Log? Set a flash message? Dispatch minions to fill their mailbox with goose droppings? It's up to you.
+    # Log? Set a flash message? Dispatch minions to 
+    # fill their mailbox with goose droppings? It's up to you.
   end
 ...
 end
