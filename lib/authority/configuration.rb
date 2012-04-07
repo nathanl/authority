@@ -6,9 +6,10 @@ module Authority
     attr_accessor :default_strategy, :abilities, :controller_action_map, :user_method, :logger
 
     def initialize
-      @default_strategy = Proc.new { |able, authorizer, user|
+      @default_strategy = Proc.new do |able, authorizer, user|
         false
-      }
+      end
+      
 
       @abilities = {
         :create => 'creatable',

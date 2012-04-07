@@ -182,10 +182,10 @@ You can configure a different default strategy. For example, you might want one 
 
 ```ruby
 # In config/initializers/authority.rb
-config.default_strategy = Proc.new { |able, authorizer, user|
+config.default_strategy = Proc.new do |able, authorizer, user|
   # Does the user have any of the roles which give this permission?
   (roles_which_grant(able, authorizer) & user.roles).any?
-}
+end
 ```
 
 If your system is uniform enough, **this strategy alone might handle all the logic you need**.
