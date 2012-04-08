@@ -1,6 +1,8 @@
 # Authority
 
-Authority gives you a clean and easy way to say, in your Rails app, **who** is allowed to do **what** with your models, and to handle and/or log unauthorized actions.
+Authority helps you authorize actions in your Rails app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
+
+Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic, define a default strategy, and handle unauthorized actions.
 
 It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
@@ -46,8 +48,6 @@ The goals of Authority are:
   - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
 - To gracefully handle any access violations: display a "you can't do that" screen and log the violation.
 - To do all this with minimal effort and mess.
-
-Notably, Authority is **ORM-neutral** and has **no magical rules syntax**. Authority helps your classes communicate, but your authorization logic goes in normal Ruby methods.
 
 <a name="flow_of_authority">
 ## The flow of Authority
