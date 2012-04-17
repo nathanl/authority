@@ -6,8 +6,16 @@ module Authority
     extend ActiveSupport::Concern
 
     included do
-      rescue_from Authority::SecurityViolation, :with => :authority_forbidden
+      rescue_from(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
       class_attribute :authority_resource
+    end
+
+    def self.security_violation_callback
+      Proc.new do |exception|
+        # Through the magic of ActiveSupport's Proc#bind, `ActionController::Base#rescue_from`
+        # can call this proc and make `self` the actual controller instance
+        self.send(Authority.configuration.security_violation_handler, exception)
+      end
     end
 
     module ClassMethods
@@ -37,6 +45,7 @@ module Authority
       def authority_action_map
         @authority_action_map ||= Authority.configuration.controller_action_map.dup
       end
+
     end
 
     protected
