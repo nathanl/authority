@@ -11,7 +11,7 @@ describe Authority::Controller do
 
     it "should call whatever method on the controller that the configuration specifies" do
       # Here be dragons!
-      @fakeException = Exception.new
+      @fake_exception = Exception.new
       @sample_controller = SampleController.new
       # If a callback is passed to a controller's `rescue_from` method as the value for 
       # the `with` option (like `SomeController.rescue_from FooException, :with => some_callback`),
@@ -22,8 +22,8 @@ describe Authority::Controller do
       @callback = Authority::Controller.security_violation_callback.bind(@sample_controller)
 
       Authority.configuration.security_violation_handler = :fire_ze_missiles
-      @sample_controller.should_receive(:fire_ze_missiles).with(@fakeException)
-      @callback.call(@fakeException)
+      @sample_controller.should_receive(:fire_ze_missiles).with(@fake_exception)
+      @callback.call(@fake_exception)
     end
   end
 
