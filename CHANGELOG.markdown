@@ -2,6 +2,11 @@
 
 This is mainly to document major new features and backwards-incompatible changes.
 
+## v1.0.0
+
+- Added `config.security_violation_handler` so users can specify which controller method to use when rescuing `SecurityViolation`s
+- Removed generator to make blank authorizers. On further consideration, one authorizer per model is counterproductive for most use cases, and I'd rather not encourage misuse.
+
 ## v1.0.0.pre4
 
 Added generator to make blank authorizers. See `rails g authority:authorizers --help`.
