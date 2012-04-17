@@ -38,15 +38,15 @@ It requires that you already have some kind of user object in your application, 
 
 The goals of Authority are:
 
-- To allow broad, class-level rules. Examples: 
+- To allow broad, **class-level** rules. Examples: 
   - "Basic users cannot delete any Widget."
   - "Only admin users can create Offices."
-- To allow fine-grained, instance-level rules. Examples: 
+- To allow fine-grained, **instance-level** rules. Examples: 
   - "Management users can only edit schedules with date ranges in the future."
   - "Users can't create playlists more than 20 songs long unless they've paid."
 - To provide a clear syntax for permissions-based views. Example:
   - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
-- To gracefully handle any access violations: display a "you can't do that" screen and log the violation.
+- To gracefully handle any access violations: by default, it displays a "you can't do that" screen and logs the violation.
 - To do all this with minimal effort and mess.
 
 <a name="flow_of_authority">
@@ -136,7 +136,7 @@ class Article
   # Adds `creatable_by?(user)`, etc
   include Authority::Abilities
 
-  # Without this, ArticleAuthorizer is assumed
+  # Without this, 'ArticleAuthorizer' is assumed
   self.authorizer_name = 'AdminAuthorizer'
   ...
 end
@@ -233,7 +233,7 @@ end
 <a name="custom_authorizers">
 #### Custom Authorizers
 
-If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - you can insert a custom class into the inheritance chain.
+If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - just use normal Ruby inheritance. For example, add your own parent class, like this:
 
 ```ruby
 # lib/my_app/authorizer.rb
@@ -260,8 +260,8 @@ If you decide to place your custom class in `lib` as shown above (as opposed to 
 
 Anytime a controller finds a user attempting something they're not authorized to do, a [Security Violation](#security_violations_and_logging) will result. Controllers get two ways to check authorization:
 
-- `authorize_actions_for Transaction` protects multiple controller actions with a `before_filter`, which performs a class-level check. If the current user is never allowed to delete a `Transaction`, they'll never even get to the controller's `destroy` method.
-- `authorize_action_for @transaction` can be called inside a single controller action, and performs an instance-level check. If called inside `update`, it will check whether the current user is allowed to update this particular `@transaction` instance.
+- `authorize_actions_for Transaction` protects multiple controller actions with a `before_filter`, which performs a **class-level** check. If the current user is never allowed to delete a `Transaction`, they'll never even get to the controller's `destroy` method.
+- `authorize_action_for @transaction` can be called inside a single controller action, and performs an **instance-level** check. If called inside `update`, it will check whether the current user is allowed to update this particular `@transaction` instance.
 
 The relationship between controller actions and abilities - like checking `readable_by?` on the `index` action - is configurable both globally, using `config.controller_action_map`, and per controller, as below.
 
