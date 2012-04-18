@@ -57,9 +57,7 @@ Authority encapsulates all authorization logic in `Authorizer` classes. Want to 
 You can group models under authorizers in any way you wish. For example:
 
 
-        +-------------+              +--------------+                               +-------------+
-        |Simplest case|              |Logical groups|                               |Most granular|
-        +-------------+              +--------------+                               +-------------+
+         Simplest case                Logical groups                                 Most granular 
 
         default_strategy              default_strategy                              default_strategy
                +                             +                                             +
