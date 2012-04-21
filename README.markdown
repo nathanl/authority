@@ -121,7 +121,7 @@ This option determines what methods are added to your users, models and authoriz
 # Whatever class represents a logged-in user in your app
 class User 
   # Adds `can_create?(resource)`, etc
-  include Authority::Abilities
+  include Authority::UserAbilities
 ...
 end
 ```
