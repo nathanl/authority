@@ -7,7 +7,7 @@ describe Authority::Authorizer do
   before :each do
     @ability_model = AbilityModel.new
     @authorizer    = @ability_model.authorizer
-    @user         = User.new
+    @user          = User.new
   end
 
   it "should take a resource instance in its initializer" do
