@@ -11,4 +11,3 @@ module Authority
 
   end
 end
-

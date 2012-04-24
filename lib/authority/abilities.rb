@@ -3,7 +3,7 @@ module Authority
   # Should be included into all models in a Rails app. Provides the model
   # with both class and instance methods like `updatable_by?(user)`
   # Exactly which methods get defined is determined from `config.abilities`;
-  # the module is evaluated after any user-supplied config block is run 
+  # the module is evaluated after any user-supplied config block is run
   # in order to make that possible.
   # All delegate to the methods of the same name on the model's authorizer.
 
@@ -30,7 +30,7 @@ module Authority
 
       def authorizer
         @authorizer ||= authorizer_name.constantize # Get an actual reference to the authorizer class
-      rescue NameError => e
+      rescue NameError
         raise Authority::NoAuthorizerError.new("#{authorizer_name} does not exist in your application")
       end
     end
