@@ -4,7 +4,7 @@ This is mainly to document major new features and backwards-incompatible changes
 
 ## Unreleased
 
-- Added `Authority::Authorizer.default` class method which is called before the `default_strategry` proc
+- Added `Authority::Authorizer.default` class method which is called before the `default_strategy` proc and delegates to that proc. This can be overridden per authorizer.
 
 ## v1.0.0
 

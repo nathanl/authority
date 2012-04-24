@@ -14,40 +14,6 @@ describe Authority::Authorizer do
     @authorizer.resource.should eq(@ability_model)
   end
 
-  describe "default method" do
-
-    Authority.adjectives.each do |adjective|
-      method_name = "#{adjective}_by?"
-
-      it "should run the default class authorization strategy method" do
-        able = method_name.sub('_by?', '').to_sym
-        Authority::Authorizer.should_receive(:default).with(able, @user)
-        Authority::Authorizer.send(method_name, @user)
-      end
-
-    end
-
-  end
-
-  describe "class methods" do
-
-    Authority.adjectives.each do |adjective|
-      method_name = "#{adjective}_by?"
-
-      it "should respond to `#{method_name}`" do
-        Authority::Authorizer.should respond_to(method_name)
-      end
-
-      it "should run the default config authorization strategy block" do
-        able = method_name.sub('_by?', '').to_sym
-        Authority.configuration.default_strategy.should_receive(:call).with(able, Authority::Authorizer, @user)
-        Authority::Authorizer.send(method_name, @user)
-      end
-
-    end
-
-  end
-
   describe "instance methods" do
 
     Authority.adjectives.each do |adjective|
@@ -66,5 +32,34 @@ describe Authority::Authorizer do
 
   end
 
-end
+  describe "class methods" do
 
+    Authority.adjectives.each do |adjective|
+      method_name = "#{adjective}_by?"
+
+      it "should respond to `#{method_name}`" do
+        Authority::Authorizer.should respond_to(method_name)
+      end
+
+      it "should delegate `#{method_name}` to the authorizer's `default` method by default" do
+        able = method_name.sub('_by?', '').to_sym
+        Authority::Authorizer.should_receive(:default).with(able, @user)
+        Authority::Authorizer.send(method_name, @user)
+      end
+
+    end
+
+  end
+
+  describe "the default method" do
+
+    it "should call the configured `default_strategy` proc by default" do
+      Authority.configuration.default_strategy.should_receive(:call).with(
+        :implodable, Authority::Authorizer, @user
+      )
+      Authority::Authorizer.default(:implodable, @user)
+    end
+
+  end
+
+end
