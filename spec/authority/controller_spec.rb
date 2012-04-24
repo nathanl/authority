@@ -13,9 +13,9 @@ describe Authority::Controller do
       # Here be dragons!
       @fake_exception = Exception.new
       @sample_controller = SampleController.new
-      # If a callback is passed to a controller's `rescue_from` method as the value for 
+      # If a callback is passed to a controller's `rescue_from` method as the value for
       # the `with` option (like `SomeController.rescue_from FooException, :with => some_callback`),
-      # Rails will use ActiveSupport's `Proc#bind` to ensure that when the proc refers to 
+      # Rails will use ActiveSupport's `Proc#bind` to ensure that when the proc refers to
       # `self`, it will be the controller, not the proc itself.
       # I need this callback's `self` to be the controller for the purposes of
       # this test, so I'm stealing that behavior.
@@ -56,7 +56,7 @@ describe Authority::Controller do
           ExampleController.authority_action_map[:erase].should be_nil
         end
       end
-      
+
     end
 
     describe "DSL (class) methods" do
@@ -83,7 +83,7 @@ describe Authority::Controller do
     end
 
     describe "instance methods" do
-      before :each do 
+      before :each do
         @user       = User.new
         @controller = ExampleController.new
         @controller.stub!(:action_name).and_return(:edit)
@@ -138,4 +138,3 @@ describe Authority::Controller do
   end
 
 end
-

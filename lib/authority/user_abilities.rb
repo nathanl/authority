@@ -4,7 +4,7 @@ module Authority
     # Should be included into whatever class represents users in an app.
     # Provides methods like `can_update?(resource)`
     # Exactly which methods get defined is determined from `config.abilities`;
-    # the module is evaluated after any user-supplied config block is run 
+    # the module is evaluated after any user-supplied config block is run
     # in order to make that possible.
     # All delegate to corresponding methods on the resource.
 
@@ -15,6 +15,6 @@ module Authority
         end
       RUBY
     end
-   
+
   end
 end

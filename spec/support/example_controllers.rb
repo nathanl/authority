@@ -20,4 +20,3 @@ end
 class SampleController
   extend MockController
 end
-

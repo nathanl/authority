@@ -9,7 +9,7 @@ module Authority
       @default_strategy = Proc.new do |able, authorizer, user|
         false
       end
-      
+
 
       @abilities = {
         :create => 'creatable',

@@ -22,7 +22,7 @@ describe Authority::Authorizer do
       it "should respond to `#{method_name}`" do
         @authorizer.should respond_to(method_name)
       end
-      
+
       it "should delegate `#{method_name}` to the corresponding class method by default" do
         @authorizer.class.should_receive(method_name).with(@user)
         @authorizer.send(method_name, @user)
