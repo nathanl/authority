@@ -35,7 +35,7 @@ describe Authority::Configuration do
   end
 
   describe "customizing the configuration" do
-    before :all do 
+    before :all do
       Authority.instance_variable_set :@configuration, nil
       Authority.configure do |config|
         config.abilities[:eat]  = 'edible'

@@ -5,7 +5,7 @@ module Authority
     # descend. Provides the authorizer with both class and instance methods
     # like `updatable_by?(user)`.
     # Exactly which methods get defined is determined from `config.abilities`;
-    # the class is evaluated after any user-supplied config block is run 
+    # the class is evaluated after any user-supplied config block is run
     # in order to make that possible.
 
     attr_reader :resource
@@ -38,5 +38,5 @@ module Authority
 
   end
 
-  class NoAuthorizerError < StandardError ; end ;
+  class NoAuthorizerError < StandardError ; end
 end

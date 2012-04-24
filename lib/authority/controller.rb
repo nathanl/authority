@@ -52,7 +52,7 @@ module Authority
 
     # Renders a static file to minimize the chances of further errors.
     #
-    # @param [Exception] error, an error that indicates the user tried to perform a forbidden action. 
+    # @param [Exception] error, an error that indicates the user tried to perform a forbidden action.
     def authority_forbidden(error)
       Authority.configuration.logger.warn(error.message)
       render :file => Rails.root.join('public', '403.html'), :status => 403, :layout => false

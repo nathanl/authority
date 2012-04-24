@@ -87,11 +87,11 @@ describe Authority::Abilities do
 
     # TODO: Nathan will comment more clearly in the future
     # aka "don't memoize" (to prevent dirty models from contaminating authorization)
-    it "should always create a new authorizer instance when accessing the authorizer" do 
+    it "should always create a new authorizer instance when accessing the authorizer" do
       @ability_model.class.authorizer.should_receive(:new).with(@ability_model).twice
       2.times { @ability_model.authorizer }
     end
-    
+
   end
 
 end
