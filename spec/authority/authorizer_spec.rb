@@ -14,6 +14,21 @@ describe Authority::Authorizer do
     @authorizer.resource.should eq(@ability_model)
   end
 
+  describe "default method" do
+
+    Authority.adjectives.each do |adjective|
+      method_name = "#{adjective}_by?"
+
+      it "should run the default class authorization strategy method" do
+        able = method_name.sub('_by?', '').to_sym
+        Authority::Authorizer.should_receive(:default).with(able, @user)
+        Authority::Authorizer.send(method_name, @user)
+      end
+
+    end
+
+  end
+
   describe "class methods" do
 
     Authority.adjectives.each do |adjective|
@@ -23,7 +38,7 @@ describe Authority::Authorizer do
         Authority::Authorizer.should respond_to(method_name)
       end
 
-      it "should run the default authorization strategy block" do
+      it "should run the default config authorization strategy block" do
         able = method_name.sub('_by?', '').to_sym
         Authority.configuration.default_strategy.should_receive(:call).with(able, Authority::Authorizer, @user)
         Authority::Authorizer.send(method_name, @user)
