@@ -2,6 +2,10 @@
 
 This is mainly to document major new features and backwards-incompatible changes.
 
+## Unreleased
+
+- Added `Authority::Authorizer.default` class method which is called before the `default_strategry` proc
+
 ## v1.0.0
 
 - Added `config.security_violation_handler` so users can specify which controller method to use when rescuing `SecurityViolation`s
