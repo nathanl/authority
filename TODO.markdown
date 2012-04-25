@@ -1,8 +1,9 @@
 # TODO
 
-## Chores
+## Tests
 
 - Add tests for the generators
+- Test `ActionController` integration
 
 ## Documentation
 
