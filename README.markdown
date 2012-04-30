@@ -87,9 +87,10 @@ The authorization process generally flows like this:
                                |                                     # calls `default`...
                                v
         AdminAuthorizer.default(:creatable, current_user)            # *You define this method.* 
-                                                                     # If you don't, the one inherited 
-                                                                     # from Authority::Authorizer just 
-                                                                     # returns false.
+                                                                     # If you don't, it will use the one 
+                                                                     # inherited from ApplicationAuthorizer.
+                                                                     # (Its parent, Authority::Authorizer,
+                                                                     # defines the method as `return false`.)
 
 If the answer is `false` and the original caller was a controller, this is treated as a `SecurityViolation`. If it was a view, maybe you just don't show a link.
 
@@ -260,10 +261,24 @@ end
 
 Anytime a controller finds a user attempting something they're not authorized to do, a [Security Violation](#security_violations_and_logging) will result. Controllers get two ways to check authorization:
 
-- `authorize_actions_for Transaction` protects multiple controller actions with a `before_filter`, which performs a **class-level** check. If the current user is never allowed to delete a `Transaction`, they'll never even get to the controller's `destroy` method.
-- `authorize_action_for @transaction` can be called inside a single controller action, and performs an **instance-level** check. If called inside `update`, it will check whether the current user is allowed to update this particular `@transaction` instance.
+- `authorize_actions_for Llama` protects multiple controller actions with a `before_filter`, which performs a **class-level** check. If the current user is never allowed to delete a `Llama`, they'll never even get to the controller's `destroy` method.
+- `authorize_action_for @llama` can be called inside a single controller action, and performs an **instance-level** check. If called inside `update`, it will check whether the current user is allowed to update this particular `@llama` instance.
 
-The relationship between controller actions and abilities - like checking `readable_by?` on the `index` action - is configurable both globally, using `config.controller_action_map`, and per controller, as below.
+How does Authority know to check `deletable_by?` before the controller's `destroy` action? It checks your configuration. These mappings are configurable globally from the initializer file. Defaults are as follows:
+
+```ruby
+config.controller_action_map = {
+ :index   => 'read',    # `index` controller action will check `readable_by?`
+ :show    => 'read',
+ :new     => 'create',  # `new` controller action will check `creatable_by?`
+ :create  => 'create',  # ...etc
+ :edit    => 'update',
+ :update  => 'update',
+ :destroy => 'delete'
+}
+```
+
+They are also configurable per controller, as follows:
 
 ```ruby
 class LlamaController < ApplicationController
@@ -273,7 +288,7 @@ class LlamaController < ApplicationController
   authorize_actions_for Llama, :except => :create, :actions => {:neuter => :update},
   
   # To authorize this controller's 'breed' action, ask whether `current_user.can_create?(Llama)`
-  authority_action :breed => 'new'
+  authority_action :breed => 'create'
 
   ...
 
