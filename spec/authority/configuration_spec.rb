@@ -3,14 +3,6 @@ require 'spec_helper'
 describe Authority::Configuration do
   describe "the default configuration" do
 
-    it "should have a default authorization strategy block" do
-      Authority.configuration.default_strategy.should respond_to(:call)
-    end
-
-    it "should return false when calling the default authorization strategy block" do
-      Authority.configuration.default_strategy.call(:action, Authority::Authorizer, User.new).should be_false
-    end
-
     it "should have a default authority controller actions map" do
       Authority.configuration.controller_action_map.should be_a(Hash)
     end
@@ -39,18 +31,11 @@ describe Authority::Configuration do
       Authority.instance_variable_set :@configuration, nil
       Authority.configure do |config|
         config.abilities[:eat]  = 'edible'
-        config.default_strategy = Proc.new { |able, authorizer, user|
-          true
-        }
       end
 
       after :all do
         Authority.instance_variable_set :@configuration, nil
         Authority.configure
-      end
-
-      it "should allow customizing the authorization block" do
-        Authority.configuration.default_strategy.call(:action, Authority::Authorizer, User.new).should be_true
       end
 
       # This shouldn't be used during runtime, only during configuration
@@ -60,5 +45,19 @@ describe Authority::Configuration do
       end
 
     end
+  end
+
+  describe "helping those upgrading to 2.0" do
+
+    before :all do
+      Authority.instance_variable_set :@configuration, nil
+    end
+
+    it "should raise a helpful exception if `config.default_strategy` is called" do
+      expect { Authority.configure { |config| config.default_strategy = Proc.new { false }}}.to raise_error(
+        ArgumentError, "`config.default_strategy=` was removed in Authority 2.0; see README and CHANGELOG"
+      )
+    end
+
   end
 end

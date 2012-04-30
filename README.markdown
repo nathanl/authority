@@ -2,7 +2,7 @@
 
 Authority helps you authorize actions in your Rails app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
 
-Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic, define a default strategy, and handle unauthorized actions.
+Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic and handle unauthorized actions.
 
 It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
@@ -22,9 +22,8 @@ It requires that you already have some kind of user object in your application, 
     <li><a href="#models">Models</a></li>
     <li><a href="#authorizers">Authorizers</a>
     <ul>
-      <li><a href="#default_strategies">Default strategies</a></li>
+      <li><a href="#default_methods">Default methods</a></li>
       <li><a href="#testing_authorizers">Testing Authorizers</a></li>
-      <li><a href="#custom_authorizers">Custom Authorizers</a></li>
     </ul></li>
     <li><a href="#controllers">Controllers</a></li>
     <li><a href="#views">Views</a></li>
@@ -55,37 +54,42 @@ The goals of Authority are:
 
 Authority encapsulates all authorization logic in `Authorizer` classes. Want to do something with a model? **Ask its authorizer**.
 
-You can group models under authorizers in any way you wish. For example:
+Models that have the same authorization rules should use the same authorizer. In other words, if you would write the exact same methods on two models to determine who can create them, who can edit them, etc, then they should use the same authorizer.
 
+Every model starts out assuming that its authorizer is `ApplicationAuthorizer`, but you can specify another one using the model's `authorizer_name=` method. Authorizers are just classes, so you can use any inheritance pattern you like.
+
+Some example groupings:
 
          Simplest case                Logical groups                                 Most granular 
 
-        default_strategy              default_strategy                              default_strategy
+      ApplicationAuthorizer        ApplicationAuthorizer                         ApplicationAuthorizer
                +                             +                                             +
                |                    +--------+-------+                 +-------------------+-------------------+
-               +                    +                +                 +                   +                   +
-       EverythingAuthorizer  BasicAuthorizer   AdminAuthorizer  CommentAuthorizer  ArticleAuthorizer  EditionAuthorizer
-               +                    +                +                 +                   +                   +
+               |                    +                +                 +                   +                   +
+               |             BasicAuthorizer   AdminAuthorizer  CommentAuthorizer  ArticleAuthorizer  EditionAuthorizer
+               |                    +                +                 +                   +                   +
        +-------+-------+            +-+       +------+                 |                   |                   |
        +       +       +              +       +      +                 +                   +                   +
     Comment Article Edition        Comment Article Edition          Comment             Article             Edition
 
+The authorization process generally flows like this:
 
-The process generally flows like this:
-
-                   current_user.can_create?(Moose)                   # You ask this question, and the user
+                   current_user.can_create?(Article)                 # You ask this question, and the user
                                +                                     # automatically asks the model...
                                |
                                v
-                   Moose.creatable_by?(current_user)                 # The model automatically asks
+                 Article.creatable_by?(current_user)                 # The model automatically asks
                                +                                     # its authorizer...
                                |
                                v
-               MooseAuthorizer.creatable_by?(current_user)           # *You define this method.*
-                               +                                     # If it's missing, the default
-                               |                                     # strategy is used...
+               AdminAuthorizer.creatable_by?(current_user)           # *You define this method.*
+                               +                                     # If you don't, the inherited one
+                               |                                     # calls `default`...
                                v
-    config.default_strategy.call(:creatable, MooseAuthorizer, user)  # *You define this strategy.*
+        AdminAuthorizer.default(:creatable, current_user)            # *You define this method.* 
+                                                                     # If you don't, the one inherited 
+                                                                     # from Authority::Authorizer just 
+                                                                     # returns false.
 
 If the answer is `false` and the original caller was a controller, this is treated as a `SecurityViolation`. If it was a view, maybe you just don't show a link.
 
@@ -110,7 +114,7 @@ config.abilities =  {
 }
 ```
 
-This option determines what methods are added to your users, models and authorizers. If you need to ask `user.can_deactivate?(Satellite)` and `@satellite.deactivatable_by?(user)`, add those to the hash.
+This option determines what methods are added to your users, models and authorizers. If you need to ask `user.can_deactivate?(Satellite)` and `@satellite.deactivatable_by?(user)`, add `:deactivate => 'deactivatable'` to the hash.
 
 <a name="wiring_it_together">
 ## Wiring It Together
@@ -135,7 +139,7 @@ class Article
   # Adds `creatable_by?(user)`, etc
   include Authority::Abilities
 
-  # Without this, 'ArticleAuthorizer' is assumed
+  # Without this, 'ApplicationAuthorizer' is assumed
   self.authorizer_name = 'AdminAuthorizer'
   ...
 end
@@ -144,7 +148,7 @@ end
 <a name="authorizers">
 ### Authorizers
 
-Add your authorizers under `app/authorizers`, subclassing `Authority::Authorizer`.
+Add your authorizers under `app/authorizers`, subclassing the generated `ApplicationAuthorizer`.
 
 These are where your actual authorization logic goes. Here's how it works:
 
@@ -152,13 +156,12 @@ These are where your actual authorization logic goes. Here's how it works:
   - Any instance method you don't define (for example, if you didn't make a `def deletable_by?(user)`) will fall back to the corresponding class method. In other words, if you haven't said whether a user can update **this particular** widget, we'll decide by checking whether they can update **any** widget.
 - Class methods answer questions about model classes, like "is it **ever** permissible for this user to update a Widget?"
   - Any class method you don't define (for example, if you didn't make a `def self.updatable_by?(user)`) will call that authorizer's `default` method.
-  - The inherited `default` method calls a [default strategy](#default_strategies) proc (**NOTE**: this will be removed in version 2.0).
 
 For example:
 
 ```ruby
 # app/authorizers/schedule_authorizer.rb
-class ScheduleAuthorizer < Authority::Authorizer
+class ScheduleAuthorizer < ApplicationAuthorizer
   # Class method: can this user at least sometimes create a Schedule?
   def self.creatable_by?(user)
     user.manager?
@@ -169,29 +172,44 @@ class ScheduleAuthorizer < Authority::Authorizer
     resource.in_future? && user.manager? && resource.department == user.department
   end
 end
+
+# undefined; calls `ScheduleAuthorizer.default(:updatable, user)`
+ScheduleAuthorizer.updatable_by?(user) 
 ```
 
-As you can see, you can specify different logic for every method on every model, if necessary. On the other extreme, you could simply supply a [default strategy](#default_strategies) that covers all your use cases.
+As you can see, you can specify different logic for every method on every model, if necessary. On the other extreme, you could simply supply a [default method](#default_methods) that covers all your use cases.
 
-<a name="default_strategies">
-#### Default Strategies
+<a name="default_methods">
+#### Default Methods
 
-Any class method you don't define on an authorizer will call the `default` method on that authorizer. If you don't define **that**, the inherited `default` method from `Authority::Authorizer` will call your configured default strategy proc (**NOTE:** this proc will be removed in version 2.0; defining a `default` method is a more standard OOP approach.)
+Any class method you don't define on an authorizer will call the `default` method on that authorizer. This method is defined on `Authority::Authorizer` to simply return false. This is a 'whitelisting' approach; any permission you haven't specified (which falls back to the default method) is considered forbidden.
 
-The **default** default strategy proc simply returns `false`, meaning that everything is forbidden. This whitelisting approach will keep you from accidentally allowing things you didn't intend. 
-
-You can configure a different default strategy. For example, you might want one that looks up permissions in your database:
+You can override this method in your `ApplicationAuthorizer` and/or per authorizer. For example, you might want one that looks up the user's roles and correlates them with permissions:
 
 ```ruby
-# In config/initializers/authority.rb
-# Example args: :creatable, AdminAuthorizer, user
-config.default_strategy = Proc.new do |able, authorizer, user|
-  # Does the user have any of the roles which give this permission?
-  (roles_which_grant(able, authorizer) & user.roles).any?
+# app/authorizers/application_authorizer.rb
+class ApplicationAuthorizer < Authority::Authorizer
+
+  # Example call: `default(:creatable, current_user)`
+  def self.default(able, user)
+    has_role_granting?(user, able) || user.admin?
+  end
+  
+  protected
+
+  def has_role_granting(user, able)
+    # Does the user have any of the roles which give this permission?
+    (roles_which_grant(able) & user.roles).any?
+  end
+
+  def roles_which_grant(able)
+    # Look up roles for the current authorizer and `able`
+    ...
+  end
 end
 ```
 
-If your system is uniform enough, **this strategy alone might handle all the logic you need**.
+If your system is uniform enough, **this method alone might handle all the logic you need**.
 
 <a name="testing_authorizers">
 #### Testing Authorizers
@@ -224,7 +242,11 @@ describe AdminAuthorizer do
       @admin_resource_instance = mock_admin_resource
     end
 
-    it "should not allow users to delete" do
+    it "should let admins delete" do
+      @admin_resource_instance.authorizer.should be_deletable_by(@admin)
+    end
+
+    it "should not let users delete" do
       @admin_resource_instance.authorizer.should_not be_deletable_by(@user)
     end
 
@@ -232,31 +254,6 @@ describe AdminAuthorizer do
 
 end
 ```
-
-<a name="custom_authorizers">
-#### Custom Authorizers
-
-If you want to customize your authorizers even further - for example, maybe you want them all to have a method like `has_permission?(user, permission_name)` - just use normal Ruby inheritance. For example, add your own parent class, like this:
-
-```ruby
-# lib/my_app/authorizer.rb
-module MyApp
-  class Authorizer < Authority::Authorizer
-  
-    def self.has_permission(user, permission_name)
-      # look that up somewhere
-    end
-
-  end
-end
-
-#app/authorizers/badger_authorizer.rb
-class BadgerAuthorizer < MyApp::Authorizer
-  # contents
-end
-```
-
-If you decide to place your custom class in `lib` as shown above (as opposed to putting it in `app`), you should require it at the bottom of `config/initializers/authority.rb`.
 
 <a name="controllers">
 ### Controllers
@@ -272,10 +269,10 @@ The relationship between controller actions and abilities - like checking `reada
 class LlamaController < ApplicationController
 
   # Check class-level authorizations before all actions except :create
-  # Before this controller's 'neuter' action, ask whether current_user.can_update?(Llama)
-  authorize_actions_for Llama, :actions => {:neuter => :update}, :except => :create
+  # Also, to authorize this controller's 'neuter' action, ask whether `current_user.can_update?(Llama)`
+  authorize_actions_for Llama, :except => :create, :actions => {:neuter => :update},
   
-  # Before this controller's 'breed' action, ask whether current_user.can_create?(Llama)
+  # To authorize this controller's 'breed' action, ask whether `current_user.can_create?(Llama)`
   authority_action :breed => 'new'
 
   ...
@@ -310,14 +307,15 @@ Anytime a user attempts an unauthorized action, Authority calls whatever control
 - Renders `public/403.html`
 - Logs the violation to whatever logger you configured.
 
-You can specify a different handler like so:
+You can specify a different handler like this:
 
 ```ruby
 # config/initializers/authority.rb
-...
 config.security_violation_handler = :fire_ze_missiles
-...
+```
+Then define the method on your controller:
 
+```ruby
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
 

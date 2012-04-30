@@ -1,7 +1,6 @@
 module Authority
+  # Gets included into the app's controllers automatically by the railtie
   module Controller
-
-    # Gets included into the app's controllers automatically by the railtie
 
     extend ActiveSupport::Concern
 
@@ -66,7 +65,7 @@ module Authority
       authorize_action_for self.class.authority_resource
     end
 
-    # Convencience wrapper for sending configured user_method to extract the
+    # Convenience wrapper for sending configured user_method to extract the
     # request's current user
     #
     # @return [Object] the user object returned from sending the user_method

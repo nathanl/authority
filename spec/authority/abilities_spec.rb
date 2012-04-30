@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'support/ability_model'
-require 'support/no_authorizer_model'
 require 'support/user'
 
 describe Authority::Abilities do
@@ -19,8 +18,8 @@ describe Authority::Abilities do
       AbilityModel.should respond_to(:authorizer_name=)
     end
 
-    it "should have a default authorizer_name of '(ClassName)Authorizer'" do
-      AbilityModel.authorizer_name.should eq("AbilityModelAuthorizer")
+    it "should have a default authorizer_name of 'ApplicationAuthorizer'" do
+      AbilityModel.authorizer_name.should eq("ApplicationAuthorizer")
     end
 
     it "should constantize the authorizer name as the authorizer" do
@@ -36,7 +35,14 @@ describe Authority::Abilities do
     end
 
     it "should raise a friendly error if the authorizer doesn't exist" do
-      expect { NoAuthorizerModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
+      AbilityModel.instance_variable_set(:@authorizer, nil)
+      AbilityModel.authorizer_name = 'NonExistentAuthorizer'
+      expect { AbilityModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
+
+      # Cleanup to prevent affecting other tests
+      # TODO: Clean up this cleanup code. :)
+      AbilityModel.instance_variable_set(:@authorizer, nil)
+      AbilityModel.authorizer_name = 'ApplicationAuthorizer'
     end
 
   end

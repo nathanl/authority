@@ -3,13 +3,9 @@ module Authority
 
     # Has default settings, overrideable in the initializer.
 
-    attr_accessor :default_strategy, :abilities, :controller_action_map, :user_method, :security_violation_handler, :logger
+    attr_accessor :abilities, :controller_action_map, :user_method, :security_violation_handler, :logger
 
     def initialize
-      @default_strategy = Proc.new do |able, authorizer, user|
-        false
-      end
-
 
       @abilities = {
         :create => 'creatable',
@@ -33,6 +29,10 @@ module Authority
       @security_violation_handler = :authority_forbidden
 
       @logger = Logger.new(STDERR)
+    end
+
+    def default_strategy=(val)
+      raise ArgumentError, "`config.default_strategy=` was removed in Authority 2.0; see README and CHANGELOG"
     end
 
   end

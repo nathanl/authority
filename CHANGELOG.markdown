@@ -2,6 +2,11 @@
 
 This is mainly to document major new features and backwards-incompatible changes.
 
+## Unreleased
+
+- **Breaking change**: models now assume their authorizer is `ApplicationAuthorizer` unless told otherwise. Generator creates a blank `ApplicationAuthorizer`. This, combined with the change in v1.1.0, makes the `default_strategy` proc obsolete in favor of straightforward inheritance of a `default` method, so support for `config.default_strategy` is removed.
+- Added accessors to `Authority::SecurityViolation` for user, action and resource, for use in custom security violation handlers.
+
 ## v1.1.0
 
 - Added `Authority::Authorizer.default` class method which is called before the `default_strategy` proc and delegates to that proc. This can be overridden per authorizer.

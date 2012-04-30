@@ -12,4 +12,3 @@
 ## Features
 
 - It would be nice to have an `authorized_link_to` method, which determines from the given path and the user's permissions whether to show the link. Not sure yet how hard this would be.
-- **Breaking change**: on installation, generate empty `ApplicationAuthorizer < Authority::Authorizer`. Any model which doesn't specify its authorizer would assume `ApplicationAuthorizer` instead of `[Modelname]Authorizer`; this way, users start out with a centralized authorizer scheme instead of with the assumption that every model needs its own. This also fits the pattern of Rails controllers.

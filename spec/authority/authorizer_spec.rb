@@ -53,11 +53,8 @@ describe Authority::Authorizer do
 
   describe "the default method" do
 
-    it "should call the configured `default_strategy` proc by default" do
-      Authority.configuration.default_strategy.should_receive(:call).with(
-        :implodable, Authority::Authorizer, @user
-      )
-      Authority::Authorizer.default(:implodable, @user)
+    it "should return false" do
+      Authority::Authorizer.default(:implodable, @user).should be_false
     end
 
   end

@@ -8,35 +8,6 @@ Authority.configure do |config|
   # Default is:
   #
   # config.user_method = :current_user
-
-  # DEFAULT_STRATEGY
-  # ================
-  # When no class-level method is defined on an Authorizer, a default_strategy
-  # proc will be called to determine what to do.
-  # Depending on your app, you may be able to put all the logic you need here.
-  #
-  # The arguments passed to this proc will be:
-  #
-  # able       - symbol name of 'able', like `:creatable`, or `:deletable`
-  # authorizer - authorizer constant. Ex: `WidgetAuthorizer` or `UserAuthorizer`
-  # user       - user object (whatever that is in your application; found using config.user_method)
-  #
-  # For example:
-  #
-  # config.default_strategy = Proc.new { |able, authorizer, user|
-  #   # Does the user have any of the roles which give this permission?
-  #   (roles_which_grant(able, authorizer) & user.roles).any?
-  # }
-  #
-  # OR
-  #
-  # config.default_strategy = Proc.new { |able, authorizer, user|
-  #   able != :implodable && user.has_hairstyle?('pompadour')
-  # }
-  #
-  # Default default strategy simply returns false, as follows:
-  #
-  # config.default_strategy =  Proc.new { |able, authorizer, user| false }
   
   # CONTROLLER_ACTION_MAP
   # For a given controller method, what verb must a user be able to do?
@@ -93,4 +64,3 @@ Authority.configure do |config|
   # config.logger = Logger.new('/dev/null')          # Don't log at all (on a Unix system)
 
 end
-

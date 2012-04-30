@@ -2,7 +2,7 @@ class AbilityModel
   include Authority::Abilities
 end
 
-class AbilityModelAuthorizer < Authority::Authorizer
+class ApplicationAuthorizer < Authority::Authorizer
   def self.readable_by?(user)
     true
   end

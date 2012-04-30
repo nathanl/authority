@@ -23,7 +23,7 @@ module Authority
       RUBY
     end
 
-    # Each class method simply calls the user-definable default strategy
+    # Each class method simply calls the `default` method
     Authority.adjectives.each do |adjective|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def self.#{adjective}_by?(user)
@@ -32,8 +32,9 @@ module Authority
       RUBY
     end
 
+    # Whitelisting approach: anything not specified will be forbidden
     def self.default(adjective, user)
-      Authority.configuration.default_strategy.call(adjective, self, user)
+      false
     end
 
   end
