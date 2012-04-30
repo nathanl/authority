@@ -57,6 +57,8 @@ module Authority
   end
 
   class SecurityViolation < StandardError
+    attr_reader :user, :action, :resource
+
     def initialize(user, action, resource)
       @user = user
       @action = action
@@ -74,4 +76,3 @@ require 'authority/configuration'
 require 'authority/controller'
 require 'authority/railtie' if defined?(Rails)
 require 'authority/version'
-

@@ -54,4 +54,31 @@ describe Authority do
 
   end
 
+  describe Authority::SecurityViolation do
+
+    before :each do
+      @user               = "I am a user"
+      @action             = :keelhaul
+      @resource           = "I am a resource"
+      @security_violation = Authority::SecurityViolation.new(@user, @action, @resource)
+    end
+
+    it "should have a reader for the user" do
+      @security_violation.user.should eq(@user)
+    end
+
+    it "should have a reader for the action" do
+      @security_violation.action.should eq(@action)
+    end
+
+    it "should have a reader for the resource" do
+      @security_violation.resource.should eq(@resource)
+    end
+
+    it "should use them all in its message" do
+      @security_violation.message.should eq("#{@user} is not authorized to #{@action} this resource: #{@resource}")
+    end
+
+  end
+
 end
