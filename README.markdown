@@ -344,6 +344,8 @@ end
 
 If you want different error handling per controller, define `fire_ze_missiles` on each of them.
 
+Your method will be handed the `SecurityViolation`, which has a `message` method. In case you want to build your own message, it also exposes `user`, `action` and `resource`.
+
 <a name="credits">
 ## Credits, AKA 'Shout-Outs'
 
