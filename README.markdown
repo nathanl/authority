@@ -294,8 +294,14 @@ class LlamaController < ApplicationController
 
   def edit
     @llama = Llama.find(params[:id])
+    authorize_action_for(@llama)        # Check to see if you're allowed to edit this llama. failure == SecurityViolation    
+  end
+
+  def update
+    @llama = Llama.find(params[:id])
+    authorize_action_for(@llama)        # Check to see if you're allowed to edit this llama.
     @llama.attributes = params[:llama]  # Don't save the attributes before authorizing
-    authorize_action_for(@llama)        # failure == SecurityViolation
+    authorize_action_for(@llama)        # Check again, to see if the changes are allowed.
     if @llama.save?
     # etc
   end
