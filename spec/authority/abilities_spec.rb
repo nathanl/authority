@@ -91,8 +91,9 @@ describe Authority::Abilities do
       @ability_model.should respond_to(:authorizer)
     end
 
-    # TODO: Nathan will comment more clearly in the future
-    # aka "don't memoize" (to prevent dirty models from contaminating authorization)
+    # When checking instance methods, we want to ensure that every check uses a new
+    # instance of the authorizer. Otherwise, you might check, make a change to the
+    # model instance, check again, and get an outdated answer.
     it "should always create a new authorizer instance when accessing the authorizer" do
       @ability_model.class.authorizer.should_receive(:new).with(@ability_model).twice
       2.times { @ability_model.authorizer }
