@@ -281,7 +281,7 @@ config.controller_action_map = {
 They are also configurable per controller, as follows:
 
 ```ruby
-class LlamaController < ApplicationController
+class LlamasController < ApplicationController
 
   # Check class-level authorizations before all actions except :create
   # Also, to authorize this controller's 'neuter' action, ask whether `current_user.can_update?(Llama)`
