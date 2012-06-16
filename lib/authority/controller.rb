@@ -11,7 +11,7 @@ module Authority
 
     def self.security_violation_callback
       Proc.new do |exception|
-        # Through the magic of ActiveSupport's Proc#bind, `ActionController::Base#rescue_from`
+        # Through the magic of ActiveSupport's `Proc#bind`, `ActionController::Base#rescue_from`
         # can call this proc and make `self` the actual controller instance
         self.send(Authority.configuration.security_violation_handler, exception)
       end
@@ -59,13 +59,13 @@ module Authority
 
     private
 
-    # The before filter that will be setup to run when the class method
+    # The `before_filter` that will be setup to run when the class method
     # `authorize_actions_for` is called
     def run_authorization_check
       authorize_action_for self.class.authority_resource
     end
 
-    # Convenience wrapper for sending configured user_method to extract the
+    # Convenience wrapper for sending configured `user_method` to extract the
     # request's current user
     #
     # @return [Object] the user object returned from sending the user_method
@@ -73,7 +73,7 @@ module Authority
       send(Authority.configuration.user_method)
     end
 
-    # To be run in a before_filter; ensure this controller action is allowed for the user
+    # To be run in a `before_filter`; ensure this controller action is allowed for the user
     #
     # @param authority_resource [Class], the model class associated with this controller
     # @raise [MissingAction] if controller action isn't a key in `config.controller_action_map`

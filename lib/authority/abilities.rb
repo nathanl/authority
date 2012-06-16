@@ -27,6 +27,7 @@ module Authority
         RUBY
       end
 
+      # @return [Class] of the designated authorizer
       def authorizer
         @authorizer ||= authorizer_name.constantize # Get an actual reference to the authorizer class
       rescue NameError

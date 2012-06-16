@@ -1,7 +1,7 @@
 module Authority
   class Configuration
 
-    # Has default settings, overrideable in the initializer.
+    # Has default settings, which can be overridden in the initializer.
 
     attr_accessor :abilities, :controller_action_map, :user_method, :security_violation_handler, :logger
 
