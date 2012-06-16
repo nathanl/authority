@@ -2,6 +2,10 @@
 
 This is mainly to document major new features and backwards-incompatible changes.
 
+## v2.0.1
+
+Documentation and test cleanup.
+
 ## v2.0.0
 
 - **Breaking change**: models now assume their authorizer is `ApplicationAuthorizer` unless told otherwise. Generator creates a blank `ApplicationAuthorizer`. This, combined with the change in v1.1.0, makes the `default_strategy` proc obsolete in favor of straightforward inheritance of a `default` method, so support for `config.default_strategy` is removed.
