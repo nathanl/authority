@@ -35,14 +35,10 @@ describe Authority::Abilities do
     end
 
     it "should raise a friendly error if the authorizer doesn't exist" do
-      AbilityModel.instance_variable_set(:@authorizer, nil)
-      AbilityModel.authorizer_name = 'NonExistentAuthorizer'
-      expect { AbilityModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
-
-      # Cleanup to prevent affecting other tests
-      # TODO: Clean up this cleanup code. :)
-      AbilityModel.instance_variable_set(:@authorizer, nil)
-      AbilityModel.authorizer_name = 'ApplicationAuthorizer'
+      class NoAuthorizerModel < AbilityModel; end ;
+      NoAuthorizerModel.instance_variable_set(:@authorizer, nil)
+      NoAuthorizerModel.authorizer_name = 'NonExistentAuthorizer'
+      expect { NoAuthorizerModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
     end
 
   end
