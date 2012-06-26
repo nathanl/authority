@@ -36,18 +36,32 @@ It requires that you already have some kind of user object in your application, 
 <a name="overview">
 ## Overview
 
-The goals of Authority are:
+Using Authority, you have:
 
-- To allow broad, **class-level** rules. Examples: 
+- Broad, **class-level** rules. Examples: 
   - "Basic users cannot delete any Widget."
   - "Only admin users can create Offices."
-- To allow fine-grained, **instance-level** rules. Examples: 
+- Fine-grained, **instance-level** rules. Examples: 
   - "Management users can only edit schedules with date ranges in the future."
   - "Users can't create playlists more than 20 songs long unless they've paid."
-- To provide a clear syntax for permissions-based views. Example:
+- A clear syntax for permissions-based views. Example:
   - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
-- To gracefully handle any access violations: by default, it displays a "you can't do that" screen and logs the violation.
-- To do all this with minimal effort and mess.
+- Graceful handling of access violations: by default, it displays a "you can't do that" screen and logs the violation.
+- Minimal effort and mess.
+
+Most importantly, you have **total flexibility**: Authority does not constrain you into using a particular scheme of roles and/or permissions.
+
+Authority lets you: 
+
+- Grant permissions based on users' points (like StackOverflow)
+- Check user roles in a separate, single-sign-on app
+- Disallow certain actions based on time or date
+- Allow an action only for users with compatible browsers
+- ...do anything else you can think of.
+
+All you have to do is define the methods you need on your authorizers. You have all the flexibility of normal Ruby classes. 
+
+**You** make the rules; Authority enforces them.
 
 <a name="flow_of_authority">
 ## The flow of Authority
