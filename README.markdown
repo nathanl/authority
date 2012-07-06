@@ -382,8 +382,6 @@ Do you like Authority? Has it cleaned up your code, made you more personable, an
 
 ## Contributing
 
-What should you contribute? Try the TODO file for ideas, or grep the project for 'TODO' comments.
-
 How can you contribute? Let me count the ways.
 
 ### 1. Publicity
@@ -392,7 +390,7 @@ If you like Authority, tell people! Blog, tweet, comment, or even... [shudder]..
 
 ### 2. Documentation
 
-Add examples to the [wiki](/wiki) to help others solve problems like yours.
+Add examples to the [wiki](http://github.com/nathanl/authority/wiki) to help others solve problems like yours.
 
 ### 3. Issues
 
@@ -400,12 +398,13 @@ Tell me your problems and/or ideas.
 
 ### 4. Code or documentation
 
-1. Let's talk! Before you do a bunch of work, open an issue so we can be sure we agree.
-2. Fork this project
-3. Create your feature branch (`git checkout -b my-new-feature`)
-4. `bundle install` to get all dependencies
-5. `rspec spec` to run all tests.
-6. Update/add tests for your changes and code until they pass.
-7. Commit your changes (`git commit -am 'Added some feature'`)
-8. Push to the branch (`git push origin my-new-feature`)
-9. Create a new Pull Request
+1. Have an idea. If you don't have one, check the TODO file or grep the project for 'TODO' comments.
+2. Open an issue so we can talk it over.
+3. Fork this project
+4. Create your feature branch (`git checkout -b my-new-feature`)
+5. `bundle install` to get all dependencies
+6. `rspec spec` to run all tests.
+7. Update/add tests for your changes and code until they pass.
+8. Commit your changes (`git commit -am 'Added some feature'`)
+9. Push to the branch (`git push origin my-new-feature`)
+10. Create a new Pull Request
