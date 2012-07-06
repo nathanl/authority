@@ -375,11 +375,30 @@ Your method will be handed the `SecurityViolation`, which has a `message` method
 - [TMA](http://www.tma1.com) for employing me and letting me open source some of our code.
 
 <a name="contributing">
+
+## Responses, AKA 'Hollaback'
+
+Do you like Authority? Has it cleaned up your code, made you more personable, and taught you the Secret to True Happiness? Awesome! I'd **love** to get email from you - see my Github profile for the address.
+
 ## Contributing
 
 What should you contribute? Try the TODO file for ideas, or grep the project for 'TODO' comments.
 
-How can you contribute?
+How can you contribute? Let me count the ways.
+
+### 1. Publicity
+
+If you like Authority, tell people! Blog, tweet, comment, or even... [shudder]... talk with people *in person*. If you feel up to it, I mean. It's OK if you don't.
+
+### 2. Documentation
+
+Add examples to the [wiki](/wiki) to help others solve problems like yours.
+
+### 3. Issues
+
+Tell me your problems and/or ideas.
+
+### 4. Code or documentation
 
 1. Let's talk! Before you do a bunch of work, open an issue so we can be sure we agree.
 2. Fork this project
