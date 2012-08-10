@@ -52,9 +52,22 @@ describe Authority::Abilities do
         AbilityModel.should respond_to(method_name)
       end
 
-      it "should delegate `#{method_name}` to its authorizer class" do
-        AbilityModel.authorizer.should_receive(method_name).with(@user)
-        AbilityModel.send(method_name, @user)
+      describe "if given an options hash" do
+
+        it "should delegate `#{method_name}` to its authorizer class, passing the options" do
+          AbilityModel.authorizer.should_receive(method_name).with(@user, :lacking => 'nothing')
+          AbilityModel.send(method_name, @user, :lacking => 'nothing')
+        end
+
+      end
+
+      describe "if not given an options hash" do
+
+        it "should delegate `#{method_name}` to its authorizer class, passing no options" do
+          AbilityModel.authorizer.should_receive(method_name).with(@user)
+          AbilityModel.send(method_name, @user)
+        end
+
       end
 
     end
@@ -75,10 +88,24 @@ describe Authority::Abilities do
         @ability_model.should respond_to(method_name)
       end
 
-      it "should delegate `#{method_name}` to a new authorizer instance" do
-        AbilityModel.authorizer.stub(:new).and_return(@authorizer)
-        @authorizer.should_receive(method_name).with(@user)
-        @ability_model.send(method_name, @user)
+      describe "if given an options hash" do
+
+        it "should delegate `#{method_name}` to a new authorizer instance, passing the options" do
+          AbilityModel.authorizer.stub(:new).and_return(@authorizer)
+          @authorizer.should_receive(method_name).with(@user, :with => 'mayo')
+          @ability_model.send(method_name, @user, :with => 'mayo')
+        end
+
+      end
+
+      describe "if not given an options hash" do
+        
+        it "should delegate `#{method_name}` to a new authorizer instance, passing no options" do
+          AbilityModel.authorizer.stub(:new).and_return(@authorizer)
+          @authorizer.should_receive(method_name).with(@user)
+          @ability_model.send(method_name, @user)
+        end
+
       end
 
     end

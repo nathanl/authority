@@ -16,10 +16,24 @@ describe Authority::UserAbilities do
       @user.should respond_to(method_name)
     end
 
-    it "should delegate the authorization check to the resource provided" do
-      @ability_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user)
-      @user.send(method_name, @ability_model)
+    describe "if given options" do
+
+      it "should delegate the authorization check to the resource, passing the options" do
+        @ability_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user, :size => 'wee')
+        @user.send(method_name, @ability_model, :size => 'wee')
+      end
+
     end
+
+    describe "if not given options" do
+
+      it "should delegate the authorization check to the resource, passing no options" do
+        @ability_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user)
+        @user.send(method_name, @ability_model)
+      end
+
+    end
+
   end
 
 end

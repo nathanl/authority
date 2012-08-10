@@ -23,9 +23,23 @@ describe Authority::Authorizer do
         @authorizer.should respond_to(method_name)
       end
 
-      it "should delegate `#{method_name}` to the corresponding class method by default" do
-        @authorizer.class.should_receive(method_name).with(@user)
-        @authorizer.send(method_name, @user)
+
+      describe "if given an options hash" do
+
+        it "should delegate `#{method_name}` to the corresponding class method, passing the options" do
+          @authorizer.class.should_receive(method_name).with(@user, :under => 'God')
+          @authorizer.send(method_name, @user, :under => 'God')
+        end
+
+      end
+
+      describe "if not given an options hash" do
+
+        it "should delegate `#{method_name}` to the corresponding class method, passing no options" do
+          @authorizer.class.should_receive(method_name).with(@user)
+          @authorizer.send(method_name, @user)
+        end
+
       end
 
     end
@@ -41,10 +55,24 @@ describe Authority::Authorizer do
         Authority::Authorizer.should respond_to(method_name)
       end
 
-      it "should delegate `#{method_name}` to the authorizer's `default` method by default" do
-        able = method_name.sub('_by?', '').to_sym
-        Authority::Authorizer.should_receive(:default).with(able, @user)
-        Authority::Authorizer.send(method_name, @user)
+      describe "if given an options hash" do
+
+        it "should delegate `#{method_name}` to the authorizer's `default` method, passing the options" do
+          able = method_name.sub('_by?', '').to_sym
+          Authority::Authorizer.should_receive(:default).with(able, @user, :with => 'gusto')
+          Authority::Authorizer.send(method_name, @user, :with => 'gusto')
+        end
+
+      end
+
+      describe "if not given an options hash" do
+
+        it "should delegate `#{method_name}` to the authorizer's `default` method, passing no options" do
+          able = method_name.sub('_by?', '').to_sym
+          Authority::Authorizer.should_receive(:default).with(able, @user)
+          Authority::Authorizer.send(method_name, @user)
+        end
+
       end
 
     end
@@ -53,8 +81,19 @@ describe Authority::Authorizer do
 
   describe "the default method" do
 
-    it "should return false" do
-      Authority::Authorizer.default(:implodable, @user).should be_false
+    describe "if given an options hash" do
+
+      it "should return false" do
+        Authority::Authorizer.default(:implodable, @user, {:for => "my_object"}).should be_false
+      end
+    end
+
+    describe "if not given an options hash" do
+
+      it "should return false" do
+        Authority::Authorizer.default(:implodable, @user).should be_false
+      end
+
     end
 
   end
