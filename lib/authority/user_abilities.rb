@@ -10,8 +10,12 @@ module Authority
 
     Authority.verbs.each do |verb|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def can_#{verb}?(resource)
-          resource.#{Authority.abilities[verb]}_by?(self)
+        def can_#{verb}?(resource, options = {})
+          if options.empty?
+            resource.#{Authority.abilities[verb]}_by?(self)
+          else
+            resource.#{Authority.abilities[verb]}_by?(self, options)
+          end
         end
       RUBY
     end

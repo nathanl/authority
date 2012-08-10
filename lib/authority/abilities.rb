@@ -21,8 +21,12 @@ module Authority
       Authority.adjectives.each do |adjective|
 
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{adjective}_by?(user)
-            authorizer.#{adjective}_by?(user)
+          def #{adjective}_by?(user, options = {})
+            if options.empty?
+              authorizer.#{adjective}_by?(user)
+            else
+              authorizer.#{adjective}_by?(user, options)
+            end
           end
         RUBY
       end
@@ -38,8 +42,12 @@ module Authority
     Authority.adjectives.each do |adjective|
 
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{adjective}_by?(user)
-          authorizer.#{adjective}_by?(user)
+        def #{adjective}_by?(user, options = {})
+          if options.empty?
+            authorizer.#{adjective}_by?(user)
+          else
+            authorizer.#{adjective}_by?(user, options)
+          end
         end
 
         def authorizer
