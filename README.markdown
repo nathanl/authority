@@ -22,6 +22,7 @@ It requires that you already have some kind of user object in your application, 
     <li><a href="#models">Models</a></li>
     <li><a href="#authorizers">Authorizers</a>
     <ul>
+      <li><a href="#passing_options">Passing Options</a></li>
       <li><a href="#default_methods">Default methods</a></li>
       <li><a href="#testing_authorizers">Testing Authorizers</a></li>
     </ul></li>
@@ -193,6 +194,29 @@ ScheduleAuthorizer.updatable_by?(user)
 ```
 
 As you can see, you can specify different logic for every method on every model, if necessary. On the other extreme, you could simply supply a [default method](#default_methods) that covers all your use cases.
+
+<a name="passing_options">
+#### Passing Options 
+
+Any options you pass when checking permissions will be passed right up the chain. One use case for this would be if you needed an associated instance in order to do a class-level check. For example:
+
+```ruby
+# I don't have a comment instance to check, but I need to know
+# which post the user wants to comment on
+user.can_create?(Comment, :for => @post)
+```
+
+This would ultimately call `creatable_by?` on the designated authorizer with two arguments: the user and `{:for => @post}`. If you've defined that method yourself, you'd need to ensure that it accepts the options hash before doing this, or you'd get a "wrong number of arguments" error.
+
+There's nothing special about the hash key `:for`; I just think it reads well in this case. You can pass any options that make sense in your case.
+
+If you **don't** pass options, none will be passed to your authorizer, either.
+
+And you could always handle the case above without options if you don't mind creating an extra model instance:
+
+```ruby
+user.can_create?(Comment.new(:post => @post))
+```
 
 <a name="default_methods">
 #### Default Methods
