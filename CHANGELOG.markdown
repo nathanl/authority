@@ -1,6 +1,8 @@
 # Changelog
 
-This is mainly to document major new features and backwards-incompatible changes.
+## v2.1.0
+
+Allow passing options hash, like `current_user.can_create?(Comment, :for => @post)`.
 
 ## v2.0.1
 
