@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'support/ability_model'
+require 'support/example_model'
 require 'support/user'
 
 describe Authority::Abilities do
@@ -11,31 +11,31 @@ describe Authority::Abilities do
   describe "authorizer" do
 
     it "should have a class attribute getter for authorizer_name" do
-      AbilityModel.should respond_to(:authorizer_name)
+      ExampleModel.should respond_to(:authorizer_name)
     end
 
     it "should have a class attribute setter for authorizer_name" do
-      AbilityModel.should respond_to(:authorizer_name=)
+      ExampleModel.should respond_to(:authorizer_name=)
     end
 
     it "should have a default authorizer_name of 'ApplicationAuthorizer'" do
-      AbilityModel.authorizer_name.should eq("ApplicationAuthorizer")
+      ExampleModel.authorizer_name.should eq("ApplicationAuthorizer")
     end
 
     it "should constantize the authorizer name as the authorizer" do
-      AbilityModel.instance_variable_set(:@authorizer, nil)
-      AbilityModel.authorizer_name.should_receive(:constantize)
-      AbilityModel.authorizer
+      ExampleModel.instance_variable_set(:@authorizer, nil)
+      ExampleModel.authorizer_name.should_receive(:constantize)
+      ExampleModel.authorizer
     end
 
     it "should memoize the authorizer to avoid reconstantizing" do
-      AbilityModel.authorizer
-      AbilityModel.authorizer_name.should_not_receive(:constantize)
-      AbilityModel.authorizer
+      ExampleModel.authorizer
+      ExampleModel.authorizer_name.should_not_receive(:constantize)
+      ExampleModel.authorizer
     end
 
     it "should raise a friendly error if the authorizer doesn't exist" do
-      class NoAuthorizerModel < AbilityModel; end ;
+      class NoAuthorizerModel < ExampleModel; end ;
       NoAuthorizerModel.instance_variable_set(:@authorizer, nil)
       NoAuthorizerModel.authorizer_name = 'NonExistentAuthorizer'
       expect { NoAuthorizerModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
@@ -49,14 +49,14 @@ describe Authority::Abilities do
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
-        AbilityModel.should respond_to(method_name)
+        ExampleModel.should respond_to(method_name)
       end
 
       describe "if given an options hash" do
 
         it "should delegate `#{method_name}` to its authorizer class, passing the options" do
-          AbilityModel.authorizer.should_receive(method_name).with(@user, :lacking => 'nothing')
-          AbilityModel.send(method_name, @user, :lacking => 'nothing')
+          ExampleModel.authorizer.should_receive(method_name).with(@user, :lacking => 'nothing')
+          ExampleModel.send(method_name, @user, :lacking => 'nothing')
         end
 
       end
@@ -64,8 +64,8 @@ describe Authority::Abilities do
       describe "if not given an options hash" do
 
         it "should delegate `#{method_name}` to its authorizer class, passing no options" do
-          AbilityModel.authorizer.should_receive(method_name).with(@user)
-          AbilityModel.send(method_name, @user)
+          ExampleModel.authorizer.should_receive(method_name).with(@user)
+          ExampleModel.send(method_name, @user)
         end
 
       end
@@ -77,23 +77,23 @@ describe Authority::Abilities do
   describe "instance methods" do
 
     before :each do
-      @ability_model = AbilityModel.new
-      @authorizer    = AbilityModel.authorizer.new(@ability_model)
+      @example_model = ExampleModel.new
+      @authorizer    = ExampleModel.authorizer.new(@example_model)
     end
 
     Authority.adjectives.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "should respond to `#{method_name}`" do
-        @ability_model.should respond_to(method_name)
+        @example_model.should respond_to(method_name)
       end
 
       describe "if given an options hash" do
 
         it "should delegate `#{method_name}` to a new authorizer instance, passing the options" do
-          AbilityModel.authorizer.stub(:new).and_return(@authorizer)
+          ExampleModel.authorizer.stub(:new).and_return(@authorizer)
           @authorizer.should_receive(method_name).with(@user, :with => 'mayo')
-          @ability_model.send(method_name, @user, :with => 'mayo')
+          @example_model.send(method_name, @user, :with => 'mayo')
         end
 
       end
@@ -101,9 +101,9 @@ describe Authority::Abilities do
       describe "if not given an options hash" do
         
         it "should delegate `#{method_name}` to a new authorizer instance, passing no options" do
-          AbilityModel.authorizer.stub(:new).and_return(@authorizer)
+          ExampleModel.authorizer.stub(:new).and_return(@authorizer)
           @authorizer.should_receive(method_name).with(@user)
-          @ability_model.send(method_name, @user)
+          @example_model.send(method_name, @user)
         end
 
       end
@@ -111,15 +111,15 @@ describe Authority::Abilities do
     end
 
     it "should provide an accessor for its authorizer" do
-      @ability_model.should respond_to(:authorizer)
+      @example_model.should respond_to(:authorizer)
     end
 
     # When checking instance methods, we want to ensure that every check uses a new
     # instance of the authorizer. Otherwise, you might check, make a change to the
     # model instance, check again, and get an outdated answer.
     it "should always create a new authorizer instance when accessing the authorizer" do
-      @ability_model.class.authorizer.should_receive(:new).with(@ability_model).twice
-      2.times { @ability_model.authorizer }
+      @example_model.class.authorizer.should_receive(:new).with(@example_model).twice
+      2.times { @example_model.authorizer }
     end
 
   end

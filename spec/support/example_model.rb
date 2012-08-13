@@ -1,4 +1,4 @@
-class AbilityModel
+class ExampleModel
   include Authority::Abilities
 end
 

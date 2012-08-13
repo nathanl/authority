@@ -1,17 +1,17 @@
 require 'spec_helper'
-require 'support/ability_model'
+require 'support/example_model'
 require 'support/user'
 
 describe Authority::Authorizer do
 
   before :each do
-    @ability_model = AbilityModel.new
-    @authorizer    = @ability_model.authorizer
+    @example_model = ExampleModel.new
+    @authorizer    = @example_model.authorizer
     @user          = User.new
   end
 
   it "should take a resource instance in its initializer" do
-    @authorizer.resource.should eq(@ability_model)
+    @authorizer.resource.should eq(@example_model)
   end
 
   describe "instance methods" do

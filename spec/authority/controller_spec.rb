@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'support/ability_model'
+require 'support/example_model'
 require 'support/example_controllers'
 require 'support/mock_rails'
 require 'support/user'
@@ -61,18 +61,18 @@ describe Authority::Controller do
 
     describe "DSL (class) methods" do
       it "should allow specifying the model to protect" do
-        ExampleController.authorize_actions_for AbilityModel
-        ExampleController.authority_resource.should eq(AbilityModel)
+        ExampleController.authorize_actions_for ExampleModel
+        ExampleController.authority_resource.should eq(ExampleModel)
       end
 
       it "should pass the options provided to the before filter that is set up" do
         @options = {:only => [:show, :edit, :update]}
         ExampleController.should_receive(:before_filter).with(:run_authorization_check, @options)
-        ExampleController.authorize_actions_for AbilityModel, @options
+        ExampleController.authorize_actions_for ExampleModel, @options
       end
 
       it "should allow specifying the authority action map in the `authorize_actions_for` declaration" do
-        ExampleController.authorize_actions_for AbilityModel, :actions => {:eat => 'delete'}
+        ExampleController.authorize_actions_for ExampleModel, :actions => {:eat => 'delete'}
         ExampleController.authority_action_map[:eat].should eq('delete')
       end
 
@@ -91,7 +91,7 @@ describe Authority::Controller do
       end
 
       it "should check authorization on the model specified" do
-        @controller.should_receive(:authorize_action_for).with(AbilityModel)
+        @controller.should_receive(:authorize_action_for).with(ExampleModel)
         @controller.send(:run_authorization_check)
       end
 

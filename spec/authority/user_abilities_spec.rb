@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'support/ability_model'
+require 'support/example_model'
 require 'support/user'
 
 describe Authority::UserAbilities do
 
   before :each do
-    @ability_model = AbilityModel.new
+    @example_model = ExampleModel.new
     @user          = User.new
   end
 
@@ -19,8 +19,8 @@ describe Authority::UserAbilities do
     describe "if given options" do
 
       it "should delegate the authorization check to the resource, passing the options" do
-        @ability_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user, :size => 'wee')
-        @user.send(method_name, @ability_model, :size => 'wee')
+        @example_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user, :size => 'wee')
+        @user.send(method_name, @example_model, :size => 'wee')
       end
 
     end
@@ -28,8 +28,8 @@ describe Authority::UserAbilities do
     describe "if not given options" do
 
       it "should delegate the authorization check to the resource, passing no options" do
-        @ability_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user)
-        @user.send(method_name, @ability_model)
+        @example_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user)
+        @user.send(method_name, @example_model)
       end
 
     end

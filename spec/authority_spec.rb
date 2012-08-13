@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'support/ability_model'
+require 'support/example_model'
 require 'support/user'
 
 describe Authority do
@@ -45,11 +45,11 @@ describe Authority do
     end
 
     it "should raise a SecurityViolation if the action is unauthorized" do
-      expect { Authority.enforce(:update, AbilityModel, @user) }.to raise_error(Authority::SecurityViolation)
+      expect { Authority.enforce(:update, ExampleModel, @user) }.to raise_error(Authority::SecurityViolation)
     end
 
     it "should not raise a SecurityViolation if the action is authorized" do
-      expect { Authority.enforce(:read, AbilityModel, @user) }.not_to raise_error(Authority::SecurityViolation)
+      expect { Authority.enforce(:read, ExampleModel, @user) }.not_to raise_error(Authority::SecurityViolation)
     end
 
   end
