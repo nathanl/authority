@@ -52,13 +52,13 @@ Using Authority, you have:
 
 Most importantly, you have **total flexibility**: Authority does not constrain you into using a particular scheme of roles and/or permissions.
 
-Authority lets you: 
+Authority lets you control access based on: 
 
-- Grant permissions based on users' points (like StackOverflow)
-- Check user roles in a separate, single-sign-on app
-- Disallow certain actions based on time or date
-- Allow an action only for users with compatible browsers
-- ...do anything else you can think of.
+- Roles in your app's database ([rolify](http://github.com/EppO/rolify) makes this easy)
+- Roles in a separate, single-sign-on app
+- Users' points (like StackOverflow)
+- Time and date
+- Weather, stock prices, vowels in the user's name, or **anything else you can check with Ruby**
 
 All you have to do is define the methods you need on your authorizers. You have all the flexibility of normal Ruby classes. 
 
