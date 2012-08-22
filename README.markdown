@@ -6,10 +6,8 @@ Authority will work fine with a standalone app or a single sign-on system. You c
 
 It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
-[![Build Status](https://secure.travis-ci.org/nathanl/authority.png)](http://travis-ci.org/nathanl/authority)
-[![Dependency Status](https://gemnasium.com/nathanl/authority.png?branch=master)](https://gemnasium.com/nathanl/authority)
-
-**NOTE on build status** - Travis CI has had some issues lately, so if the build status shows "broken," click the button and look into it; chances are it's not my code. On the plus side, you can see all the Ruby and Rails versions that Authority is tested against.
+[![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
+[![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority)
 
 ## Contents
 
