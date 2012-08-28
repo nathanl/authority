@@ -366,7 +366,17 @@ Anytime a user attempts an unauthorized action, Authority calls whatever control
 - Renders `public/403.html`
 - Logs the violation to whatever logger you configured.
 
-You can specify a different handler like this:
+You can define your own `authority_forbidden` method:
+
+
+```ruby
+# Send 'em back where they came from with a slap on the wrist
+def authority_forbidden(exception)
+  redirect_to request.referrer.presence || root_path, :alert => 'You are not authorized to complete that action.'
+end
+```
+
+... or specify a different handler like this:
 
 ```ruby
 # config/initializers/authority.rb
