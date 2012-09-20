@@ -26,10 +26,11 @@ module Authority
   # @param [Symbol] action
   # @param [Model] resource instance
   # @param [User] user instance
+  # @param [Hash] options, arbitrary options hash to delegate to the authorizer
   # @raise [SecurityViolation] if user is not allowed to perform action on resource
   # @return [Model] resource instance
-  def self.enforce(action, resource, user)
-    action_authorized = user.send("can_#{action}?", resource)
+  def self.enforce(action, resource, user, *options)
+    action_authorized = user.send("can_#{action}?", resource, Hash[*options])
     unless action_authorized
       raise SecurityViolation.new(user, action, resource)
     end
