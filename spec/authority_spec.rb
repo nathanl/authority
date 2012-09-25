@@ -44,6 +44,15 @@ describe Authority do
       @user = User.new
     end
 
+    it "should pass options given through to the user auth ability" do
+      options = { :for => 'context' }
+
+      # Stub with explicit args serves an expectation role here; also avoids adding deletable_by?
+      @user.stub!(:can_delete?).with(ExampleModel, options).and_return(true)
+
+      Authority.enforce(:delete, ExampleModel, @user, options)
+    end
+
     it "should raise a SecurityViolation if the action is unauthorized" do
       expect { Authority.enforce(:update, ExampleModel, @user) }.to raise_error(Authority::SecurityViolation)
     end
