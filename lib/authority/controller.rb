@@ -74,15 +74,18 @@ module Authority
     end
 
     # To be run in a `before_filter`; ensure this controller action is allowed for the user
+    # Can be used directly within a controller action as well, given an instance or class with or
+    # without options to delegate to the authorizer.
     #
-    # @param authority_resource [Class], the model class associated with this controller
+    # @param [Class] authority_resource, the model class associated with this controller
+    # @param [Hash] options, arbitrary options hash to forward up the chain to the authorizer
     # @raise [MissingAction] if controller action isn't a key in `config.controller_action_map`
-    def authorize_action_for(authority_resource)
+    def authorize_action_for(authority_resource, *options)
       authority_action = self.class.authority_action_map[action_name.to_sym]
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
       end
-      Authority.enforce(authority_action, authority_resource, authority_user)
+      Authority.enforce(authority_action, authority_resource, authority_user, *options)
     end
 
     class MissingAction < StandardError ; end

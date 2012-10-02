@@ -95,6 +95,12 @@ describe Authority::Controller do
         @controller.send(:run_authorization_check)
       end
 
+      it "should pass the options provided to `authorize_actions_for` downstream" do
+        @controller.stub!(:action_name).and_return(:destroy)
+        Authority.should_receive(:enforce).with('delete', ExampleModel, @user, :for => 'context')
+        @controller.send(:authorize_action_for, ExampleModel, :for => 'context')
+      end
+
       it "should raise a SecurityViolation if authorization fails" do
         expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::SecurityViolation)
       end
