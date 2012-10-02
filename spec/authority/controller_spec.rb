@@ -95,7 +95,7 @@ describe Authority::Controller do
         @controller.send(:run_authorization_check)
       end
 
-      it "should pass the options provided to `authorize_actions_for` downstream" do
+      it "should pass the options provided to `authorize_action_for` downstream" do
         @controller.stub!(:action_name).and_return(:destroy)
         Authority.should_receive(:enforce).with('delete', ExampleModel, @user, :for => 'context')
         @controller.send(:authorize_action_for, ExampleModel, :for => 'context')
