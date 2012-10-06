@@ -347,6 +347,8 @@ class LlamasController < ApplicationController
 end
 ```
 
+As with other authorization checks, you can also pass options here, and they'll be sent along to your authorization method: `authorize_action_for(@llama, :sporting => @hat_style)`. Generally, though, your authorization will depend on some attribute or association of the model instance, so the authorizer can check `@llama.neck_strength` and `@llama.owner.nationality`, etc, without needing any additional information.
+
 <a name="views">
 ### Views
 
