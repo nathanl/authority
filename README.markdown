@@ -45,8 +45,9 @@ Using Authority, you have:
 - Fine-grained, **instance-level** rules. Examples: 
   - "Management users can only edit schedules with date ranges in the future."
   - "Users can't create playlists more than 20 songs long unless they've paid."
-- A clear syntax for permissions-based views. Example:
+- A clear syntax for permissions-based views. Examples:
   - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
+  - `link_to 'Keelhaul Scallywag', keelhaul_scallywag_path(@scallywag) if current_user.can_keelhaul?(@scallywag)`
 - Graceful handling of access violations: by default, it displays a "you can't do that" screen and logs the violation.
 - Minimal effort and mess.
 
