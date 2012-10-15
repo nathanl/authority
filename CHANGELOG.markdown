@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.2.0
+
+Allow passing options hash to `authorize_action_for`, like `authorize_action_for(@llama, :sporting => @hat_style)`.
+
 ## v2.1.0
 
 Allow passing options hash, like `current_user.can_create?(Comment, :for => @post)`.

@@ -45,8 +45,9 @@ Using Authority, you have:
 - Fine-grained, **instance-level** rules. Examples: 
   - "Management users can only edit schedules with date ranges in the future."
   - "Users can't create playlists more than 20 songs long unless they've paid."
-- A clear syntax for permissions-based views. Example:
+- A clear syntax for permissions-based views. Examples:
   - `link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@widget)`
+  - `link_to 'Keelhaul Scallywag', keelhaul_scallywag_path(@scallywag) if current_user.can_keelhaul?(@scallywag)`
 - Graceful handling of access violations: by default, it displays a "you can't do that" screen and logs the violation.
 - Minimal effort and mess.
 
@@ -346,6 +347,8 @@ class LlamasController < ApplicationController
 
 end
 ```
+
+As with other authorization checks, you can also pass options here, and they'll be sent along to your authorization method: `authorize_action_for(@llama, :sporting => @hat_style)`. Generally, though, your authorization will depend on some attribute or association of the model instance, so the authorizer can check `@llama.neck_strength` and `@llama.owner.nationality`, etc, without needing any additional information.
 
 <a name="views">
 ### Views
