@@ -98,4 +98,13 @@ describe Authority::Authorizer do
 
   end
 
+  describe "the `authorizes?` method" do
+
+    it "calls a method by the name of the symbol given" do
+      Authority::Authorizer.should_receive(:play_bagpipes?).with(@user)
+      Authority::Authorizer.authorizes?(:play_bagpipes, @user)
+    end
+
+  end
+
 end

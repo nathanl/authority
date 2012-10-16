@@ -45,6 +45,10 @@ module Authority
       false
     end
 
+    def self.authorizes?(action, user)
+      self.send("#{action}?", user)
+    end
+
   end
 
   class NoAuthorizerError < StandardError ; end

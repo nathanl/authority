@@ -20,5 +20,9 @@ module Authority
       RUBY
     end
 
+    def authorized_to?(action)
+      ApplicationAuthorizer.authorizes?(action, self)
+    end
+
   end
 end
