@@ -8,6 +8,7 @@ It requires that you already have some kind of user object in your application, 
 
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
 [![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/nathanl/authority)
 
 ## Contents
 
