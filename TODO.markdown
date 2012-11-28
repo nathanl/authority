@@ -4,17 +4,8 @@
 
 - Add tests for the generators
 - Test `ActionController` integration
-
-## Features
-
-## Add .can? method
-
-- For non-resource-specific authorization, add `user.can?`. This should go to a corresponding authorizer method, which should call a method by the given name. For example, `user.can?(:access_admin_page)` goes to `ApplicationAuthorizer.allows_access_to?(:admin_page)` which calls `self.access_admin_page`. Or something.
-
-### Use translation files
-
-- Move all user-facing messages into en.yml
-- Add other languages
+- Configure Rspec to run tests in random order and chase down any issues
+- Switch to newer Rspec `expect()` syntax
 
 ## Structural changes
 
