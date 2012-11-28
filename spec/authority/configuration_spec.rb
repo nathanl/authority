@@ -47,7 +47,7 @@ describe Authority::Configuration do
     end
   end
 
-  describe "helping those upgrading to 2.0" do
+  describe "helping those upgrading from versions prior to 2.0" do
 
     before :all do
       Authority.instance_variable_set :@configuration, nil
