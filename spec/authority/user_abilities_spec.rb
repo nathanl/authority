@@ -40,11 +40,11 @@ describe Authority::UserAbilities do
 
   end
 
-  describe "authorized_to? method" do
+  describe "using `can?` for non-resource-specific checks" do
 
     it "checks with ApplicationAuthorizer" do
-      ApplicationAuthorizer.should_receive(:authorizes?).with(:mimic_lemurs, @user)
-      @user.authorized_to?(:mimic_lemurs)
+      ApplicationAuthorizer.should_receive(:can_mimic_lemurs?).with(@user)
+      @user.can?(:mimic_lemurs)
     end
 
   end

@@ -20,8 +20,8 @@ module Authority
       RUBY
     end
 
-    def authorized_to?(action)
-      ApplicationAuthorizer.authorizes?(action, self)
+    def can?(action)
+      ApplicationAuthorizer.send("can_#{action}?", self)
     end
 
   end
