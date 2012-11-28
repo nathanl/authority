@@ -3,6 +3,7 @@ require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/string/inflections'
 require 'logger'
+require 'authority/security_violation'
 
 module Authority
 
@@ -58,20 +59,6 @@ module Authority
     require 'authority/abilities'
     require 'authority/authorizer'
     require 'authority/user_abilities'
-  end
-
-  class SecurityViolation < StandardError
-    attr_reader :user, :action, :resource
-
-    def initialize(user, action, resource)
-      @user = user
-      @action = action
-      @resource = resource
-    end
-
-    def message
-      "#{@user} is not authorized to #{@action} this resource: #{@resource}"
-    end
   end
 
 end
