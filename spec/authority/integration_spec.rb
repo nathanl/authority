@@ -18,7 +18,7 @@ describe "integration from user through model to authorizer" do
 
       describe "if given an options hash" do
 
-        it "should delegate `#{adjective_method}` to its authorizer class, passing the options" do
+        it "delegates `#{adjective_method}` to its authorizer class, passing the options" do
           ExampleModel.authorizer.should_receive(adjective_method).with(@user, :lacking => 'nothing')
           @user.send(verb_method, ExampleModel, :lacking => 'nothing')
         end
@@ -27,7 +27,7 @@ describe "integration from user through model to authorizer" do
 
       describe "if not given an options hash" do
 
-        it "should delegate `#{adjective_method}` to its authorizer class, passing no options" do
+        it "delegates `#{adjective_method}` to its authorizer class, passing no options" do
           ExampleModel.authorizer.should_receive(adjective_method).with(@user)
           @user.send(verb_method, @example_model)
         end
@@ -54,7 +54,7 @@ describe "integration from user through model to authorizer" do
 
       describe "if given an options hash" do
 
-        it "should delegate `#{adjective_method}` to a new authorizer instance, passing the options" do
+        it "delegates `#{adjective_method}` to a new authorizer instance, passing the options" do
           @authorizer.should_receive(adjective_method).with(@user, :consistency => 'mushy')
           @user.send(verb_method, @example_model, :consistency => 'mushy')
         end
@@ -63,7 +63,7 @@ describe "integration from user through model to authorizer" do
 
       describe "if not given an options hash" do
         
-        it "should delegate `#{adjective_method}` to a new authorizer instance, passing no options" do
+        it "delegates `#{adjective_method}` to a new authorizer instance, passing no options" do
           @authorizer.should_receive(adjective_method).with(@user)
           @user.send(verb_method, @example_model)
         end

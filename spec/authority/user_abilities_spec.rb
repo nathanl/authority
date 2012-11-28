@@ -14,13 +14,13 @@ describe Authority::UserAbilities do
     Authority.verbs.each do |verb|
       method_name = "can_#{verb}?"
 
-      it "should define the `#{method_name}` method" do
+      it "defines the `#{method_name}` method" do
         @user.should respond_to(method_name)
       end
 
       describe "if given options" do
 
-        it "should delegate the authorization check to the resource, passing the options" do
+        it "delegates the authorization check to the resource, passing the options" do
           @example_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user, :size => 'wee')
           @user.send(method_name, @example_model, :size => 'wee')
         end
@@ -29,7 +29,7 @@ describe Authority::UserAbilities do
 
       describe "if not given options" do
 
-        it "should delegate the authorization check to the resource, passing no options" do
+        it "delegates the authorization check to the resource, passing no options" do
           @example_model.should_receive("#{Authority.abilities[verb]}_by?").with(@user)
           @user.send(method_name, @example_model)
         end

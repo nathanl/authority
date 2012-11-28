@@ -267,11 +267,11 @@ describe AdminAuthorizer do
   end
 
   describe "class" do
-    it "should let admins update in bulk" do
+    it "lets admins update in bulk" do
       AdminAuthorizer.should be_bulk_updatable_by(@admin)
     end
 
-    it "should not let users update in bulk" do
+    it "doesn't let users update in bulk" do
       AdminAuthorizer.should_not be_bulk_updatable_by(@user)
     end
   end
@@ -283,11 +283,11 @@ describe AdminAuthorizer do
       @admin_resource_instance = mock_admin_resource
     end
 
-    it "should let admins delete" do
+    it "lets admins delete" do
       @admin_resource_instance.authorizer.should be_deletable_by(@admin)
     end
 
-    it "should not let users delete" do
+    it "doesn't let users delete" do
       @admin_resource_instance.authorizer.should_not be_deletable_by(@user)
     end
 
