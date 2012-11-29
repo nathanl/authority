@@ -7,7 +7,7 @@ Authority will work fine with a standalone app or a single sign-on system. You c
 It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
-[![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority)
+<!-- [![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority) -->
 [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/nathanl/authority)
 
 ## Contents
