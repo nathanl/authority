@@ -101,10 +101,6 @@ describe Authority::Controller do
         @controller.send(:authorize_action_for, ExampleModel, :for => 'context')
       end
 
-      it "raises a SecurityViolation if authorization fails" do
-        expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::SecurityViolation)
-      end
-
       it "raises a MissingAction if there is no corresponding action for the controller" do
         @controller.stub(:action_name).and_return('sculpt')
         expect { @controller.send(:run_authorization_check) }.to raise_error(Authority::Controller::MissingAction)
