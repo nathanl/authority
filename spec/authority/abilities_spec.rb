@@ -11,15 +11,15 @@ describe Authority::Abilities do
   describe "authorizer" do
 
     it "has a class attribute getter for authorizer_name" do
-      ExampleModel.should respond_to(:authorizer_name)
+      expect(ExampleModel).to respond_to(:authorizer_name)
     end
 
     it "has a class attribute setter for authorizer_name" do
-      ExampleModel.should respond_to(:authorizer_name=)
+      expect(ExampleModel).to respond_to(:authorizer_name=)
     end
 
     it "has a default authorizer_name of 'ApplicationAuthorizer'" do
-      ExampleModel.authorizer_name.should eq("ApplicationAuthorizer")
+      expect(ExampleModel.authorizer_name).to eq("ApplicationAuthorizer")
     end
 
     it "constantizes the authorizer name as the authorizer" do
@@ -49,7 +49,7 @@ describe Authority::Abilities do
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        ExampleModel.should respond_to(method_name)
+        expect(ExampleModel).to respond_to(method_name)
       end
 
       describe "if given an options hash" do
@@ -85,7 +85,7 @@ describe Authority::Abilities do
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        @example_model.should respond_to(method_name)
+        expect(@example_model).to respond_to(method_name)
       end
 
       describe "if given an options hash" do
@@ -111,7 +111,7 @@ describe Authority::Abilities do
     end
 
     it "provides an accessor for its authorizer" do
-      @example_model.should respond_to(:authorizer)
+      expect(@example_model).to respond_to(:authorizer)
     end
 
     # When checking instance methods, we want to ensure that every check uses a new

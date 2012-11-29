@@ -11,7 +11,7 @@ describe Authority::Authorizer do
   end
 
   it "takes a resource instance in its initializer" do
-    @authorizer.resource.should eq(@example_model)
+    expect(@authorizer.resource).to eq(@example_model)
   end
 
   describe "instance methods" do
@@ -20,7 +20,7 @@ describe Authority::Authorizer do
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        @authorizer.should respond_to(method_name)
+        expect(@authorizer).to respond_to(method_name)
       end
 
 
@@ -52,7 +52,7 @@ describe Authority::Authorizer do
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        Authority::Authorizer.should respond_to(method_name)
+        expect(Authority::Authorizer).to respond_to(method_name)
       end
 
       describe "if given an options hash" do
@@ -84,14 +84,14 @@ describe Authority::Authorizer do
     describe "if given an options hash" do
 
       it "returns false" do
-        Authority::Authorizer.default(:implodable, @user, {:for => "my_object"}).should be_false
+        expect(Authority::Authorizer.default(:implodable, @user, {:for => "my_object"})).to be_false
       end
     end
 
     describe "if not given an options hash" do
 
       it "returns false" do
-        Authority::Authorizer.default(:implodable, @user).should be_false
+        expect(Authority::Authorizer.default(:implodable, @user)).to be_false
       end
 
     end

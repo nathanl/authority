@@ -4,11 +4,11 @@ describe Authority::Configuration do
   describe "the default configuration" do
 
     it "has a default authority controller actions map" do
-      Authority.configuration.controller_action_map.should be_a(Hash)
+      expect(Authority.configuration.controller_action_map).to be_a(Hash)
     end
 
     it "has a default controller method for accessing the user object" do
-      Authority.configuration.user_method.should eq(:current_user)
+      expect(Authority.configuration.user_method).to eq(:current_user)
     end
 
     describe "logging security violations" do
@@ -41,7 +41,7 @@ describe Authority::Configuration do
       # This shouldn't be used during runtime, only during configuration
       # It won't do anything outside of configuration anyway
       it "allows adding to the default list of abilities" do
-        Authority.configuration.abilities[:eat].should eq('edible')
+        expect(Authority.configuration.abilities[:eat]).to eq('edible')
       end
 
     end

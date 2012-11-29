@@ -46,14 +46,14 @@ describe Authority::Controller do
 
       it "is created on demand" do
         ExampleController.instance_variable_set(:@authority_action_map, nil)
-        ExampleController.authority_action_map.should be_a(Hash)
-        ExampleController.authority_action_map.should_not be(Authority.configuration.controller_action_map)
+        expect(ExampleController.authority_action_map).to be_a(Hash)
+        expect(ExampleController.authority_action_map).not_to be(Authority.configuration.controller_action_map)
       end
 
       describe "when subclassing" do
         it "allows the child class to edit the controller action map without affecting the parent class" do
           DummyController.authority_action :erase => 'delete'
-          ExampleController.authority_action_map[:erase].should be_nil
+          expect(ExampleController.authority_action_map[:erase]).to be_nil
         end
       end
 
@@ -62,7 +62,7 @@ describe Authority::Controller do
     describe "DSL (class) methods" do
       it "allows specifying the model to protect" do
         ExampleController.authorize_actions_for ExampleModel
-        ExampleController.authority_resource.should eq(ExampleModel)
+        expect(ExampleController.authority_resource).to eq(ExampleModel)
       end
 
       it "passes the options provided to the before filter that is set up" do
@@ -73,12 +73,12 @@ describe Authority::Controller do
 
       it "allows specifying the authority action map in the `authorize_actions_for` declaration" do
         ExampleController.authorize_actions_for ExampleModel, :actions => {:eat => 'delete'}
-        ExampleController.authority_action_map[:eat].should eq('delete')
+        expect(ExampleController.authority_action_map[:eat]).to eq('delete')
       end
 
       it "has a write into the authority actions map usuable in a DSL format" do
         ExampleController.authority_action :smite => 'delete'
-        ExampleController.authority_action_map[:smite].should eq('delete')
+        expect(ExampleController.authority_action_map[:smite]).to eq('delete')
       end
     end
 
@@ -118,7 +118,7 @@ describe Authority::Controller do
       describe "in controllers that inherited from a controller including authority, but don't call any class method" do
         it "automatically has a new copy of the authority_action_map" do
           @controller = InstanceController.new
-          @controller.class.authority_action_map.should eq(Authority.configuration.controller_action_map)
+          expect(@controller.class.authority_action_map).to eq(Authority.configuration.controller_action_map)
         end
       end
 

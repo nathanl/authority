@@ -15,7 +15,7 @@ describe Authority::UserAbilities do
       method_name = "can_#{verb}?"
 
       it "defines the `#{method_name}` method" do
-        @user.should respond_to(method_name)
+        expect(@user).to respond_to(method_name)
       end
 
       describe "if given options" do

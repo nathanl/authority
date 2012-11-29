@@ -5,7 +5,7 @@ require 'support/user'
 describe Authority do
 
   it "has a default list of abilities" do
-    Authority.abilities.should be_a(Hash)
+    expect(Authority.abilities).to be_a(Hash)
   end
 
   it "does not allow modification of the Authority.abilities hash directly" do
@@ -15,21 +15,21 @@ describe Authority do
   end
 
   it "has a convenience accessor for the ability verbs" do
-    Authority.verbs.map(&:to_s).sort.should eq(['create', 'delete', 'read', 'update'])
+    expect(Authority.verbs.map(&:to_s).sort).to eq(['create', 'delete', 'read', 'update'])
   end
 
   it "has a convenience accessor for the ability adjectives" do
-    Authority.adjectives.sort.should eq(%w[creatable deletable readable updatable])
+    expect(Authority.adjectives.sort).to eq(%w[creatable deletable readable updatable])
   end
 
   describe "configuring Authority" do
 
     it "has a configuration accessor" do
-      Authority.should respond_to(:configuration)
+      expect(Authority).to respond_to(:configuration)
     end
 
     it "has a `configure` method" do
-      Authority.should respond_to(:configure)
+      expect(Authority).to respond_to(:configure)
     end
 
     it "requires the remainder of library internals after configuration" do
@@ -83,19 +83,19 @@ describe Authority do
     end
 
     it "has a reader for the user" do
-      @security_violation.user.should eq(@user)
+      expect(@security_violation.user).to eq(@user)
     end
 
     it "has a reader for the action" do
-      @security_violation.action.should eq(@action)
+      expect(@security_violation.action).to eq(@action)
     end
 
     it "has a reader for the resource" do
-      @security_violation.resource.should eq(@resource)
+      expect(@security_violation.resource).to eq(@resource)
     end
 
     it "uses them all in its message" do
-      @security_violation.message.should eq("#{@user} is not authorized to #{@action} this resource: #{@resource}")
+      expect(@security_violation.message).to eq("#{@user} is not authorized to #{@action} this resource: #{@resource}")
     end
 
   end

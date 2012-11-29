@@ -268,11 +268,11 @@ describe AdminAuthorizer do
 
   describe "class" do
     it "lets admins update in bulk" do
-      AdminAuthorizer.should be_bulk_updatable_by(@admin)
+      expect(AdminAuthorizer).to be_bulk_updatable_by(@admin)
     end
 
     it "doesn't let users update in bulk" do
-      AdminAuthorizer.should_not be_bulk_updatable_by(@user)
+      expect(AdminAuthorizer).not_to be_bulk_updatable_by(@user)
     end
   end
 
@@ -284,11 +284,11 @@ describe AdminAuthorizer do
     end
 
     it "lets admins delete" do
-      @admin_resource_instance.authorizer.should be_deletable_by(@admin)
+      expect(@admin_resource_instance.authorizer).to be_deletable_by(@admin)
     end
 
     it "doesn't let users delete" do
-      @admin_resource_instance.authorizer.should_not be_deletable_by(@user)
+      expect(@admin_resource_instance.authorizer).not_to be_deletable_by(@user)
     end
 
   end
