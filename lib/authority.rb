@@ -31,14 +31,18 @@ module Authority
   # @raise [SecurityViolation] if user is not allowed to perform action on resource
   # @return [Model] resource instance
   def self.enforce(action, resource, user, *options)
-    action_authorized = if options.empty?
-                          user.send("can_#{action}?", resource)
-                        else
-                          user.send("can_#{action}?", resource, Hash[*options])
-                        end
-    raise SecurityViolation.new(user, action, resource) unless action_authorized
-
+    unless action_authorized?(action, resource, user, *options)
+      raise SecurityViolation.new(user, action, resource) 
+    end
     resource
+  end
+
+  def self.action_authorized?(action, resource, user, *options)
+    if options.empty?
+      user.send("can_#{action}?", resource)
+    else
+      user.send("can_#{action}?", resource, Hash[*options])
+    end
   end
 
   class << self

@@ -91,6 +91,11 @@ describe Authority::Controller do
       end
 
       it "checks authorization on the model specified" do
+        # TODO - rethink this test and/or the test structure of this file.
+        # Stubbing here is a code smell; it really reflects that
+        # `run_authorization_check` is meant to be a before_filter, added
+        # after some setup has been done by `authorize_actions_for`
+        ExampleController.stub(:authority_resource).and_return(ExampleModel)
         @controller.should_receive(:authorize_action_for).with(ExampleModel)
         @controller.send(:run_authorization_check)
       end
