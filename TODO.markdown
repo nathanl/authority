@@ -4,6 +4,7 @@
 
 - Add tests for the generators
 - Test `ActionController` integration
+- Work on readability of spec output when using `--format doc --order default` (pick up in `controller_spec`)
 
 ## Structural changes
 
