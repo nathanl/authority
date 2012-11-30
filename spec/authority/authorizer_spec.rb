@@ -88,14 +88,14 @@ describe Authority::Authorizer do
 
   describe "the default method" do
 
-    describe "if given an options hash" do
+    context "when given an options hash" do
 
       it "returns false" do
         expect(Authority::Authorizer.default(:implodable, @user, {:for => "my_object"})).to be_false
       end
     end
 
-    describe "if not given an options hash" do
+    context "when not given an options hash" do
 
       it "returns false" do
         expect(Authority::Authorizer.default(:implodable, @user)).to be_false
