@@ -11,7 +11,7 @@ describe Authority::Controller do
 
     it "calls whatever method on the controller that the configuration specifies" do
       # Here be dragons!
-      @fake_exception = Exception.new
+      @fake_exception    = Exception.new
       @sample_controller = SampleController.new
       # If a callback is passed to a controller's `rescue_from` method as the value for
       # the `with` option (like `SomeController.rescue_from FooException, :with => some_callback`),
@@ -27,7 +27,7 @@ describe Authority::Controller do
     end
   end
 
-  describe "when including" do
+  context "when including" do
 
     before :each do
       Authority::Controller.stub(:security_violation_callback).and_return(Proc.new {|exception| })
@@ -40,7 +40,7 @@ describe Authority::Controller do
 
   end
 
-  describe "after including" do
+  context "after including" do
 
     describe "the authority controller action map" do
 
@@ -51,38 +51,51 @@ describe Authority::Controller do
       end
 
       describe "when subclassing" do
+
         it "allows the child class to edit the controller action map without affecting the parent class" do
           DummyController.authority_action :erase => 'delete'
           expect(ExampleController.authority_action_map[:erase]).to be_nil
         end
+
       end
 
     end
 
-    describe "DSL (class) methods" do
-      it "allows specifying the model to protect" do
-        ExampleController.authorize_actions_for ExampleModel
-        expect(ExampleController.authority_resource).to eq(ExampleModel)
+    describe "class methods" do
+
+      describe "authorize_actions_for" do
+
+        it "allows specifying the model to protect" do
+          ExampleController.authorize_actions_for ExampleModel
+          expect(ExampleController.authority_resource).to eq(ExampleModel)
+        end
+
+        it "sets up a before_filter, passing the options it was given" do
+          @options = {:only => [:show, :edit, :update]}
+          ExampleController.should_receive(:before_filter).with(:run_authorization_check, @options)
+          ExampleController.authorize_actions_for ExampleModel, @options
+        end
+
+        it "allows specifying the authority action map" do
+          ExampleController.authorize_actions_for ExampleModel, :actions => {:eat => 'delete'}
+          expect(ExampleController.authority_action_map[:eat]).to eq('delete')
+        end
+
       end
 
-      it "passes the options provided to the before filter that is set up" do
-        @options = {:only => [:show, :edit, :update]}
-        ExampleController.should_receive(:before_filter).with(:run_authorization_check, @options)
-        ExampleController.authorize_actions_for ExampleModel, @options
+      describe "authority_action" do
+
+        it "updates the controller's map of methods to authorizations" do
+          ExampleController.authority_action :smite => 'delete'
+          expect(ExampleController.authority_action_map[:smite]).to eq('delete')
+        end
+
       end
 
-      it "allows specifying the authority action map in the `authorize_actions_for` declaration" do
-        ExampleController.authorize_actions_for ExampleModel, :actions => {:eat => 'delete'}
-        expect(ExampleController.authority_action_map[:eat]).to eq('delete')
-      end
-
-      it "has a write into the authority actions map usuable in a DSL format" do
-        ExampleController.authority_action :smite => 'delete'
-        expect(ExampleController.authority_action_map[:smite]).to eq('delete')
-      end
     end
 
     describe "instance methods" do
+
       before :each do
         @user       = User.new
         @controller = ExampleController.new
@@ -141,8 +154,11 @@ describe Authority::Controller do
           @controller.should_receive(:render).with(:file => forbidden_page, :status => 403, :layout => false)
           @controller.send(:authority_forbidden, @mock_error)
         end
+
       end
+
     end
+    
   end
 
 end
