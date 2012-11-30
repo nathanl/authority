@@ -9,7 +9,7 @@ describe Authority::UserAbilities do
     @user          = User.new
   end
 
-  describe "can_(verb)? methods" do
+  describe "using `can_{verb}?` methods to check permissions on a resource" do
 
     Authority.verbs.each do |verb|
       method_name = "can_#{verb}?"

@@ -23,21 +23,24 @@ describe Authority::Authorizer do
         expect(@authorizer).to respond_to(method_name)
       end
 
+      describe "#{method_name}" do
 
-      describe "if given an options hash" do
+        context "when given an options hash" do
 
-        it "delegates `#{method_name}` to the corresponding class method, passing the options" do
-          @authorizer.class.should_receive(method_name).with(@user, :under => 'God')
-          @authorizer.send(method_name, @user, :under => 'God')
+          it "delegates `#{method_name}` to the corresponding class method, passing the options" do
+            @authorizer.class.should_receive(method_name).with(@user, :under => 'God')
+            @authorizer.send(method_name, @user, :under => 'God')
+          end
+
         end
 
-      end
+        context "when not given an options hash" do
 
-      describe "if not given an options hash" do
+          it "delegates `#{method_name}` to the corresponding class method, passing no options" do
+            @authorizer.class.should_receive(method_name).with(@user)
+            @authorizer.send(method_name, @user)
+          end
 
-        it "delegates `#{method_name}` to the corresponding class method, passing no options" do
-          @authorizer.class.should_receive(method_name).with(@user)
-          @authorizer.send(method_name, @user)
         end
 
       end
@@ -55,22 +58,26 @@ describe Authority::Authorizer do
         expect(Authority::Authorizer).to respond_to(method_name)
       end
 
-      describe "if given an options hash" do
+      describe "#{method_name}" do
 
-        it "delegates `#{method_name}` to the authorizer's `default` method, passing the options" do
-          able = method_name.sub('_by?', '').to_sym
-          Authority::Authorizer.should_receive(:default).with(able, @user, :with => 'gusto')
-          Authority::Authorizer.send(method_name, @user, :with => 'gusto')
+        context "when given an options hash" do
+
+          it "delegates `#{method_name}` to the authorizer's `default` method, passing the options" do
+            able = method_name.sub('_by?', '').to_sym
+            Authority::Authorizer.should_receive(:default).with(able, @user, :with => 'gusto')
+            Authority::Authorizer.send(method_name, @user, :with => 'gusto')
+          end
+
         end
 
-      end
+        context "when not given an options hash" do
 
-      describe "if not given an options hash" do
+          it "delegates `#{method_name}` to the authorizer's `default` method, passing no options" do
+            able = method_name.sub('_by?', '').to_sym
+            Authority::Authorizer.should_receive(:default).with(able, @user)
+            Authority::Authorizer.send(method_name, @user)
+          end
 
-        it "delegates `#{method_name}` to the authorizer's `default` method, passing no options" do
-          able = method_name.sub('_by?', '').to_sym
-          Authority::Authorizer.should_receive(:default).with(able, @user)
-          Authority::Authorizer.send(method_name, @user)
         end
 
       end
