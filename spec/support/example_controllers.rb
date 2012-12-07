@@ -9,9 +9,6 @@ class ExampleController
   include Authority::Controller
 end
 
-class DummyController < ExampleController
-end
-
 class InstanceController < ExampleController
 end
 

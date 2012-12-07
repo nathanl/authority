@@ -44,19 +44,22 @@ describe Authority::Controller do
 
     describe "the authority controller action map" do
 
+      before(:each) { ExampleController.instance_variable_set(:@authority_action_map, nil) }
+
       it "is created on demand" do
-        ExampleController.instance_variable_set(:@authority_action_map, nil)
         expect(ExampleController.authority_action_map).to be_a(Hash)
+      end
+
+      it "is created as a copy of the configured controller action map" do
+        expect(ExampleController.authority_action_map).to     eq(Authority.configuration.controller_action_map)
         expect(ExampleController.authority_action_map).not_to be(Authority.configuration.controller_action_map)
       end
 
-      describe "when subclassing" do
-
-        it "allows the child class to edit the controller action map without affecting the parent class" do
-          DummyController.authority_action :erase => 'delete'
-          expect(ExampleController.authority_action_map[:erase]).to be_nil
-        end
-
+      it "is unique per controller" do
+        child_controller = Class.new(ExampleController)
+        child_controller.authority_action :erase => 'delete'
+        expect(child_controller.authority_action_map[:erase]).to eq('delete')
+        expect(ExampleController.authority_action_map[:erase]).to be_nil
       end
 
     end
