@@ -35,7 +35,9 @@ module Authority
       def authorizer
         @authorizer ||= authorizer_name.constantize # Get an actual reference to the authorizer class
       rescue NameError
-        raise Authority::NoAuthorizerError.new("#{authorizer_name} does not exist in your application")
+        raise Authority::NoAuthorizerError.new(
+          "#{authorizer_name} is set as the authorizer for #{self}, but the constant is missing"
+        )
       end
     end
 
