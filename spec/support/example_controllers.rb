@@ -9,9 +9,6 @@ class ExampleController
   include Authority::Controller
 end
 
-class InstanceController < ExampleController
-end
-
 # this controller will not have `authority_actions_for` called on it but will
 # have `authority_action_for` called on it
 class SampleController

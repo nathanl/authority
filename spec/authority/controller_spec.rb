@@ -132,13 +132,6 @@ describe Authority::Controller do
         @controller.send(:authority_user)
       end
 
-      describe "in controllers that inherited from a controller including authority, but don't call any class method" do
-        it "automatically has a new copy of the authority_action_map" do
-          @controller = InstanceController.new
-          expect(@controller.class.authority_action_map).to eq(Authority.configuration.controller_action_map)
-        end
-      end
-
       describe "authority_forbidden action" do
 
         before :each do
