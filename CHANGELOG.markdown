@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added generic `current_user.can?(:mimic_lemurs)` for cases where there is no resource to work with. This calls a corresponding class method on `ApplicationAuthorizer`, like `ApplicationAuthorizer.can_mimic_lemurs?`.
+- Renamed `authority_action` to `authority_actions` (plural) to reflect the fact that you can set multiple actions at once. Use of the old method will raise a deprecation warning.
+- Lots of test cleanup so that test output is clearer - run rspec with `--format doc --order default` to see it.
+
 ## v2.2.0
 
 Allow passing options hash to `authorize_action_for`, like `authorize_action_for(@llama, :sporting => @hat_style)`.

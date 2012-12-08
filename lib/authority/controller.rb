@@ -26,15 +26,23 @@ module Authority
       # ones and any other options applicable to a before_filter
       def authorize_actions_for(model_class, options = {})
         self.authority_resource = model_class
-        authority_action(options[:actions] || {})
+        authority_actions(options[:actions] || {})
         before_filter :run_authorization_check, options
       end
 
       # Allows defining and overriding a controller's map of its actions to the model's authorizer methods
       #
       # @param [Hash] action_map - controller actions and methods, to be merged with existing action_map
-      def authority_action(action_map)
+      def authority_actions(action_map)
         authority_action_map.merge!(action_map.symbolize_keys)
+      end
+
+      def authority_action(action_map)
+        puts "Authority's `authority_action` method has been renamed \
+        to `authority_actions` (plural) to reflect the fact that you can \
+        set multiple actions in one shot. Please update your controllers \
+        accordingly. (called from #{caller.first})".squeeze(' ')
+        authority_actions(action_map)
       end
 
       # The controller action to authority action map used for determining

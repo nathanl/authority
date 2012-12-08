@@ -82,7 +82,7 @@ describe Authority::Controller do
         it "passes the action hash to the `authority_action` method" do
           example_controller = Class.new(ExampleController)
           new_actions = {:synthesize => :create, :annihilate => 'delete'}
-          example_controller.should_receive(:authority_action).with(new_actions)
+          example_controller.should_receive(:authority_actions).with(new_actions)
           example_controller.authorize_actions_for(ExampleModel, :actions => new_actions)
         end
 
@@ -93,7 +93,7 @@ describe Authority::Controller do
         it "modifies this controller's authority action map" do
           example_controller = Class.new(ExampleController)
           new_actions = {:show => :display, :synthesize => :create, :annihilate => 'delete'}
-          example_controller.authority_action(new_actions)
+          example_controller.authority_actions(new_actions)
           expect(example_controller.authority_action_map).to eq(
             Authority.configuration.controller_action_map.merge(new_actions)
           )
@@ -101,7 +101,7 @@ describe Authority::Controller do
 
         it "only affects the controller it's called in" do
           child_controller = Class.new(ExampleController)
-          child_controller.authority_action(:smite => 'delete')
+          child_controller.authority_actions(:smite => 'delete')
           expect(ExampleController.authority_action_map[:smite]).to eq(nil)
         end
 
