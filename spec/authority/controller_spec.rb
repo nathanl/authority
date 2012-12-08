@@ -39,6 +39,8 @@ describe Authority::Controller do
       end
     end
 
+    let(:resource_class) { ExampleResource }
+
     describe "the security violation callback" do
 
       it "calls whatever method on the controller that the configuration specifies" do
@@ -86,21 +88,21 @@ describe Authority::Controller do
       describe "authorize_actions_for" do
 
         it "allows specifying the model to protect" do
-          controller_class.authorize_actions_for(ExampleModel)
-          expect(controller_class.authority_resource).to eq(ExampleModel)
+          controller_class.authorize_actions_for(resource_class)
+          expect(controller_class.authority_resource).to eq(resource_class)
         end
 
         it "sets up a before_filter, passing the options it was given" do
           filter_options = {:only => [:show, :edit, :update]}
           controller_class.should_receive(:before_filter).with(:run_authorization_check, filter_options)
-          controller_class.authorize_actions_for(ExampleModel, filter_options)
+          controller_class.authorize_actions_for(resource_class, filter_options)
         end
 
         it "passes the action hash to the `authority_action` method" do
           child_controller = Class.new(controller_class)
           new_actions = {:synthesize => :create, :annihilate => 'delete'}
           child_controller.should_receive(:authority_actions).with(new_actions)
-          child_controller.authorize_actions_for(ExampleModel, :actions => new_actions)
+          child_controller.authorize_actions_for(resource_class, :actions => new_actions)
         end
 
       end
@@ -130,7 +132,7 @@ describe Authority::Controller do
       let(:controller_class) do
         Class.new(ExampleController).tap do |c|
           c.send(:include, Authority::Controller)
-          c.authorize_actions_for(ExampleModel)
+          c.authorize_actions_for(resource_class)
         end
       end
 
@@ -140,12 +142,12 @@ describe Authority::Controller do
         end 
       end
 
-      let(:user) { User.new }
+      let(:user) { ExampleUser.new }
 
       describe "run_authorization_check (used as a before_filter)" do
 
         it "checks authorization on the model specified" do
-          controller_instance.should_receive(:authorize_action_for).with(ExampleModel)
+          controller_instance.should_receive(:authorize_action_for).with(resource_class)
           controller_instance.send(:run_authorization_check)
         end
 
@@ -164,13 +166,13 @@ describe Authority::Controller do
 
         it "calls Authority.enforce to authorize the action" do
           Authority.should_receive(:enforce)
-          controller_instance.send(:authorize_action_for, ExampleModel)
+          controller_instance.send(:authorize_action_for, resource_class)
         end
 
         it "passes along any options it was given" do
           options = {:for => 'insolence'}
-          Authority.should_receive(:enforce).with('delete', ExampleModel, user, options)
-          controller_instance.send(:authorize_action_for, ExampleModel, options)
+          Authority.should_receive(:enforce).with('delete', resource_class, user, options)
+          controller_instance.send(:authorize_action_for, resource_class, options)
         end
 
       end

@@ -1,8 +1,8 @@
-class User
+class ExampleUser
   include Authority::UserAbilities
 end
 
-class ExampleModel
+class ExampleResource
   include Authority::Abilities
 end
 

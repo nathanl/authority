@@ -3,9 +3,9 @@ require 'support/example_classes'
 
 describe Authority::Authorizer do
 
-  let(:model_instance) { ExampleModel.new }
+  let(:model_instance) { ExampleResource.new }
   let(:authorizer)    { model_instance.authorizer }
-  let(:user)          { User.new }
+  let(:user)          { ExampleUser.new }
 
   it "takes a resource instance in its initializer" do
     expect(authorizer.resource).to eq(model_instance)

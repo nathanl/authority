@@ -39,14 +39,15 @@ describe Authority do
 
   describe "enforcement" do
 
-    let(:user) { User.new }
+    let(:user)           { ExampleUser.new }
+    let(:resource_class) { ExampleResource }
 
     describe "if given options" do
 
       it "checks the user's authorization, passing along the options" do
         options = { :for => 'context' }
-        user.should_receive(:can_delete?).with(ExampleModel, options).and_return(true)
-        Authority.enforce(:delete, ExampleModel, user, options)
+        user.should_receive(:can_delete?).with(resource_class, options).and_return(true)
+        Authority.enforce(:delete, resource_class, user, options)
       end
 
     end
@@ -54,18 +55,18 @@ describe Authority do
     describe "if not given options" do
 
       it "checks the user's authorization, passing no options" do
-        user.should_receive(:can_delete?).with(ExampleModel).and_return(true)
-        Authority.enforce(:delete, ExampleModel, user)
+        user.should_receive(:can_delete?).with(resource_class).and_return(true)
+        Authority.enforce(:delete, resource_class, user)
       end
 
     end
 
     it "raises a SecurityViolation if the action is unauthorized" do
-      expect { Authority.enforce(:update, ExampleModel, user) }.to raise_error(Authority::SecurityViolation)
+      expect { Authority.enforce(:update, resource_class, user) }.to raise_error(Authority::SecurityViolation)
     end
 
     it "doesn't raise a SecurityViolation if the action is authorized" do
-      expect { Authority.enforce(:read, ExampleModel, user) }.not_to raise_error(Authority::SecurityViolation)
+      expect { Authority.enforce(:read, resource_class, user) }.not_to raise_error(Authority::SecurityViolation)
     end
 
   end

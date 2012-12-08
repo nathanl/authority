@@ -3,22 +3,23 @@ require 'support/example_classes'
 
 describe Authority::Abilities do
 
-  let(:user) { User.new }
+  let(:user)           { ExampleUser.new }
+  let(:resource_class) { ExampleResource }
 
   describe "instance methods" do
 
     describe "authorizer_name" do
 
       it "has a class attribute getter for authorizer_name" do
-        expect(ExampleModel).to respond_to(:authorizer_name)
+        expect(resource_class).to respond_to(:authorizer_name)
       end
 
       it "has a class attribute setter for authorizer_name" do
-        expect(ExampleModel).to respond_to(:authorizer_name=)
+        expect(resource_class).to respond_to(:authorizer_name=)
       end
 
       it "has a default authorizer_name of 'ApplicationAuthorizer'" do
-        expect(ExampleModel.authorizer_name).to eq("ApplicationAuthorizer")
+        expect(resource_class.authorizer_name).to eq("ApplicationAuthorizer")
       end
 
     end
@@ -26,19 +27,19 @@ describe Authority::Abilities do
     describe "authorizer" do
 
       it "constantizes the authorizer name as the authorizer" do
-        ExampleModel.instance_variable_set(:@authorizer, nil)
-        ExampleModel.authorizer_name.should_receive(:constantize)
-        ExampleModel.authorizer
+        resource_class.instance_variable_set(:@authorizer, nil)
+        resource_class.authorizer_name.should_receive(:constantize)
+        resource_class.authorizer
       end
 
       it "memoizes the authorizer to avoid reconstantizing" do
-        ExampleModel.authorizer
-        ExampleModel.authorizer_name.should_not_receive(:constantize)
-        ExampleModel.authorizer
+        resource_class.authorizer
+        resource_class.authorizer_name.should_not_receive(:constantize)
+        resource_class.authorizer
       end
 
       it "raises a friendly error if the authorizer doesn't exist" do
-        class NoAuthorizerModel < ExampleModel; end ;
+        class NoAuthorizerModel < resource_class; end ;
         NoAuthorizerModel.instance_variable_set(:@authorizer, nil)
         NoAuthorizerModel.authorizer_name = 'NonExistentAuthorizer'
         expect { NoAuthorizerModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
@@ -54,7 +55,7 @@ describe Authority::Abilities do
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        expect(ExampleModel).to respond_to(method_name)
+        expect(resource_class).to respond_to(method_name)
       end
 
       describe "#{method_name}" do
@@ -62,8 +63,8 @@ describe Authority::Abilities do
         context "when given an options hash" do
 
           it "delegates `#{method_name}` to its authorizer class, passing the options" do
-            ExampleModel.authorizer.should_receive(method_name).with(user, :lacking => 'nothing')
-            ExampleModel.send(method_name, user, :lacking => 'nothing')
+            resource_class.authorizer.should_receive(method_name).with(user, :lacking => 'nothing')
+            resource_class.send(method_name, user, :lacking => 'nothing')
           end
 
         end
@@ -71,8 +72,8 @@ describe Authority::Abilities do
         context "when not given an options hash" do
 
           it "delegates `#{method_name}` to its authorizer class, passing no options" do
-            ExampleModel.authorizer.should_receive(method_name).with(user)
-            ExampleModel.send(method_name, user)
+            resource_class.authorizer.should_receive(method_name).with(user)
+            resource_class.send(method_name, user)
           end
 
         end
@@ -85,17 +86,17 @@ describe Authority::Abilities do
 
   describe "instance methods" do
 
-    let(:example_model) { ExampleModel.new }
+    let(:resource_instance) { resource_class.new }
 
     before :each do
-      @authorizer = ExampleModel.authorizer.new(example_model)
+      @authorizer = resource_class.authorizer.new(resource_instance)
     end
 
     Authority.adjectives.each do |adjective|
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        expect(example_model).to respond_to(method_name)
+        expect(resource_instance).to respond_to(method_name)
       end
 
       describe "#{method_name}" do
@@ -103,9 +104,9 @@ describe Authority::Abilities do
         context "when given an options hash" do
 
           it "delegates `#{method_name}` to a new authorizer instance, passing the options" do
-            ExampleModel.authorizer.stub(:new).and_return(@authorizer)
+            resource_class.authorizer.stub(:new).and_return(@authorizer)
             @authorizer.should_receive(method_name).with(user, :with => 'mayo')
-            example_model.send(method_name, user, :with => 'mayo')
+            resource_instance.send(method_name, user, :with => 'mayo')
           end
 
         end
@@ -113,9 +114,9 @@ describe Authority::Abilities do
         context "when not given an options hash" do
 
           it "delegates `#{method_name}` to a new authorizer instance, passing no options" do
-            ExampleModel.authorizer.stub(:new).and_return(@authorizer)
+            resource_class.authorizer.stub(:new).and_return(@authorizer)
             @authorizer.should_receive(method_name).with(user)
-            example_model.send(method_name, user)
+            resource_instance.send(method_name, user)
           end
 
         end
@@ -125,15 +126,15 @@ describe Authority::Abilities do
     end
 
     it "provides an accessor for its authorizer" do
-      expect(example_model).to respond_to(:authorizer)
+      expect(resource_instance).to respond_to(:authorizer)
     end
 
     # When checking instance methods, we want to ensure that every check uses a new
     # instance of the authorizer. Otherwise, you might check, make a change to the
     # model instance, check again, and get an outdated answer.
     it "always creates a new authorizer instance when accessing the authorizer" do
-      example_model.class.authorizer.should_receive(:new).with(example_model).twice
-      2.times { example_model.authorizer }
+      resource_instance.class.authorizer.should_receive(:new).with(resource_instance).twice
+      2.times { resource_instance.authorizer }
     end
 
   end

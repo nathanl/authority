@@ -3,8 +3,8 @@ require 'support/example_classes'
 
 describe Authority::UserAbilities do
 
-  let(:model_instance) { ExampleModel.new }
-  let(:user)           { User.new }
+  let(:resource_instance) { ExampleResource.new }
+  let(:user)              { ExampleUser.new }
 
   describe "using `can_{verb}?` methods to check permissions on a resource" do
 
@@ -18,8 +18,8 @@ describe Authority::UserAbilities do
       describe "if given options" do
 
         it "delegates the authorization check to the resource, passing the options" do
-          model_instance.should_receive("#{Authority.abilities[verb]}_by?").with(user, :size => 'wee')
-          user.send(method_name, model_instance, :size => 'wee')
+          resource_instance.should_receive("#{Authority.abilities[verb]}_by?").with(user, :size => 'wee')
+          user.send(method_name, resource_instance, :size => 'wee')
         end
 
       end
@@ -27,8 +27,8 @@ describe Authority::UserAbilities do
       describe "if not given options" do
 
         it "delegates the authorization check to the resource, passing no options" do
-          model_instance.should_receive("#{Authority.abilities[verb]}_by?").with(user)
-          user.send(method_name, model_instance)
+          resource_instance.should_receive("#{Authority.abilities[verb]}_by?").with(user)
+          user.send(method_name, resource_instance)
         end
 
       end
