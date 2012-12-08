@@ -57,9 +57,9 @@ describe Authority::Controller do
 
       it "is unique per controller" do
         child_controller = Class.new(ExampleController)
-        child_controller.authority_action :erase => 'delete'
-        expect(child_controller.authority_action_map[:erase]).to eq('delete')
-        expect(ExampleController.authority_action_map[:erase]).to be_nil
+        expect(child_controller.authority_action_map).not_to be(
+          ExampleController.authority_action_map
+        )
       end
 
     end
@@ -79,18 +79,28 @@ describe Authority::Controller do
           ExampleController.authorize_actions_for ExampleModel, @options
         end
 
-        it "allows specifying the authority action map" do
-          ExampleController.authorize_actions_for ExampleModel, :actions => {:eat => 'delete'}
-          expect(ExampleController.authority_action_map[:eat]).to eq('delete')
+        it "allows adding multiple items to authority action map" do
+          new_actions = {:synthesize => :create, :annihilate => 'delete'}
+          ExampleController.authorize_actions_for(ExampleModel, :actions => new_actions)
+          expect(ExampleController.authority_action_map).to eq(
+            Authority.configuration.controller_action_map.merge(new_actions)
+          )
         end
 
       end
 
       describe "authority_action" do
 
-        it "updates the controller's map of methods to authorizations" do
-          ExampleController.authority_action :smite => 'delete'
-          expect(ExampleController.authority_action_map[:smite]).to eq('delete')
+        it "adds or updates one item in the controller's authority controller action map" do
+          child_controller = Class.new(ExampleController)
+          child_controller.authority_action(:smite => 'delete')
+          expect(child_controller.authority_action_map[:smite]).to eq('delete')
+        end
+
+        it "only affects the controller it's called in" do
+          child_controller = Class.new(ExampleController)
+          child_controller.authority_action(:smite => 'delete')
+          expect(ExampleController.authority_action_map[:smite]).to eq(nil)
         end
 
       end
