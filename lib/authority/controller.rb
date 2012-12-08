@@ -4,17 +4,17 @@ module Authority
 
     extend ActiveSupport::Concern
 
-    included do
-      rescue_from(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
-      class_attribute :authority_resource
-    end
-
     def self.security_violation_callback
       Proc.new do |exception|
         # Through the magic of ActiveSupport's `Proc#bind`, `ActionController::Base#rescue_from`
         # can call this proc and make `self` the actual controller instance
         self.send(Authority.configuration.security_violation_handler, exception)
       end
+    end
+
+    included do
+      rescue_from(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
+      class_attribute :authority_resource
     end
 
     module ClassMethods
@@ -57,6 +57,21 @@ module Authority
 
     protected
 
+    # To be run in a `before_filter`; ensure this controller action is allowed for the user
+    # Can be used directly within a controller action as well, given an instance or class with or
+    # without options to delegate to the authorizer.
+    #
+    # @param [Class] authority_resource, the model class associated with this controller
+    # @param [Hash] options, arbitrary options hash to forward up the chain to the authorizer
+    # @raise [MissingAction] if controller action isn't a key in `config.controller_action_map`
+    def authorize_action_for(authority_resource, *options)
+      authority_action = self.class.authority_action_map[action_name.to_sym]
+      if authority_action.nil?
+        raise MissingAction.new("No authority action defined for #{action_name}")
+      end
+      Authority.enforce(authority_action, authority_resource, authority_user, *options)
+    end
+
     # Renders a static file to minimize the chances of further errors.
     #
     # @param [Exception] error, an error that indicates the user tried to perform a forbidden action.
@@ -79,21 +94,6 @@ module Authority
     # @return [Object] the user object returned from sending the user_method
     def authority_user
       send(Authority.configuration.user_method)
-    end
-
-    # To be run in a `before_filter`; ensure this controller action is allowed for the user
-    # Can be used directly within a controller action as well, given an instance or class with or
-    # without options to delegate to the authorizer.
-    #
-    # @param [Class] authority_resource, the model class associated with this controller
-    # @param [Hash] options, arbitrary options hash to forward up the chain to the authorizer
-    # @raise [MissingAction] if controller action isn't a key in `config.controller_action_map`
-    def authorize_action_for(authority_resource, *options)
-      authority_action = self.class.authority_action_map[action_name.to_sym]
-      if authority_action.nil?
-        raise MissingAction.new("No authority action defined for #{action_name}")
-      end
-      Authority.enforce(authority_action, authority_resource, authority_user, *options)
     end
 
     class MissingAction < StandardError ; end
