@@ -18,6 +18,7 @@ It requires that you already have some kind of user object in your application, 
   <li><a href="#installation">Installation</a></li>
   <li><a href="#defining_your_abilities">Defining Your Abilities</a></li>
   <li><a href="#wiring_it_together">Wiring It Together</a>
+  <li><a href="#the_generic_can">The Generic `can?`</a>
   <ul>
     <li><a href="#users">Users</a></li>
     <li><a href="#models">Models</a></li>
@@ -328,7 +329,8 @@ class LlamasController < ApplicationController
   authorize_actions_for Llama, :except => :create, :actions => {:neuter => :update},
   
   # To authorize this controller's 'breed' action, ask whether `current_user.can_create?(Llama)`
-  authority_action :breed => 'create'
+  # To authorize its 'vaporize' action, ask whether `current_user.can_delete?(Llama)`
+  authority_actions :breed => 'create', :vaporize => 'delete'
 
   ...
 
@@ -361,6 +363,16 @@ link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@wi
 ```
 
 If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a [Security Violation](#security_violations_and_logging) from the controller.
+
+## The Generic `can?`
+
+Authority is organized around protecting resources. But **occasionally** you **may** need to authorize something that has no particular resource. For that, it provides the generic `can?` method. It works like this:
+
+```ruby
+  current_user.can?(:view_stats_dashboard) # calls `ApplicationAuthorizer.can_view_stats_dashboard?`
+```
+
+Use this very sparingly, and consider it a [code smell](http://en.wikipedia.org/wiki/Code_smell). Overuse will turn your `ApplicationAuthorizer` into a junk drawer of methods. Ask yourself, "am I sure I don't have a resource for this? Should I have one?"
 
 <a name="security_violations_and_logging">
 ## Security Violations & Logging
