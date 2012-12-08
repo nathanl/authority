@@ -20,9 +20,14 @@ describe Authority::Controller do
       Authority::Controller.stub(:security_violation_callback).and_return(Proc.new {|exception| })
     end
 
-    it "specifies rescuing security violations with a standard callback" do
-      controller_class.should_receive(:rescue_from).with(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
+    after :each do
       controller_class.send(:include, Authority::Controller)
+    end
+
+    it "specifies rescuing security violations with a standard callback" do
+      controller_class.should_receive(:rescue_from).with(
+        Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback
+      )
     end
 
   end
@@ -123,33 +128,37 @@ describe Authority::Controller do
 
     describe "instance methods" do
 
+      let(:controller_class) do
+        Class.new(ExampleController).tap do |c|
+          c.send(:include, Authority::Controller)
+          c.authorize_actions_for(ExampleModel)
+        end
+      end
+
       let(:controller_instance) do
         controller_class.new.tap do |cc| 
-          cc.stub!(:action_name).and_return(:edit)
-          cc.stub!(Authority.configuration.user_method).and_return(user)
+          cc.stub(Authority.configuration.user_method).and_return(user)
         end 
       end
+
       let(:user) { User.new }
 
       it "checks authorization on the model specified" do
-        # TODO - rethink this test and/or the test structure of this file.
-        # Stubbing here is a code smell; it really reflects that
-        # `run_authorization_check` is meant to be a before_filter, added
-        # after some setup has been done by `authorize_actions_for`
-        controller_class.stub(:authority_resource).and_return(ExampleModel)
         controller_instance.should_receive(:authorize_action_for).with(ExampleModel)
         controller_instance.send(:run_authorization_check)
       end
 
       it "passes the options provided to `authorize_action_for` downstream" do
-        controller_instance.stub!(:action_name).and_return(:destroy)
+        controller_instance.stub(:action_name).and_return(:destroy)
         Authority.should_receive(:enforce).with('delete', ExampleModel, user, :for => 'context')
         controller_instance.send(:authorize_action_for, ExampleModel, :for => 'context')
       end
 
       it "raises a MissingAction if there is no corresponding action for the controller" do
         controller_instance.stub(:action_name).and_return('sculpt')
-        expect { controller_instance.send(:run_authorization_check) }.to raise_error(Authority::Controller::MissingAction)
+        expect { controller_instance.send(:run_authorization_check) }.to raise_error(
+          Authority::Controller::MissingAction
+        )
       end
 
       it "returns the authority_user for the current request by using the configured user_method" do
