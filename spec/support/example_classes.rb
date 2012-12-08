@@ -1,3 +1,7 @@
+class User
+  include Authority::UserAbilities
+end
+
 class ExampleModel
   include Authority::Abilities
 end

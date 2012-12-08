@@ -1,6 +1,5 @@
 require 'spec_helper'
-require 'support/example_model'
-require 'support/user'
+require 'support/example_classes'
 
 describe "integration from user through model to authorizer" do
 

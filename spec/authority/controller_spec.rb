@@ -1,7 +1,6 @@
 require 'spec_helper'
-require 'support/example_model'
+require 'support/example_classes'
 require 'support/mock_rails'
-require 'support/user'
 require 'active_support/core_ext/proc'
 
 describe Authority::Controller do

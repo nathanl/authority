@@ -1,6 +1,5 @@
 require 'spec_helper'
-require 'support/example_model'
-require 'support/user'
+require 'support/example_classes'
 
 describe Authority::UserAbilities do
 
