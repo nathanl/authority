@@ -79,22 +79,24 @@ describe Authority::Controller do
           ExampleController.authorize_actions_for ExampleModel, @options
         end
 
-        it "allows adding multiple items to authority action map" do
+        it "passes the action hash to the `authority_action` method" do
+          example_controller = Class.new(ExampleController)
           new_actions = {:synthesize => :create, :annihilate => 'delete'}
-          ExampleController.authorize_actions_for(ExampleModel, :actions => new_actions)
-          expect(ExampleController.authority_action_map).to eq(
-            Authority.configuration.controller_action_map.merge(new_actions)
-          )
+          example_controller.should_receive(:authority_action).with(new_actions)
+          example_controller.authorize_actions_for(ExampleModel, :actions => new_actions)
         end
 
       end
 
       describe "authority_action" do
 
-        it "adds or updates one item in the controller's authority controller action map" do
-          child_controller = Class.new(ExampleController)
-          child_controller.authority_action(:smite => 'delete')
-          expect(child_controller.authority_action_map[:smite]).to eq('delete')
+        it "modifies this controller's authority action map" do
+          example_controller = Class.new(ExampleController)
+          new_actions = {:show => :display, :synthesize => :create, :annihilate => 'delete'}
+          example_controller.authority_action(new_actions)
+          expect(example_controller.authority_action_map).to eq(
+            Authority.configuration.controller_action_map.merge(new_actions)
+          )
         end
 
         it "only affects the controller it's called in" do
