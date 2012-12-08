@@ -143,27 +143,46 @@ describe Authority::Controller do
 
       let(:user) { User.new }
 
-      it "checks authorization on the model specified" do
-        controller_instance.should_receive(:authorize_action_for).with(ExampleModel)
-        controller_instance.send(:run_authorization_check)
+      describe "run_authorization_check (used as a before_filter)" do
+
+        it "checks authorization on the model specified" do
+          controller_instance.should_receive(:authorize_action_for).with(ExampleModel)
+          controller_instance.send(:run_authorization_check)
+        end
+
+        it "raises a MissingAction if there is no corresponding action for the controller" do
+          controller_instance.stub(:action_name).and_return('sculpt')
+          expect { controller_instance.send(:run_authorization_check) }.to raise_error(
+            Authority::Controller::MissingAction
+          )
+        end
+
       end
 
-      it "passes the options provided to `authorize_action_for` downstream" do
-        controller_instance.stub(:action_name).and_return(:destroy)
-        Authority.should_receive(:enforce).with('delete', ExampleModel, user, :for => 'context')
-        controller_instance.send(:authorize_action_for, ExampleModel, :for => 'context')
+      describe "authorize_action_for" do
+
+        before(:each) { controller_instance.stub(:action_name).and_return(:destroy) }
+
+        it "calls Authority.enforce to authorize the action" do
+          Authority.should_receive(:enforce)
+          controller_instance.send(:authorize_action_for, ExampleModel)
+        end
+
+        it "passes along any options it was given" do
+          options = {:for => 'insolence'}
+          Authority.should_receive(:enforce).with('delete', ExampleModel, user, options)
+          controller_instance.send(:authorize_action_for, ExampleModel, options)
+        end
+
       end
 
-      it "raises a MissingAction if there is no corresponding action for the controller" do
-        controller_instance.stub(:action_name).and_return('sculpt')
-        expect { controller_instance.send(:run_authorization_check) }.to raise_error(
-          Authority::Controller::MissingAction
-        )
-      end
+      describe "authority_user" do
 
-      it "returns the authority_user for the current request by using the configured user_method" do
-        controller_instance.should_receive(Authority.configuration.user_method)
-        controller_instance.send(:authority_user)
+        it "gets the user for the current request from the configured user_method" do
+          controller_instance.should_receive(Authority.configuration.user_method)
+          controller_instance.send(:authority_user)
+        end
+
       end
 
       describe "authority_forbidden action" do

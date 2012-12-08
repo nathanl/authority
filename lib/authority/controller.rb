@@ -65,6 +65,7 @@ module Authority
     # @param [Hash] options, arbitrary options hash to forward up the chain to the authorizer
     # @raise [MissingAction] if controller action isn't a key in `config.controller_action_map`
     def authorize_action_for(authority_resource, *options)
+      # `action_name` comes from ActionController
       authority_action = self.class.authority_action_map[action_name.to_sym]
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
