@@ -2,9 +2,10 @@
 
 ## Tests
 
-- Add tests for the generators
-- Test `ActionController` integration
 - Work on readability of spec output when using `--format doc --order default` (pick up in `controller_spec`)
+- Test with Rails 4 and Ruby 2.0
+- Test `ActionController` integration
+- Add tests for the generators
 
 ## Structural changes
 
