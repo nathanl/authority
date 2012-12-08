@@ -4,10 +4,8 @@ require 'support/user'
 
 describe "integration from user through model to authorizer" do
 
-  before :each do
-    @user          = User.new
-    @example_model = ExampleModel.new
-  end
+  let(:user)           { User.new }
+  let(:model_instance) { ExampleModel.new }
 
   describe "class methods" do
 
@@ -16,20 +14,24 @@ describe "integration from user through model to authorizer" do
       adjective        = Authority.abilities[verb]
       adjective_method = "#{adjective}_by?"
 
-      describe "if given an options hash" do
+      describe "#{adjective_method}" do
 
-        it "delegates `#{adjective_method}` to its authorizer class, passing the options" do
-          ExampleModel.authorizer.should_receive(adjective_method).with(@user, :lacking => 'nothing')
-          @user.send(verb_method, ExampleModel, :lacking => 'nothing')
+        describe "if given an options hash" do
+
+          it "delegates `#{adjective_method}` to its authorizer class, passing the options" do
+            ExampleModel.authorizer.should_receive(adjective_method).with(user, :lacking => 'nothing')
+            user.send(verb_method, ExampleModel, :lacking => 'nothing')
+          end
+
         end
 
-      end
+        describe "if not given an options hash" do
 
-      describe "if not given an options hash" do
+          it "delegates `#{adjective_method}` to its authorizer class, passing no options" do
+            ExampleModel.authorizer.should_receive(adjective_method).with(user)
+            user.send(verb_method, model_instance)
+          end
 
-        it "delegates `#{adjective_method}` to its authorizer class, passing no options" do
-          ExampleModel.authorizer.should_receive(adjective_method).with(@user)
-          @user.send(verb_method, @example_model)
         end
 
       end
@@ -41,10 +43,8 @@ describe "integration from user through model to authorizer" do
   describe "instance methods" do
 
     before :each do
-      @user          = User.new
-      @example_model = ExampleModel.new
-      @authorizer    = ExampleModel.authorizer.new(@example_model)
-      ExampleModel.authorizer.stub(:new).and_return(@authorizer)
+      @authorizer_instance = ExampleModel.authorizer.new(model_instance)
+      ExampleModel.authorizer.stub(:new).and_return(@authorizer_instance)
     end
 
     Authority.verbs.each do |verb|
@@ -52,20 +52,24 @@ describe "integration from user through model to authorizer" do
       adjective        = Authority.abilities[verb]
       adjective_method = "#{adjective}_by?"
 
-      describe "if given an options hash" do
+      describe "#{adjective_method}" do
 
-        it "delegates `#{adjective_method}` to a new authorizer instance, passing the options" do
-          @authorizer.should_receive(adjective_method).with(@user, :consistency => 'mushy')
-          @user.send(verb_method, @example_model, :consistency => 'mushy')
+        describe "if given an options hash" do
+
+          it "delegates `#{adjective_method}` to a new authorizer instance, passing the options" do
+            @authorizer_instance.should_receive(adjective_method).with(user, :consistency => 'mushy')
+            user.send(verb_method, model_instance, :consistency => 'mushy')
+          end
+
         end
 
-      end
+        describe "if not given an options hash" do
 
-      describe "if not given an options hash" do
-        
-        it "delegates `#{adjective_method}` to a new authorizer instance, passing no options" do
-          @authorizer.should_receive(adjective_method).with(@user)
-          @user.send(verb_method, @example_model)
+          it "delegates `#{adjective_method}` to a new authorizer instance, passing no options" do
+            @authorizer_instance.should_receive(adjective_method).with(user)
+            user.send(verb_method, model_instance)
+          end
+
         end
 
       end
