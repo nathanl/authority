@@ -364,6 +364,7 @@ link_to 'Edit Widget', edit_widget_path(@widget) if current_user.can_update?(@wi
 
 If the user isn't allowed to edit widgets, they won't see the link. If they're nosy and try to hit the URL directly, they'll get a [Security Violation](#security_violations_and_logging) from the controller.
 
+<a name="the_generic_can">
 ## The Generic `can?`
 
 Authority is organized around protecting resources. But **occasionally** you **may** need to authorize something that has no particular resource. For that, it provides the generic `can?` method. It works like this:
