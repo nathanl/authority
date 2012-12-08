@@ -4,14 +4,12 @@ require 'support/user'
 
 describe Authority::Authorizer do
 
-  before :each do
-    @example_model = ExampleModel.new
-    @authorizer    = @example_model.authorizer
-    @user          = User.new
-  end
+  let(:model_instance) { ExampleModel.new }
+  let(:authorizer)    { model_instance.authorizer }
+  let(:user)          { User.new }
 
   it "takes a resource instance in its initializer" do
-    expect(@authorizer.resource).to eq(@example_model)
+    expect(authorizer.resource).to eq(model_instance)
   end
 
   describe "instance methods" do
@@ -20,7 +18,7 @@ describe Authority::Authorizer do
       method_name = "#{adjective}_by?"
 
       it "responds to `#{method_name}`" do
-        expect(@authorizer).to respond_to(method_name)
+        expect(authorizer).to respond_to(method_name)
       end
 
       describe "#{method_name}" do
@@ -28,8 +26,8 @@ describe Authority::Authorizer do
         context "when given an options hash" do
 
           it "delegates `#{method_name}` to the corresponding class method, passing the options" do
-            @authorizer.class.should_receive(method_name).with(@user, :under => 'God')
-            @authorizer.send(method_name, @user, :under => 'God')
+            authorizer.class.should_receive(method_name).with(user, :under => 'God')
+            authorizer.send(method_name, user, :under => 'God')
           end
 
         end
@@ -37,8 +35,8 @@ describe Authority::Authorizer do
         context "when not given an options hash" do
 
           it "delegates `#{method_name}` to the corresponding class method, passing no options" do
-            @authorizer.class.should_receive(method_name).with(@user)
-            @authorizer.send(method_name, @user)
+            authorizer.class.should_receive(method_name).with(user)
+            authorizer.send(method_name, user)
           end
 
         end
@@ -64,8 +62,8 @@ describe Authority::Authorizer do
 
           it "delegates `#{method_name}` to the authorizer's `default` method, passing the options" do
             able = method_name.sub('_by?', '').to_sym
-            Authority::Authorizer.should_receive(:default).with(able, @user, :with => 'gusto')
-            Authority::Authorizer.send(method_name, @user, :with => 'gusto')
+            Authority::Authorizer.should_receive(:default).with(able, user, :with => 'gusto')
+            Authority::Authorizer.send(method_name, user, :with => 'gusto')
           end
 
         end
@@ -74,8 +72,8 @@ describe Authority::Authorizer do
 
           it "delegates `#{method_name}` to the authorizer's `default` method, passing no options" do
             able = method_name.sub('_by?', '').to_sym
-            Authority::Authorizer.should_receive(:default).with(able, @user)
-            Authority::Authorizer.send(method_name, @user)
+            Authority::Authorizer.should_receive(:default).with(able, user)
+            Authority::Authorizer.send(method_name, user)
           end
 
         end
@@ -91,14 +89,14 @@ describe Authority::Authorizer do
     context "when given an options hash" do
 
       it "returns false" do
-        expect(Authority::Authorizer.default(:implodable, @user, {:for => "my_object"})).to be_false
+        expect(Authority::Authorizer.default(:implodable, user, {:for => "my_object"})).to be_false
       end
     end
 
     context "when not given an options hash" do
 
       it "returns false" do
-        expect(Authority::Authorizer.default(:implodable, @user)).to be_false
+        expect(Authority::Authorizer.default(:implodable, user)).to be_false
       end
 
     end

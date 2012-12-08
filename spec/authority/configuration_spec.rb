@@ -16,8 +16,8 @@ describe Authority::Configuration do
       it "logs to standard error by default" do
         Authority.instance_variable_set :@configuration, nil
         null = File.exists?('/dev/null') ? '/dev/null' : 'NUL:' # Allow for Windows
-        @logger = Logger.new(null)
-        Logger.should_receive(:new).with(STDERR).and_return(@logger)
+        logger = Logger.new(null)
+        Logger.should_receive(:new).with(STDERR).and_return(logger)
         Authority.configure
         Authority.configuration.logger
       end
