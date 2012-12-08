@@ -14,7 +14,7 @@ describe Authority do
   end
 
   it "has a convenience accessor for the ability verbs" do
-    expect(Authority.verbs.sort).to eq([:create, :delete, :read, :update])
+    expect(Authority.verbs.map(&:to_s).sort).to eq(%w[create delete read update])
   end
 
   it "has a convenience accessor for the ability adjectives" do
