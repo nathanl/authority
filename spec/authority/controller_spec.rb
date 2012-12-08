@@ -1,12 +1,17 @@
 require 'spec_helper'
 require 'support/example_model'
-require 'support/example_controllers'
 require 'support/mock_rails'
 require 'support/user'
 require 'active_support/core_ext/proc'
 
 describe Authority::Controller do
 
+  class ExampleController
+    def self.rescue_from(*args) ; end
+    def self.before_filter(*args) ; end
+  end
+
+  # Get a fresh descendant class for each test, in case we've modified it
   let(:controller_class) { Class.new(ExampleController) }
 
   context "when including" do
