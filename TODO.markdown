@@ -1,5 +1,11 @@
 # TODO
 
+## Documentation
+
+- When cutting the next version, update README to show:
+  - `authority_actions` with multiple items.
+  - `can?(:do_something)` usage
+
 ## Tests
 
 - Work on readability of spec output when using `--format doc --order default` (pick up in `controller_spec`)
