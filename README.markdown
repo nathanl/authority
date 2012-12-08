@@ -18,7 +18,6 @@ It requires that you already have some kind of user object in your application, 
   <li><a href="#installation">Installation</a></li>
   <li><a href="#defining_your_abilities">Defining Your Abilities</a></li>
   <li><a href="#wiring_it_together">Wiring It Together</a>
-  <li><a href="#the_generic_can">The Generic `can?`</a>
   <ul>
     <li><a href="#users">Users</a></li>
     <li><a href="#models">Models</a></li>
@@ -31,6 +30,7 @@ It requires that you already have some kind of user object in your application, 
     <li><a href="#controllers">Controllers</a></li>
     <li><a href="#views">Views</a></li>
   </ul></li>
+  <li><a href="#the_generic_can">The Generic `can?`</a>
   <li><a href="#security_violations_and_logging">Security Violations &amp; Logging</a></li>
   <li><a href="#credits">Credits</a></li>
   <li><a href="#contributing">Contributing</a></li>
