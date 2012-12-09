@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v2.3.0
 
 - Added generic `current_user.can?(:mimic_lemurs)` for cases where there is no resource to work with. This calls a corresponding class method on `ApplicationAuthorizer`, like `ApplicationAuthorizer.can_mimic_lemurs?`.
 - Renamed `authority_action` to `authority_actions` (plural) to reflect the fact that you can set multiple actions at once. Use of the old method will raise a deprecation warning.
