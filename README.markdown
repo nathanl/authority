@@ -370,8 +370,16 @@ If the user isn't allowed to edit widgets, they won't see the link. If they're n
 Authority is organized around protecting resources. But **occasionally** you **may** need to authorize something that has no particular resource. For that, it provides the generic `can?` method. It works like this:
 
 ```ruby
-  current_user.can?(:view_stats_dashboard) # calls `ApplicationAuthorizer.authorizes_to_view_stats_dashboard?`
-  current_user.can?(:view_stats_dashboard, :on => :tuesdays, :with => :tea) # same, passing the options
+current_user.can?(:view_stats_dashboard) # calls `ApplicationAuthorizer.authorizes_to_view_stats_dashboard?`
+current_user.can?(:view_stats_dashboard, :on => :tuesdays, :with => :tea) # same, passing the options
+
+# application_authorizer.rb
+class ApplicationAuthorizer < Authority::Authorizer
+  # ...
+  def self.authorizes_to_view_stats_dashboard?(user, options = {})
+    user.has_role?(:manager) # or whatever
+  end
+end
 ```
 
 Use this very sparingly, and consider it a [code smell](http://en.wikipedia.org/wiki/Code_smell). Overuse will turn your `ApplicationAuthorizer` into a junk drawer of methods. Ask yourself, "am I sure I don't have a resource for this? Should I have one?"
