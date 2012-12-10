@@ -1,5 +1,6 @@
 module Authority
   class Authorizer
+    extend Forwardable
 
     # The base Authorizer class, from which all the authorizers in an app will
     # descend. Provides the authorizer with both class and instance methods
@@ -14,17 +15,14 @@ module Authority
       @resource = resource
     end
 
+    # Whitelisting approach: anything not specified will be forbidden
+    def self.default(adjective, user, options = {})
+      false
+    end
+
     # Each instance method simply calls the corresponding class method
     Authority.adjectives.each do |adjective|
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{adjective}_by?(user, options = {})
-          if options.empty?
-            self.class.#{adjective}_by?(user)
-          else
-            self.class.#{adjective}_by?(user, options)
-          end
-        end
-      RUBY
+      def_delegator :"self.class", :"#{adjective}_by?"
     end
 
     # Each class method simply calls the `default` method
@@ -38,11 +36,6 @@ module Authority
           end
         end
       RUBY
-    end
-
-    # Whitelisting approach: anything not specified will be forbidden
-    def self.default(adjective, user, options = {})
-      false
     end
 
   end

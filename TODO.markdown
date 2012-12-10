@@ -6,10 +6,6 @@
 - Test `ActionController` integration
 - Add tests for the generators
 
-## Code
-
-- Look into using the `Forwardable` module for delegation in various places. (Does it handle passing options if given and nothing if not?)
-
 ## Structural changes
 
 - Consider the huge change from authorizer objects to modules for permissions. This eliminates the awkwardness of "to check a resource instance, let's go instantiate an authorizer and give it this resource instance..." If we make this change, describe a detailed upgrade path.
