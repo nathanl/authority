@@ -23,9 +23,7 @@ module Authority
 
     # Send all calls like `editable_by?` to an authorizer instance
     Authority.adjectives.each do |adjective|
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def_delegators :authorizer, :"#{adjective}_by?"
-      RUBY
+      def_delegators :authorizer, :"#{adjective}_by?"
     end
 
     module ClassMethods
@@ -33,9 +31,7 @@ module Authority
 
       # Send all calls like `editable_by?` to the authorizer class
       Authority.adjectives.each do |adjective|
-        class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def_delegators :authorizer, :"#{adjective}_by?"
-        RUBY
+        def_delegators :authorizer, :"#{adjective}_by?"
       end
 
       # @return [Class] of the designated authorizer
