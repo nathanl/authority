@@ -38,7 +38,7 @@ module Authority
       end
 
       def authority_action(action_map)
-        puts "Authority's `authority_action` method has been renamed \
+        Authority.logger.warn "Authority's `authority_action` method has been renamed \
         to `authority_actions` (plural) to reflect the fact that you can \
         set multiple actions in one shot. Please update your controllers \
         accordingly. (called from #{caller.first})".squeeze(' ')
