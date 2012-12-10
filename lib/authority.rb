@@ -57,6 +57,10 @@ module Authority
     configuration
   end
 
+  def self.logger
+    @logger ||= configuration.logger
+  end
+
   private
 
   def self.require_authority_internals!

@@ -19,7 +19,7 @@ describe Authority::Configuration do
         logger = Logger.new(null)
         Logger.should_receive(:new).with(STDERR).and_return(logger)
         Authority.configure
-        Authority.configuration.logger
+        Authority.logger
       end
 
     end

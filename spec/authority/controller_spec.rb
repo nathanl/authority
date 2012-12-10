@@ -191,14 +191,14 @@ describe Authority::Controller do
         let(:mock_error) { mock(:message => 'oh noes! an error!') }
 
         it "logs an error" do
-          Authority.configuration.logger.should_receive(:warn)
+          Authority.logger.should_receive(:warn)
           controller_instance.stub(:render)
           controller_instance.send(:authority_forbidden, mock_error)
         end
 
         it "renders the public/403.html file" do
           forbidden_page = Rails.root.join('public/403.html')
-          Authority.configuration.logger.stub(:warn)
+          Authority.logger.stub(:warn)
           controller_instance.should_receive(:render).with(:file => forbidden_page, :status => 403, :layout => false)
           controller_instance.send(:authority_forbidden, mock_error)
         end

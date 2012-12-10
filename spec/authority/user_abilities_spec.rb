@@ -61,16 +61,15 @@ describe Authority::UserAbilities do
 
         before :each do
           ApplicationAuthorizer.stub(:can_mimic_lemurs?).and_return('thumbs up!')
-          # NOTE - prevents annoying output during these tests, but don't try to use `puts` below... ;)
-          $stdout.stub(:puts) 
+          Authority.logger.stub(:warn)
         end
 
         it "uses the `can` return value (for backwards compatibility)" do
           expect(user.can?(:mimic_lemurs)).to eq('thumbs up!')
         end
 
-        it "puts a deprecation warning" do
-          $stdout.should_receive(:puts).with(
+        it "sends a deprecation warning" do
+          Authority.logger.should_receive(:warn).with(
             "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_mimic_lemurs?` to `authorizes_to_mimic_lemurs?`"
           )
           user.can?(:mimic_lemurs)

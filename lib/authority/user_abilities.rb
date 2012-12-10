@@ -27,7 +27,9 @@ module Authority
         begin
           # For backwards compatibility
           response = ApplicationAuthorizer.send("can_#{action}?", self, options)
-          puts "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_#{action}?` to `authorizes_to_#{action}?`"
+          Authority.logger.warn(
+            "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_#{action}?` to `authorizes_to_#{action}?`"
+          )
           response
         rescue NoMethodError => new_exception
           raise original_exception
