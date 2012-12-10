@@ -9,6 +9,7 @@ module Authority
 
   module Abilities
     extend ActiveSupport::Concern
+    extend Forwardable
 
     # Assume authorizer is `ApplicationAuthorizer` (but let the user change that)
     included do
@@ -16,18 +17,24 @@ module Authority
       self.authorizer_name = "ApplicationAuthorizer"
     end
 
+    def authorizer
+      self.class.authorizer.new(self) # instantiate on every check, in case model has changed
+    end
+
+    # Send all calls like `editable_by?` to an authorizer instance
+    Authority.adjectives.each do |adjective|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        def_delegators :authorizer, :"#{adjective}_by?"
+      RUBY
+    end
+
     module ClassMethods
+      extend Forwardable
 
+      # Send all calls like `editable_by?` to the authorizer class
       Authority.adjectives.each do |adjective|
-
         class_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{adjective}_by?(user, options = {})
-            if options.empty?
-              authorizer.#{adjective}_by?(user)
-            else
-              authorizer.#{adjective}_by?(user, options)
-            end
-          end
+          def_delegators :authorizer, :"#{adjective}_by?"
         RUBY
       end
 
@@ -39,23 +46,7 @@ module Authority
           "#{authorizer_name} is set as the authorizer for #{self}, but the constant is missing"
         )
       end
-    end
 
-    Authority.adjectives.each do |adjective|
-
-      class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def #{adjective}_by?(user, options = {})
-          if options.empty?
-            authorizer.#{adjective}_by?(user)
-          else
-            authorizer.#{adjective}_by?(user, options)
-          end
-        end
-
-        def authorizer
-          self.class.authorizer.new(self) # instantiate on every check, in case model has changed
-        end
-      RUBY
     end
 
   end
