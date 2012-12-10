@@ -20,8 +20,19 @@ module Authority
       RUBY
     end
 
-    def can?(action)
-      ApplicationAuthorizer.send("can_#{action}?", self)
+    def can?(action, options = {})
+      begin
+        ApplicationAuthorizer.send("authorizes_to_#{action}?", self, options)
+      rescue NoMethodError => original_exception
+        begin
+          # For backwards compatibility
+          response = ApplicationAuthorizer.send("can_#{action}?", self, options)
+          puts "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_#{action}?` to `authorizes_to_#{action}?`"
+          response
+        rescue NoMethodError => new_exception
+          raise original_exception
+        end
+      end
     end
 
   end

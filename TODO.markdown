@@ -9,8 +9,6 @@
 ## Code
 
 - Look into using the `Forwardable` module for delegation in various places. (Does it handle passing options if given and nothing if not?)
-- Have `.can?` accept and pass options
-- Consider having `can?(:eat_cake)` call `ApplicationAuthorizer.authorizes_to_eat_cake?`. Maintain backwards compatibility but give a warning.
 
 ## Structural changes
 
