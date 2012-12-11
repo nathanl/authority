@@ -49,6 +49,16 @@ describe Authority::UserAbilities do
         expect(user.can?(:mimic_lemurs)).to eq('yessir')
       end
 
+      it "passes along options if any were given" do
+        ApplicationAuthorizer.should_receive(:authorizes_to_mimic_lemurs?).with(user, :for => :academic_credit)
+        user.can?(:mimic_lemurs, :for => :academic_credit)
+      end
+
+      it "doesn't pass along options if none were given" do
+        ApplicationAuthorizer.should_receive(:authorizes_to_mimic_lemurs?).with(user)
+        user.can?(:mimic_lemurs)
+      end
+
     end
 
     context "when ApplicationAuthorizer does not respond to a matching `authorizes_to?` call" do

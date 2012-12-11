@@ -21,12 +21,13 @@ module Authority
     end
 
     def can?(action, options = {})
+      self_and_maybe_options = [self, (options == {} ? nil : options)].compact # throw out if nil
       begin
-        ApplicationAuthorizer.send("authorizes_to_#{action}?", self, options)
+        ApplicationAuthorizer.send("authorizes_to_#{action}?", *self_and_maybe_options)
       rescue NoMethodError => original_exception
         begin
           # For backwards compatibility
-          response = ApplicationAuthorizer.send("can_#{action}?", self, options)
+          response = ApplicationAuthorizer.send("can_#{action}?", *self_and_maybe_options)
           Authority.logger.warn(
             "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_#{action}?` to `authorizes_to_#{action}?`"
           )
