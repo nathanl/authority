@@ -1,5 +1,15 @@
 # Changelog
 
+Authority does its best to use [semantic versioning](http://semver.org).
+
+## v2.3.2
+
+- Updated `can?` to only pass options if it was given options.
+
+## v2.3.1
+
+- Had second thought and reworked `can?(:action)` to call `Application_authorizer.authorizes_to_#{action}?`. Ensured it's backwards compatible for the few people who started using this in the last day or so.
+
 ## v2.3.0
 
 - Added generic `current_user.can?(:mimic_lemurs)` for cases where there is no resource to work with. This calls a corresponding class method on `ApplicationAuthorizer`, like `ApplicationAuthorizer.can_mimic_lemurs?`.
