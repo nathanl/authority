@@ -11,17 +11,14 @@ module Authority
     Authority.verbs.each do |verb|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def can_#{verb}?(resource, options = {})
-          if options.empty?
-            resource.#{Authority.abilities[verb]}_by?(self)
-          else
-            resource.#{Authority.abilities[verb]}_by?(self, options)
-          end
+          self_and_maybe_options = [self, options].tap {|args| args.pop if args.last == {}}
+          resource.#{Authority.abilities[verb]}_by?(*self_and_maybe_options)
         end
       RUBY
     end
 
     def can?(action, options = {})
-      self_and_maybe_options = [self, (options == {} ? nil : options)].compact # throw out if nil
+      self_and_maybe_options = [self, options].tap {|args| args.pop if args.last == {}}
       begin
         ApplicationAuthorizer.send("authorizes_to_#{action}?", *self_and_maybe_options)
       rescue NoMethodError => original_exception

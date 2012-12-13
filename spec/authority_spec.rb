@@ -42,7 +42,7 @@ describe Authority do
     let(:user)           { ExampleUser.new }
     let(:resource_class) { ExampleResource }
 
-    describe "if given options" do
+    describe "when given options" do
 
       it "checks the user's authorization, passing along the options" do
         options = { :for => 'context' }
@@ -52,7 +52,7 @@ describe Authority do
 
     end
 
-    describe "if not given options" do
+    describe "when not given options" do
 
       it "checks the user's authorization, passing no options" do
         user.should_receive(:can_delete?).with(resource_class).and_return(true)

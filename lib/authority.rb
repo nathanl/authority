@@ -31,19 +31,16 @@ module Authority
   # @param [Hash] options, arbitrary options hash to delegate to the authorizer
   # @raise [SecurityViolation] if user is not allowed to perform action on resource
   # @return [Model] resource instance
-  def self.enforce(action, resource, user, *options)
-    unless action_authorized?(action, resource, user, *options)
+  def self.enforce(action, resource, user, options = {})
+    unless action_authorized?(action, resource, user, options)
       raise SecurityViolation.new(user, action, resource) 
     end
     resource
   end
 
-  def self.action_authorized?(action, resource, user, *options)
-    if options.empty?
-      user.send("can_#{action}?", resource)
-    else
-      user.send("can_#{action}?", resource, Hash[*options])
-    end
+  def self.action_authorized?(action, resource, user, options = {})
+    resource_and_maybe_options = [resource, options].tap {|args| args.pop if args.last == {}}
+    user.send("can_#{action}?", *resource_and_maybe_options)
   end
 
   class << self

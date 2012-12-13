@@ -29,11 +29,8 @@ module Authority
     Authority.adjectives.each do |adjective|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def self.#{adjective}_by?(user, options = {})
-          if options.empty?
-            default(:#{adjective}, user)
-          else
-            default(:#{adjective}, user, options)
-          end
+          user_and_maybe_options = [user, options].tap {|args| args.pop if args.last == {}}
+          default(:#{adjective}, *user_and_maybe_options)
         end
       RUBY
     end
