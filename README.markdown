@@ -387,13 +387,14 @@ Use this very sparingly, and consider it a [code smell](http://en.wikipedia.org/
 <a name="security_violations_and_logging">
 ## Security Violations & Logging
 
-Anytime a user attempts an unauthorized action, Authority calls whatever controller method is specified by your `security_violation_handler` option, handing it the exception. The default handler is `authority_forbidden`, which Authority adds to your `ApplicationController`. It does the following:
+If you're using Authority's view helpers, users should only see links for actions they're authorized to take. If a user deliberately tries to access a restricted resource (for instance, by typing the URL directly), Authority raises and rescues an `Authority::SecurityViolation`.
+
+When it rescues the exception, Authority calls whatever controller method is specified by your `security_violation_handler` option, handing it the exception. The default handler is `authority_forbidden`, which Authority adds to your `ApplicationController`. It does the following:
 
 - Renders `public/403.html`
 - Logs the violation to whatever logger you configured.
 
 You can define your own `authority_forbidden` method:
-
 
 ```ruby
 # Send 'em back where they came from with a slap on the wrist
