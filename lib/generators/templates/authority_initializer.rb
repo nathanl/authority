@@ -3,7 +3,8 @@ Authority.configure do |config|
   # USER_METHOD
   # ===========
   # Authority needs the name of a method, available in any controller, which
-  # will return the currently logged-in user.
+  # will return the currently logged-in user. (If this varies by controller,
+  # just create a common alias.)
   #
   # Default is:
   #
@@ -44,14 +45,6 @@ Authority.configure do |config|
   #   :delete => 'deletable'
   # }
 
-  # SECURITY_VIOLATION_HANDLER
-  # ==========================
-  # If a SecurityViolation is raised, what controller method should be used to rescue it?
-  #
-  # Default is:
-  #
-  # config.security_violation_handler = :authority_forbidden # Defined in controller.rb
-  
   # LOGGER
   # ======
   # If a user tries to perform an unauthorized action, where should we log that fact?
