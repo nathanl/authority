@@ -1,5 +1,7 @@
 # TODO
 
+- Consider removing `config.security_violation_handler`, since `authority_forbidden` can already be redefined on any controller
+
 ## Tests
 
 - Test with Rails 4 and Ruby 2.0
