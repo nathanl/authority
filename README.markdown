@@ -389,12 +389,12 @@ Use this very sparingly, and consider it a [code smell](http://en.wikipedia.org/
 
 If you're using Authority's view helpers, users should only see links for actions they're authorized to take. If a user deliberately tries to access a restricted resource (for instance, by typing the URL directly), Authority raises and rescues an `Authority::SecurityViolation`.
 
-When it rescues the exception, Authority calls whatever controller method is specified by your `security_violation_handler` option, handing it the exception. The default handler is `authority_forbidden`, which Authority adds to your `ApplicationController`. It does the following:
+When it rescues the exception, Authority calls whatever controller method is specified by your `security_violation_handler` option, handing it the exception. The default handler is `authority_forbidden`, which Authority mixes in to your `ApplicationController`. It does the following:
 
 - Renders `public/403.html`
 - Logs the violation to whatever logger you configured.
 
-You can define your own `authority_forbidden` method:
+You can define your own `authority_forbidden` method on `ApplicationController` and/or any other controller. For example:
 
 ```ruby
 # Send 'em back where they came from with a slap on the wrist
@@ -403,28 +403,6 @@ def authority_forbidden(error)
   redirect_to request.referrer.presence || root_path, :alert => 'You are not authorized to complete that action.'
 end
 ```
-
-... or specify a different handler like this:
-
-```ruby
-# config/initializers/authority.rb
-config.security_violation_handler = :fire_ze_missiles
-```
-Then define the method on your controller:
-
-```ruby
-# app/controllers/application_controller.rb
-class ApplicationController < ActionController::Base
-
-  def fire_ze_missiles(exception)
-    # Log? Set a flash message? Dispatch minions to 
-    # fill their mailbox with goose droppings? It's up to you.
-  end
-...
-end
-```
-
-If you want different error handling per controller, define `fire_ze_missiles` on each of them.
 
 Your method will be handed the `SecurityViolation`, which has a `message` method. In case you want to build your own message, it also exposes `user`, `action` and `resource`.
 
