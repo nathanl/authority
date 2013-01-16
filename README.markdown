@@ -353,6 +353,22 @@ end
 
 As with other authorization checks, you can also pass options here, and they'll be sent along to your authorization method: `authorize_action_for(@llama, :sporting => @hat_style)`. Generally, though, your authorization will depend on some attribute or association of the model instance, so the authorizer can check `@llama.neck_strength` and `@llama.owner.nationality`, etc, without needing any additional information.
 
+Note that you can also call `authority_actions` as many times as you like, so you can specify one mapping at a time if you prefer:
+
+```ruby
+class LlamasController < ApplicationController
+  def breed
+    # some code
+  end
+  authority_actions :breed => 'create'
+
+  def vaporize
+    # some code
+  end
+  authority_actions :vaporize => 'delete'
+end
+```
+
 <a name="views">
 ### Views
 
