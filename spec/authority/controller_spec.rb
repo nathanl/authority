@@ -87,9 +87,14 @@ describe Authority::Controller do
 
       describe "authorize_actions_for" do
 
-        it "allows specifying the model to protect" do
+        it "allows specifying the class of the model to protect" do
           controller_class.authorize_actions_for(resource_class)
           expect(controller_class.authority_resource).to eq(resource_class)
+        end
+
+        it "allows specifying an instance method to find the class of the model to protect" do
+          controller_class.authorize_actions_for(:finder_method)
+          expect(controller_class.authority_resource).to eq(:finder_method)
         end
 
         it "sets up a before_filter, passing the options it was given" do
@@ -146,9 +151,48 @@ describe Authority::Controller do
 
       describe "run_authorization_check (used as a before_filter)" do
 
-        it "checks authorization on the model specified" do
-          controller_instance.should_receive(:authorize_action_for).with(resource_class)
-          controller_instance.send(:run_authorization_check)
+        context "if a resource class was specified" do
+
+          it "checks authorization on the model specified" do
+            controller_instance.should_receive(:authorize_action_for).with(resource_class)
+            controller_instance.send(:run_authorization_check)
+          end
+
+        end
+
+        context "if a method for determining the class was specified" do
+
+          let(:resource_class) { Hash }
+          let(:controller_class) do
+            Class.new(ExampleController).tap do |c|
+              c.send(:include, Authority::Controller)
+              c.authorize_actions_for(:method_to_find_class)
+            end
+          end
+
+          context "if the controller has such an instance method" do
+
+            before :each do
+              controller_instance.stub(:method_to_find_class).and_return(resource_class)
+            end
+
+            it "checks authorization on class returned by that method" do
+              controller_instance.should_receive(:authorize_action_for).with(resource_class)
+              controller_instance.send(:run_authorization_check)
+            end
+
+          end
+
+          context "if the controller has no such instance method" do
+
+            it "raises an exception" do
+              expect{controller_instance.send(:run_authorization_check)}.to raise_error(
+                Authority::Controller::MissingResource
+              )
+            end
+
+          end
+
         end
 
         it "raises a MissingAction if there is no corresponding action for the controller" do
