@@ -369,6 +369,19 @@ class LlamasController < ApplicationController
 end
 ```
 
+Finally, note that if you have a controller that dynamically determines the class it's working with, you can pass the name of a controller instance method to `authorize_actions_for` instead of a class, and the class will be looked up when a request is made.
+
+```
+class LlamasController < ApplicationController
+
+  authorize_actions_for :llama_class
+
+  def llama_class
+    [StandardLlama, LludicriousLlama].sample
+  end
+end
+```
+
 <a name="views">
 ### Views
 
