@@ -14,18 +14,23 @@ module Authority
 
     included do
       rescue_from(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
-      class_attribute :authority_resource
+      class << self
+        attr_accessor :authority_resource
+      end
     end
 
     module ClassMethods
 
       # Sets up before_filter to ensure user is allowed to perform a given controller action
       #
-      # @param [Class] model_class - class whose authorizer should be consulted
-      # @param [Hash] options - can contain :actions to be merged with existing
+      # @param [Class OR Symbol] resource_or_finder - class whose authorizer
+      # should be consulted, or instance method on the controller which will
+      # determine that class when the request is made
+      # @param [Hash] options - can contain :actions to
+      # be merged with existing
       # ones and any other options applicable to a before_filter
-      def authorize_actions_for(model_class, options = {})
-        self.authority_resource = model_class
+      def authorize_actions_for(resource_or_finder, options = {})
+        self.authority_resource = resource_or_finder
         authority_actions(options[:actions] || {})
         before_filter :run_authorization_check, options
       end
@@ -86,7 +91,17 @@ module Authority
     # The `before_filter` that will be setup to run when the class method
     # `authorize_actions_for` is called
     def run_authorization_check
-      authorize_action_for self.class.authority_resource
+      authorize_action_for authority_resource
+    end
+
+    def authority_resource
+      return self.class.authority_resource       if self.class.authority_resource.is_a?(Class)
+      return send(self.class.authority_resource) if respond_to?(self.class.authority_resource)
+      raise MissingResource.new(
+          "Trying to authorize actions for '#{self.class.authority_resource}', but can't. \
+          Must be either a resource class OR the name of a controller instance method that \
+          returns one.".squeeze(' ')
+      )
     end
 
     # Convenience wrapper for sending configured `user_method` to extract the
@@ -97,6 +112,7 @@ module Authority
       send(Authority.configuration.user_method)
     end
 
-    class MissingAction < StandardError ; end
+    class MissingAction   < StandardError ; end
+    class MissingResource < StandardError ; end
   end
 end
