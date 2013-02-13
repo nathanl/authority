@@ -377,7 +377,7 @@ class LlamasController < ApplicationController
   authorize_actions_for :llama_class
 
   def llama_class
-    [StandardLlama, LudicriousLlama].sample
+    [StandardLlama, LludicriousLlama].sample
   end
 end
 ```
