@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## v2.4.0
+
+Controller method `authorize_actions_for` can now be given a method name to dynamically determine the class to authorize. For example, `authorize_actions_for :model_class` will call the `model_class` method on the controller instance at request time.
+
 ## v2.3.2
 
 - Updated `can?` to only pass options if it was given options.
