@@ -96,7 +96,8 @@ module Authority
 
     def authority_resource
       return self.class.authority_resource       if self.class.authority_resource.is_a?(Class)
-      return send(self.class.authority_resource) if respond_to?(self.class.authority_resource)
+      send(self.class.authority_resource)
+    rescue NoMethodError => e
       raise MissingResource.new(
           "Trying to authorize actions for '#{self.class.authority_resource}', but can't. \
           Must be either a resource class OR the name of a controller instance method that \
