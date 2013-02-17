@@ -14,7 +14,7 @@ module Authority
 
     included do
       rescue_from(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
-      class_attribute :authority_resource, instance_reader: false
+      class_attribute :authority_resource, :instance_reader => false
     end
 
     module ClassMethods
