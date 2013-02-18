@@ -112,6 +112,31 @@ describe Authority::Controller do
 
       end
 
+      describe "authority_resource" do
+
+        let(:child_controller) { Class.new(controller_class) }
+
+        before :each do
+          controller_class.authorize_actions_for(resource_class)
+        end
+
+        it "remembers what it was set to" do
+          expect(controller_class.authority_resource).to eq(resource_class)
+        end
+
+        it "uses its parent controller's value by default" do
+          expect(child_controller.authority_resource).to eq(resource_class)
+        end
+
+        it "can be modified without affecting the parent controller" do
+          fancy_array = Class.new(Array)
+          child_controller.authorize_actions_for(fancy_array)
+          expect(child_controller.authority_resource).to eq(fancy_array)
+          expect(controller_class.authority_resource).to eq(resource_class)
+        end
+
+      end
+
       describe "authority_action" do
 
         it "modifies this controller's authority action map" do
