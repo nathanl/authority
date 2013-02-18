@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## v2.4.2
+
+Bugfix - make `authority_resource` inheritable. For instance, if you call `authorize_actions_for Llama` in one controller, a child controller does the same unless told otherwise.
+
 ## v2.4.1
 
 The controller method name given to `authorize_actions_for` no longer has to be public. (We don't want to force controllers to make any method public that shouldn't be a routable action.)
