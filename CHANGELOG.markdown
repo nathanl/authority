@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## v2.4.3
+
+Bugfix for Rails 3.1 - apparently its `class_attribute` method stepped on instance methods even when given `:instance_reader => false`
+
 ## v2.4.2
 
 Bugfix - make `authority_resource` inheritable. For instance, if you call `authorize_actions_for Llama` in one controller, a child controller does the same unless told otherwise.
