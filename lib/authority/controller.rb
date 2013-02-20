@@ -89,10 +89,10 @@ module Authority
     # The `before_filter` that will be setup to run when the class method
     # `authorize_actions_for` is called
     def run_authorization_check
-      authorize_action_for authority_resource
+      authorize_action_for instance_authority_resource
     end
 
-    def authority_resource
+    def instance_authority_resource
       return self.class.authority_resource       if self.class.authority_resource.is_a?(Class)
       send(self.class.authority_resource)
     rescue NoMethodError => e
