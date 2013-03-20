@@ -3,23 +3,45 @@ require 'support/example_classes'
 
 describe Authority::Abilities do
 
-  let(:user)           { ExampleUser.new }
-  let(:resource_class) { ExampleResource }
+  let(:user)                      { ExampleUser.new }
+  let(:resource_class)            { ExampleResource }
+  let(:namespaced_resource_class) { Namespaced::ExampleResource }
+  let(:other_resource_class)      { OtherResource }
 
   describe "instance methods" do
 
     describe "authorizer_name" do
 
-      it "has a class attribute getter for authorizer_name" do
+      it "has a class attribute getter" do
         expect(resource_class).to respond_to(:authorizer_name)
       end
 
-      it "has a class attribute setter for authorizer_name" do
+      it "has a class attribute setter" do
         expect(resource_class).to respond_to(:authorizer_name=)
       end
 
-      it "has a default authorizer_name of 'ApplicationAuthorizer'" do
-        expect(resource_class.authorizer_name).to eq("ApplicationAuthorizer")
+      describe "by default" do
+
+        context "when there is an authorizer with a name like the resource's" do
+
+          it "uses that authorizer" do
+            expect(resource_class.authorizer_name).to eq("ExampleResourceAuthorizer")
+          end
+
+          it "respects namespaces when it's looking" do
+            expect(namespaced_resource_class.authorizer_name).to eq("Namespaced::ExampleResourceAuthorizer")
+          end
+
+        end
+
+        context "when there is no authorizer with a name like the resource's" do
+
+          it "uses 'ApplicationAuthorizer'" do
+            expect(other_resource_class.authorizer_name).to eq("ApplicationAuthorizer")
+          end
+
+        end
+
       end
 
     end
