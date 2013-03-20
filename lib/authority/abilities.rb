@@ -14,10 +14,14 @@ module Authority
     included do |base|
       class_attribute :authorizer_name
 
-      # Set the default authorizer for this model
-      # TODO: Look for an authorizer named like the model inside the model's
-      # namespace. If there is none, use 'ApplicationAuthorizer' 
-      self.authorizer_name = "ApplicationAuthorizer"
+      # Set the default authorizer for this model.
+      # - Look for an authorizer named like the model inside the model's namespace.
+      # - If there is none, use 'ApplicationAuthorizer'
+      self.authorizer_name = begin
+                               "#{base.name}Authorizer".constantize.name
+                             rescue NameError => e
+                               "ApplicationAuthorizer"
+                             end
     end
 
     def authorizer

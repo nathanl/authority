@@ -5,7 +5,7 @@ describe Authority::Abilities do
 
   let(:user)                      { ExampleUser.new }
   let(:resource_class)            { ExampleResource }
-  let(:namespaced_resource_class) { Namespaced::ExampleResource }
+  let(:namespaced_resource_class) { Namespaced::SampleResource }
   let(:other_resource_class)      { OtherResource }
 
   describe "instance methods" do
@@ -29,7 +29,7 @@ describe Authority::Abilities do
           end
 
           it "respects namespaces when it's looking" do
-            expect(namespaced_resource_class.authorizer_name).to eq("Namespaced::ExampleResourceAuthorizer")
+            expect(namespaced_resource_class.authorizer_name).to eq("Namespaced::SampleResourceAuthorizer")
           end
 
         end
