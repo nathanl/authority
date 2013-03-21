@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## Unreleased
+
+Models whose `authorizer_name` is not specified will now check for an authorizer with their own name before falling back to `ApplicationAuthorizer`.  Eg, `Comment` will look for `CommentAuthorizer`. Namespacing is respected.
+
 ## v2.4.3
 
 Bugfix for Rails 3.1 - apparently its `class_attribute` method stepped on instance methods even when given `:instance_reader => false`
