@@ -4,7 +4,7 @@
 
 ## Tests
 
-- Test with Rails 4 and Ruby 2.0
+- Test with Rails 4
 - Test `ActionController` integration
 - Add tests for the generators
 
