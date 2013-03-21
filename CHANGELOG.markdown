@@ -2,7 +2,7 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
-## Unreleased
+## v2.5.0
 
 Models whose `authorizer_name` is not specified will now check for an authorizer with their own name before falling back to `ApplicationAuthorizer`.  Eg, `Comment` will look for `CommentAuthorizer`. Namespacing is respected.
 
