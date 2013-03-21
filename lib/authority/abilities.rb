@@ -11,10 +11,17 @@ module Authority
     extend ActiveSupport::Concern
     extend Forwardable
 
-    # Assume authorizer is `ApplicationAuthorizer` (but let the user change that)
-    included do
+    included do |base|
       class_attribute :authorizer_name
-      self.authorizer_name = "ApplicationAuthorizer"
+
+      # Set the default authorizer for this model.
+      # - Look for an authorizer named like the model inside the model's namespace.
+      # - If there is none, use 'ApplicationAuthorizer'
+      self.authorizer_name = begin
+                               "#{base.name}Authorizer".constantize.name
+                             rescue NameError => e
+                               "ApplicationAuthorizer"
+                             end
     end
 
     def authorizer

@@ -71,9 +71,12 @@ All you have to do is define the methods you need on your authorizers. You have 
 
 Authority encapsulates all authorization logic in `Authorizer` classes. Want to do something with a model? **Ask its authorizer**.
 
-Models that have the same authorization rules should use the same authorizer. In other words, if you would write the exact same methods on two models to determine who can create them, who can edit them, etc, then they should use the same authorizer.
+You can specify a model's authorizer using the class method `authorizer_name=`. If you don't specify it, it will:
 
-Every model starts out assuming that its authorizer is `ApplicationAuthorizer`, but you can specify another one using the model's `authorizer_name=` method. Authorizers are just classes, so you can use any inheritance pattern you like.
+- Look for an authorizer with its name. Eg, `Comment` will look for `CommentAuthorizer`.
+- If that's not found, it will use `ApplicationAuthorizer`.
+
+**Models that have the same authorization rules should use the same authorizer**. In other words, if you would write the exact same methods on two models to determine who can create them, who can edit them, etc, then they should use the same authorizer.
 
 Some example groupings:
 
