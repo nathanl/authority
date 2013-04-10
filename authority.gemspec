@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Authority helps you authorize actions in your Rails app. It's ORM-neutral and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.}
   gem.homepage      = "https://github.com/nathanl/authority"
 
-  gem.add_dependency "rails", ">= 3.0.0"
+  gem.add_dependency "activesupport", ">= 3.0.0"
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")

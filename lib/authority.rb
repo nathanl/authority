@@ -2,6 +2,7 @@ require 'active_support/concern'
 require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/string/inflections'
+require 'active_support/rescuable'
 require 'forwardable'
 require 'logger'
 require 'authority/security_violation'
@@ -33,7 +34,7 @@ module Authority
   # @return [Model] resource instance
   def self.enforce(action, resource, user, options = {})
     unless action_authorized?(action, resource, user, options)
-      raise SecurityViolation.new(user, action, resource) 
+      raise SecurityViolation.new(user, action, resource)
     end
     resource
   end
