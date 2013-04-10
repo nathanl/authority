@@ -33,14 +33,14 @@ module Authority
   # @return [Model] resource instance
   def self.enforce(action, resource, user, options = {})
     unless action_authorized?(action, resource, user, options)
-      raise SecurityViolation.new(user, action, resource) 
+      raise SecurityViolation.new(user, action, resource)
     end
     resource
   end
 
   def self.action_authorized?(action, resource, user, options = {})
     resource_and_maybe_options = [resource, options].tap {|args| args.pop if args.last == {}}
-    user.send("can_#{action}?", *resource_and_maybe_options)
+    user and user.send("can_#{action}?", *resource_and_maybe_options)
   end
 
   class << self
