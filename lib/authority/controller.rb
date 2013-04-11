@@ -3,6 +3,7 @@ module Authority
   module Controller
 
     extend ActiveSupport::Concern
+    include ActiveSupport::Rescuable unless defined?(Rails)
 
     def self.security_violation_callback
       Proc.new do |exception|

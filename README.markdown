@@ -1,10 +1,10 @@
 # Authority
 
-Authority helps you authorize actions in your Rails app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
+Authority helps you authorize actions in your Ruby app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
 
 Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic and handle unauthorized actions.
 
-It requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
+If you're using controller integration, it requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
 
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
 [![Code Climate](https://codeclimate.com/github/nathanl/authority.png)](https://codeclimate.com/github/nathanl/authority)
@@ -119,7 +119,9 @@ If the answer is `false` and the original caller was a controller, this is treat
 <a name="installation">
 ## Installation
 
-Starting from a clean commit status, add `authority` to your Gemfile, `bundle`, then `rails g authority:install`.
+Starting from a clean commit status, add `authority` to your Gemfile, then `bundle`.
+
+If you're using Rails, run `rails g authority:install`. Otherwise, pass a block to `Authority.configure` with [configuration options](https://github.com/nathanl/authority/blob/master/lib/generators/templates/authority_initializer.rb) somewhere when your application boots up.
 
 <a name="defining_your_abilities">
 ## Defining Your Abilities
@@ -302,6 +304,8 @@ end
 <a name="controllers">
 ### Controllers
 
+If you're using Rails, ActionController support will be loaded in through a Railtie. Otherwise, you'll want to integrate it into your framework yourself. [Authority's controller](https://github.com/nathanl/authority/blob/master/lib/authority/controller.rb) is an excellent starting point.
+
 Anytime a controller finds a user attempting something they're not authorized to do, a [Security Violation](#security_violations_and_logging) will result. Controllers get two ways to check authorization:
 
 - `authorize_actions_for Llama` protects multiple controller actions with a `before_filter`, which performs a **class-level** check. If the current user is never allowed to delete a `Llama`, they'll never even get to the controller's `destroy` method.
@@ -418,7 +422,9 @@ Use this very sparingly, and consider it a [code smell](http://en.wikipedia.org/
 <a name="security_violations_and_logging">
 ## Security Violations & Logging
 
-If you're using Authority's view helpers, users should only see links for actions they're authorized to take. If a user deliberately tries to access a restricted resource (for instance, by typing the URL directly), Authority raises and rescues an `Authority::SecurityViolation`.
+If you're using Authority's `ActiveController` integration or have used it as a template for your own, your application will handle unauthorized requests with `403 Forbidden` automatically.
+
+If you use Authority to [conditionally render links](#security_violations_and_logging), users will only see links for actions they're authorized to take. If a user deliberately tries to access a restricted resource (for instance, by typing the URL directly), Authority raises and rescues an `Authority::SecurityViolation`.
 
 When it rescues the exception, Authority calls whatever controller method is specified by your `security_violation_handler` option, handing it the exception. The default handler is `authority_forbidden`, which Authority mixes in to your `ApplicationController`. It does the following:
 
