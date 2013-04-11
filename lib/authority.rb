@@ -32,7 +32,7 @@ module Authority
   # @raise [SecurityViolation] if user is not allowed to perform action on resource
   # @return [Model] resource instance
   def self.enforce(action, resource, user, options = {})
-    unless action_authorized?(action, resource, user, options)
+    unless !(user.nil? or configuration.nil_anonymous_users) && action_authorized?(action, resource, user, options)
       raise SecurityViolation.new(user, action, resource)
     end
     resource
@@ -40,7 +40,7 @@ module Authority
 
   def self.action_authorized?(action, resource, user, options = {})
     resource_and_maybe_options = [resource, options].tap {|args| args.pop if args.last == {}}
-    user and user.send("can_#{action}?", *resource_and_maybe_options)
+    user.send("can_#{action}?", *resource_and_maybe_options)
   end
 
   class << self

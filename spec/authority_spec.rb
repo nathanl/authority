@@ -61,16 +61,17 @@ describe Authority do
 
     end
 
-    it "raises a SecurityViolation if the user is nil" do
-      expect { Authority.enforce(:update, resource_class, nil) }.to raise_error(Authority::SecurityViolation)
-    end
-
     it "raises a SecurityViolation if the action is unauthorized" do
       expect { Authority.enforce(:update, resource_class, user) }.to raise_error(Authority::SecurityViolation)
     end
 
     it "doesn't raise a SecurityViolation if the action is authorized" do
       expect { Authority.enforce(:read, resource_class, user) }.not_to raise_error(Authority::SecurityViolation)
+    end
+
+    it "raises a SecurityViolation if the user is nil and nil_anonymous_users are allowed" do
+      Authority.configuration.stub(:nil_anonymous_users){ true }
+      expect { Authority.enforce(:update, resource_class, nil) }.to raise_error(Authority::SecurityViolation)
     end
 
   end

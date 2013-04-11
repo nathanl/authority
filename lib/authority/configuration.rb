@@ -3,7 +3,7 @@ module Authority
 
     # Has default settings, which can be overridden in the initializer.
 
-    attr_accessor :abilities, :controller_action_map, :user_method, :security_violation_handler, :logger
+    attr_accessor :abilities, :controller_action_map, :user_method, :nil_anonymous_users, :security_violation_handler, :logger
 
     def initialize
 
@@ -25,6 +25,7 @@ module Authority
       }
 
       @user_method = :current_user
+      @nil_anonymous_users = false
 
       @security_violation_handler = :authority_forbidden
 
