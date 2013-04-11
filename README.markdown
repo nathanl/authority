@@ -4,7 +4,7 @@ Authority helps you authorize actions in your Ruby app. It's **ORM-neutral** and
 
 Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic and handle unauthorized actions.
 
-If you're using controller integration, it requires that you already have some kind of user object in your application, accessible from all controllers and views via a method like `current_user` (configurable).
+If you're using it with Rails controllers, it requires that you already have some kind of user object in your application, accessible via a method like `current_user` (configurable).
 
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
 [![Code Climate](https://codeclimate.com/github/nathanl/authority.png)](https://codeclimate.com/github/nathanl/authority)
