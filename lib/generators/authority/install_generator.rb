@@ -5,7 +5,7 @@ module Authority
     class InstallGenerator < Rails::Generators::Base
 
       source_root File.expand_path("../../templates", __FILE__)
-      desc "Creates an Authority initializer for your application." 
+      desc "Creates an Authority initializer for your application."
 
       def do_all
         create_authorizers_directory
@@ -19,14 +19,14 @@ module Authority
 
         RUBY
         puts message.strip_heredoc
-        
+
       end
 
       private
 
       def create_authorizers_directory
         # Creates empty directory if none; doesn't empty the directory
-        empty_directory "app/authorizers" 
+        empty_directory "app/authorizers"
       end
 
       def copy_application_authorizer

@@ -40,10 +40,10 @@ It requires that you already have some kind of user object in your application, 
 
 Using Authority, you have:
 
-- Broad, **class-level** rules. Examples: 
+- Broad, **class-level** rules. Examples:
   - "Basic users cannot delete any Widget."
   - "Only admin users can create Offices."
-- Fine-grained, **instance-level** rules. Examples: 
+- Fine-grained, **instance-level** rules. Examples:
   - "Management users can only edit schedules with date ranges in the future."
   - "Users can't create playlists more than 20 songs long unless they've paid."
 - A clear syntax for permissions-based views. Examples:
@@ -54,7 +54,7 @@ Using Authority, you have:
 
 Most importantly, you have **total flexibility**: Authority does not constrain you into using a particular scheme of roles and/or permissions.
 
-Authority lets you control access based on: 
+Authority lets you control access based on:
 
 - Roles in your app's database ([rolify](http://github.com/EppO/rolify) makes this easy)
 - Roles in a separate, single-sign-on app
@@ -62,7 +62,7 @@ Authority lets you control access based on:
 - Time and date
 - Weather, stock prices, vowels in the user's name, or **anything else you can check with Ruby**
 
-All you have to do is define the methods you need on your authorizers. You have all the flexibility of normal Ruby classes. 
+All you have to do is define the methods you need on your authorizers. You have all the flexibility of normal Ruby classes.
 
 **You** make the rules; Authority enforces them.
 
@@ -80,7 +80,7 @@ You can specify a model's authorizer using the class method `authorizer_name=`. 
 
 Some example groupings:
 
-         Simplest case                Logical groups                                 Most granular 
+         Simplest case                Logical groups                                 Most granular
 
       ApplicationAuthorizer        ApplicationAuthorizer                         ApplicationAuthorizer
                +                             +                                             +
@@ -106,8 +106,8 @@ The authorization process generally flows like this:
                                +                                     # If you don't, the inherited one
                                |                                     # calls `default`...
                                v
-        AdminAuthorizer.default(:creatable, current_user)            # *You define this method.* 
-                                                                     # If you don't, it will use the one 
+        AdminAuthorizer.default(:creatable, current_user)            # *You define this method.*
+                                                                     # If you don't, it will use the one
                                                                      # inherited from ApplicationAuthorizer.
                                                                      # (Its parent, Authority::Authorizer,
                                                                      # defines the method as `return false`.)
@@ -145,7 +145,7 @@ This option determines what methods are added to your users, models and authoriz
 
 ```ruby
 # Whatever class represents a logged-in user in your app
-class User 
+class User
   # Adds `can_create?(resource)`, etc
   include Authority::UserAbilities
 ...
@@ -195,13 +195,13 @@ class ScheduleAuthorizer < ApplicationAuthorizer
 end
 
 # undefined; calls `ScheduleAuthorizer.default(:updatable, user)`
-ScheduleAuthorizer.updatable_by?(user) 
+ScheduleAuthorizer.updatable_by?(user)
 ```
 
 As you can see, you can specify different logic for every method on every model, if necessary. On the other extreme, you could simply supply a [default method](#default_methods) that covers all your use cases.
 
 <a name="passing_options">
-#### Passing Options 
+#### Passing Options
 
 Any options you pass when checking permissions will be passed right up the chain. One use case for this would be if you needed an associated instance in order to do a class-level check. For example:
 
@@ -238,7 +238,7 @@ class ApplicationAuthorizer < Authority::Authorizer
   def self.default(able, user)
     has_role_granting?(user, able) || user.admin?
   end
-  
+
   protected
 
   def has_role_granting(user, able)
@@ -264,7 +264,7 @@ One nice thing about putting your authorization logic in authorizers is the ease
 # An authorizer shared by several admin-only models
 describe AdminAuthorizer do
 
-  before :each do 
+  before :each do
     @user  = FactoryGirl.build(:user)
     @admin = FactoryGirl.build(:admin)
   end
@@ -329,7 +329,7 @@ class LlamasController < ApplicationController
   # Check class-level authorizations before all actions except :create
   # Also, to authorize this controller's 'neuter' action, ask whether `current_user.can_update?(Llama)`
   authorize_actions_for Llama, :except => :create, :actions => {:neuter => :update},
-  
+
   # To authorize this controller's 'breed' action, ask whether `current_user.can_create?(Llama)`
   # To authorize its 'vaporize' action, ask whether `current_user.can_delete?(Llama)`
   authority_actions :breed => 'create', :vaporize => 'delete'
@@ -338,7 +338,7 @@ class LlamasController < ApplicationController
 
   def edit
     @llama = Llama.find(params[:id])
-    authorize_action_for(@llama)        # Check to see if you're allowed to edit this llama. failure == SecurityViolation    
+    authorize_action_for(@llama)        # Check to see if you're allowed to edit this llama. failure == SecurityViolation
   end
 
   def update

@@ -167,9 +167,9 @@ describe Authority::Controller do
       end
 
       let(:controller_instance) do
-        controller_class.new.tap do |cc| 
+        controller_class.new.tap do |cc|
           cc.stub(Authority.configuration.user_method).and_return(user)
-        end 
+        end
       end
 
       let(:user) { ExampleUser.new }
@@ -275,7 +275,7 @@ describe Authority::Controller do
       end
 
     end
-    
+
   end
 
 end
