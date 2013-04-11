@@ -9,7 +9,17 @@ Authority.configure do |config|
   # Default is:
   #
   # config.user_method = :current_user
-  
+  #
+  # NIL_ANONYMOUS_USERS
+  # -------------------
+  # If your `user_method` method returns nil for unauthenticated users, you'll probably want
+  # Authority to treat them as anonymous users with no permissions, so set this to `true`.
+  # Otherwise, Authority will raise errors when the result of `user_method` is nil.
+  #
+  # Default is:
+  #
+  # config.nil_anonymous_users = false
+
   # CONTROLLER_ACTION_MAP
   # =====================
   # For a given controller method, what verb must a user be able to do?
@@ -33,7 +43,7 @@ Authority.configure do |config|
   # ABILITIES
   # =========
   # Teach Authority how to understand the verbs and adjectives in your system. Perhaps you
-  # need {:microwave => 'microwavable'}. I'm not saying you do, of course. Stop looking at 
+  # need {:microwave => 'microwavable'}. I'm not saying you do, of course. Stop looking at
   # me like that.
   #
   # Defaults are as follows:
@@ -48,7 +58,7 @@ Authority.configure do |config|
   # LOGGER
   # ======
   # If a user tries to perform an unauthorized action, where should we log that fact?
-  # Provide a logger object which responds to `.warn(message)`, unless your 
+  # Provide a logger object which responds to `.warn(message)`, unless your
   # security_violation_handler calls a different method.
   #
   # Default is:

@@ -11,6 +11,10 @@ describe Authority::Configuration do
       expect(Authority.configuration.user_method).to eq(:current_user)
     end
 
+    it "does not treat nil `user_method` results as unauthorized" do
+      expect(Authority.configuration.nil_anonymous_users).to be_false
+    end
+
     describe "logging security violations" do
 
       it "logs to standard error by default" do
