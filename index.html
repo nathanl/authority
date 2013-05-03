@@ -41,6 +41,35 @@
 
       <p>Object-oriented Rails authorization. It's flipping awesome.</p>
 
+      <pre>
+        <code>
+          class User
+            include Authority::UserAbilities
+          end
+
+          class Post < ActiveRecord::Base
+            include Authority::Abilities
+          end
+
+          class Comment < ActiveRecord::Base
+            include Authority::Abilities
+            self.authorizer_name = 'PostAuthorizer'
+          end
+
+          class PostAuthorizer < ApplicationAuthorizer
+            def updatable_by?(user)
+              user == resource.owner || user.admin?
+            end
+          end
+
+          # Pretend we initialized these objects. ;)
+          regular_user.can_update?(@own_post)    # => true
+          regular_user.can_update?(@own_comment) # => true
+          regular_user.can_update?(@my_post)     # => false
+          admin_user.can_update?(@my_post)       # => true
+        </code>
+      </pre>
+
       <h3>Real Quotes</h3>
 
       <dl class="quotes">
