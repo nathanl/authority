@@ -2,3 +2,7 @@ dl.quotes dd {
   margin-bottom: 1em;
   color: #fc0;
 }
+
+code {
+  font-family: monospace;
+}
