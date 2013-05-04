@@ -1,0 +1,6 @@
+source "http://rubygems.org"
+
+gem "rails", "~> 3.1.4"
+gem 'rspec', '>= 2.8.0'
+
+gemspec :path=>"../"
