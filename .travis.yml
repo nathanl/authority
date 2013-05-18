@@ -15,3 +15,14 @@ gemfile:
   - gemfiles/3.2.gemfile
   - gemfiles/4.0.gemfile
   - Gemfile
+
+matrix:
+  exclude:
+    - rvm: 1.8.7
+      gemfiles/4.0.gemfile
+    - rvm: 1.9.2
+      gemfiles/4.0.gemfile
+    - rvm: jruby-18mode
+      gemfiles/4.0.gemfile
+    - rvm: rbx-18mode
+      gemfiles/4.0.gemfile
