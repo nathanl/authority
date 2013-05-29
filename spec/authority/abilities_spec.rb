@@ -48,15 +48,15 @@ describe Authority::Abilities do
 
     describe "authorizer" do
 
-      it "constantizes the authorizer name as the authorizer" do
+      it "wraps the authorizer with wraper" do
         resource_class.instance_variable_set(:@authorizer, nil)
-        resource_class.authorizer_name.should_receive(:constantize)
+        resource_class.should_receive(:wrap_authorizer)
         resource_class.authorizer
       end
 
       it "memoizes the authorizer to avoid reconstantizing" do
         resource_class.authorizer
-        resource_class.authorizer_name.should_not_receive(:constantize)
+        resource_class.should_not_receive(:wrap_authorizer)
         resource_class.authorizer
       end
 
@@ -69,6 +69,26 @@ describe Authority::Abilities do
 
     end
 
+  end
+
+  context 'authorizer wraper' do
+    specify 'authorizer should be wraped with wraper class' do
+      resource_class.authorizer.name.should == 'ExampleResourceAuthorizerWraper'
+    end
+
+    specify 'authorizer wraper name for application authorither should be uniq' do
+      other_resource_class.authorizer.name.should == 'OtherResourceAuthorizerWraper'
+    end
+
+    describe '.resourse' do
+      specify 'resource class should respond to .resourse' do
+        resource_class.authorizer.should respond_to(:resource)
+      end
+
+      specify '.resource should return resource class' do
+        resource_class.authorizer.resource.should == resource_class
+      end
+    end
   end
 
   describe "class methods" do
