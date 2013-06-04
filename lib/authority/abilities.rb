@@ -27,21 +27,18 @@ module Authority
       self.class.authorizer.new(self) # instantiate on every check, in case model has changed
     end
 
-    # Send all calls like `editable_by?` to an authorizer instance
-    # Not using Forwardable because it makes it harder for users to track an ArgumentError
-    # back to their authorizer
-    Authority.adjectives.each do |adjective|
-      define_method("#{adjective}_by?") { |*args| authorizer.send("#{adjective}_by?", *args) }
-    end
-
-    module ClassMethods
-
-      # Send all calls like `editable_by?` to the authorizer class
+    module Definitions
+      # Send all calls like `editable_by?` to an authorizer instance
       # Not using Forwardable because it makes it harder for users to track an ArgumentError
       # back to their authorizer
       Authority.adjectives.each do |adjective|
         define_method("#{adjective}_by?") { |*args| authorizer.send("#{adjective}_by?", *args) }
       end
+    end
+    include Definitions
+
+    module ClassMethods
+      include Definitions
 
       # @return [Class] of the designated authorizer
       def authorizer
