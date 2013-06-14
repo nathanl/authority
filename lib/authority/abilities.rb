@@ -16,11 +16,13 @@ module Authority
       # Set the default authorizer for this model.
       # - Look for an authorizer named like the model inside the model's namespace.
       # - If there is none, use 'ApplicationAuthorizer'
-      self.authorizer_name = begin
-                               "#{base.name}Authorizer".constantize.name
-                             rescue NameError => e
-                               "ApplicationAuthorizer"
-                             end
+      def self.authorizer_name
+        @authorizer_name ||=  begin
+                                "#{self.name}Authorizer".constantize.name
+                              rescue NameError => e
+                                "ApplicationAuthorizer"
+                              end
+      end
     end
 
     def authorizer
