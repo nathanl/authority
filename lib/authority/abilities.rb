@@ -42,14 +42,29 @@ module Authority
 
       # @return [Class] of the designated authorizer
       def authorizer
-        @authorizer ||= authorizer_name.constantize # Get an actual reference to the authorizer class
+        @authorizer ||= wrap_authorizer(authorizer_name) # Get an actual reference to the authorizer class
       rescue NameError
         raise Authority::NoAuthorizerError.new(
           "#{authorizer_name} is set as the authorizer for #{self}, but the constant is missing"
         )
       end
 
-    end
+      def wrap_authorizer(authorizer_name)
+        wraper_name = self.name.to_s + 'AuthorizerWraper'
 
+        begin
+          wraper_name.constantize
+        rescue
+          resource_class = self
+          wraper_class = Class.new(authorizer_name.constantize) do
+                           @resource = resource_class
+                           def self.resource
+                             @resource
+                           end
+                         end
+          Object.const_set(wraper_name, wraper_class)
+        end
+      end
+    end
   end
 end
