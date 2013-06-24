@@ -2,7 +2,7 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
-## Unreleased
+## v2.6.0
 
 - Now dependent on ActiveSupport, not all of Rails, as a step toward easier use with other frameworks
 - Testing with Rails 4.0
