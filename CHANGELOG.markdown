@@ -2,6 +2,12 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## Unreleased
+
+- Now dependent on ActiveSupport, not all of Rails, as a step toward easier use with other frameworks
+- Testing with Rails 4.0
+- Clearer backtraces in certain situations
+
 ## v2.5.0
 
 Models whose `authorizer_name` is not specified will now check for an authorizer with their own name before falling back to `ApplicationAuthorizer`.  Eg, `Comment` will look for `CommentAuthorizer`. Namespacing is respected.
