@@ -12,12 +12,14 @@ describe Authority::Abilities do
 
     describe "authorizer_name" do
 
-      it "has a class attribute getter" do
+      it "has a class attribute getters" do
         expect(resource_class).to respond_to(:authorizer_name)
+        expect(resource_class).to respond_to(:authorizer_class)
       end
 
-      it "has a class attribute setter" do
+      it "has a class attribute setters" do
         expect(resource_class).to respond_to(:authorizer_name=)
+        expect(resource_class).to respond_to(:authorizer_class=)
       end
 
       describe "by default" do
@@ -26,10 +28,12 @@ describe Authority::Abilities do
 
           it "uses that authorizer" do
             expect(resource_class.authorizer_name).to eq("ExampleResourceAuthorizer")
+            expect(resource_class.authorizer_class).to eq(ExampleResourceAuthorizer)
           end
 
           it "respects namespaces when it's looking" do
             expect(namespaced_resource_class.authorizer_name).to eq("Namespaced::SampleResourceAuthorizer")
+            expect(namespaced_resource_class.authorizer_class).to eq(Namespaced::SampleResourceAuthorizer)
           end
 
         end
@@ -48,23 +52,10 @@ describe Authority::Abilities do
 
     describe "authorizer" do
 
-      it "constantizes the authorizer name as the authorizer" do
-        resource_class.instance_variable_set(:@authorizer, nil)
-        resource_class.authorizer_name.should_receive(:constantize)
-        resource_class.authorizer
-      end
-
-      it "memoizes the authorizer to avoid reconstantizing" do
-        resource_class.authorizer
-        resource_class.authorizer_name.should_not_receive(:constantize)
-        resource_class.authorizer
-      end
-
-      it "raises a friendly error if the authorizer doesn't exist" do
+      it "raises a friendly error if the authorizer name doesn't exist" do
         class NoAuthorizerModel < resource_class; end ;
         NoAuthorizerModel.instance_variable_set(:@authorizer, nil)
-        NoAuthorizerModel.authorizer_name = 'NonExistentAuthorizer'
-        expect { NoAuthorizerModel.authorizer }.to raise_error(Authority::NoAuthorizerError)
+        expect { NoAuthorizerModel.authorizer_name = 'NonExistentAuthorizer' }.to raise_error(Authority::NoAuthorizerError)
       end
 
     end
