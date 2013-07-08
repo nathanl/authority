@@ -17,10 +17,14 @@ module Authority
       # - Look for an authorizer named like the model inside the model's namespace.
       # - If there is none, use 'ApplicationAuthorizer'
       self.authorizer_name = begin
-                               "#{base.name}Authorizer".constantize.name
-                             rescue NameError => e
-                               "ApplicationAuthorizer"
-                             end
+        "#{base.name}Authorizer".constantize.name
+      rescue NameError => e
+        "ApplicationAuthorizer"
+      end
+    end
+
+    def authorizer=(authorizer_class)
+      @authorizer = authorizer_class
     end
 
     def authorizer
@@ -45,8 +49,8 @@ module Authority
         @authorizer ||= authorizer_name.constantize # Get an actual reference to the authorizer class
       rescue NameError
         raise Authority::NoAuthorizerError.new(
-          "#{authorizer_name} is set as the authorizer for #{self}, but the constant is missing"
-        )
+                  "#{authorizer_name} is set as the authorizer for #{self}, but the constant is missing"
+              )
       end
 
     end
