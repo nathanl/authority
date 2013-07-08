@@ -11,28 +11,20 @@ module Authority
     extend ActiveSupport::Concern
 
     included do |base|
-      class_attribute :authorizer_class
+      class_attribute :authorizer_name
 
       # Set the default authorizer for this model.
       # - Look for an authorizer named like the model inside the model's namespace.
       # - If there is none, use 'ApplicationAuthorizer'
-      self.authorizer_class = begin
-                               "#{base.name}Authorizer".constantize
-                             rescue NameError => e
-                               ApplicationAuthorizer
-                             end
-
-      def self.authorizer_name=(name)
-        self.authorizer_class = name.constantize
-      rescue NameError
-        raise Authority::NoAuthorizerError.new(
-            "#{name} is set as the authorizer for #{self}, but the constant is missing"
-        )
+      self.authorizer_name = begin
+        "#{base.name}Authorizer".constantize.name
+      rescue NameError => e
+        "ApplicationAuthorizer"
       end
+    end
 
-      def self.authorizer_name
-        self.authorizer_class.name
-      end
+    def authorizer=(authorizer_class)
+      @authorizer = authorizer_class
     end
 
     def authorizer
@@ -54,7 +46,11 @@ module Authority
 
       # @return [Class] of the designated authorizer
       def authorizer
-        authorizer_class
+        @authorizer ||= authorizer_name.constantize # Get an actual reference to the authorizer class
+      rescue NameError
+        raise Authority::NoAuthorizerError.new(
+                  "#{authorizer_name} is set as the authorizer for #{self}, but the constant is missing"
+              )
       end
 
     end
