@@ -23,9 +23,6 @@ module Authority
       end
     end
 
-    def authorizer=(authorizer_class)
-      @authorizer = authorizer_class
-    end
 
     def authorizer
       self.class.authorizer.new(self) # instantiate on every check, in case model has changed
@@ -43,6 +40,11 @@ module Authority
 
     module ClassMethods
       include Definitions
+
+      def authorizer=(authorizer_class)
+        @authorizer = authorizer_class
+        self.authorizer_name = @authorizer.name
+      end
 
       # @return [Class] of the designated authorizer
       def authorizer
