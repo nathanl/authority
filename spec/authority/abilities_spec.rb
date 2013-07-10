@@ -50,7 +50,7 @@ describe Authority::Abilities do
 
       let(:test_class)  { Class.new {include Authority::Abilities} }
 
-      it "has a class attribute=" do
+      it "has a class attribute setter" do
         expect(test_class).to respond_to(:authorizer=)
       end
 
@@ -59,8 +59,9 @@ describe Authority::Abilities do
         expect(test_class.authorizer).to eq(ExampleResourceAuthorizer)
       end
 
-      it "sets authorizer_name" do
-        test_class.authorizer = ExampleResourceAuthorizer
+      it "also sets authorizer_name" do
+        test_class.authorizer_name = 'FooAuthorizer'
+        test_class.authorizer      = ExampleResourceAuthorizer
         expect(test_class.authorizer_name).to eq("ExampleResourceAuthorizer")
       end
 

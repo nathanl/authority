@@ -42,7 +42,7 @@ module Authority
       include Definitions
 
       def authorizer=(authorizer_class)
-        @authorizer = authorizer_class
+        @authorizer          = authorizer_class
         self.authorizer_name = @authorizer.name
       end
 
