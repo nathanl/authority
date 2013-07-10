@@ -71,7 +71,12 @@ All you have to do is define the methods you need on your authorizers. You have 
 
 Authority encapsulates all authorization logic in `Authorizer` classes. Want to do something with a model? **Ask its authorizer**.
 
-You can specify a model's authorizer using the class method `authorizer_name=`. If you don't specify it, it will:
+You can specify a model's authorizer one of two ways:
+
+- specify the class itself: `authorizer = SomeAuthorizer`
+- specify the class's name: `authorizer_name = 'SomeAuthorizer'` (useful if the constant isn't yet loaded)
+
+If you don't specify an authorizer, the model will:
 
 - Look for an authorizer with its name. Eg, `Comment` will look for `CommentAuthorizer`.
 - If that's not found, it will use `ApplicationAuthorizer`.
