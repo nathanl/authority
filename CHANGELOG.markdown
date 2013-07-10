@@ -2,10 +2,14 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## 2.7.0
+
+Allows setting authorizer by class (`authorizer = FooAuthorizer`) as well as by name (`authorizer_name = 'FooAuthorizer'`), thanks to [mguymon](https://github.com/mguymon)
+
 ## v2.6.0
 
-- Now dependent on ActiveSupport, not all of Rails, as a step toward easier use with other frameworks
-- Testing with Rails 4.0
+- Now dependent on ActiveSupport, not all of Rails, as a step toward easier use with other frameworks. Thanks to [christhekeele](https://github.com/christhekeele)
+- Testing with Rails 4.0, thanks to [sanemat](https://github.com/sanemat)
 - Clearer backtraces in certain situations
 
 ## v2.5.0
@@ -44,7 +48,7 @@ Controller method `authorize_actions_for` can now be given a method name to dyna
 
 ## v2.2.0
 
-Allow passing options hash to `authorize_action_for`, like `authorize_action_for(@llama, :sporting => @hat_style)`.
+Allow passing options hash to `authorize_action_for`, like `authorize_action_for(@llama, :sporting => @hat_style)`. Thanks to [MP211](https://github.com/MP211).
 
 ## v2.1.0
 
@@ -61,7 +65,7 @@ Documentation and test cleanup.
 
 ## v1.1.0
 
-- Added `Authority::Authorizer.default` class method which is called before the `default_strategy` proc and delegates to that proc. This can be overridden per authorizer.
+- Added `Authority::Authorizer.default` class method which is called before the `default_strategy` proc and delegates to that proc. This can be overridden per authorizer. Thanks to [kevmoo](https://github.com/kevmoo)
 
 ## v1.0.0
 
