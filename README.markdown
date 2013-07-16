@@ -9,6 +9,7 @@ If you're using it with Rails controllers, it requires that you already have som
 [![Gem Version](https://badge.fury.io/rb/authority.png)](https://rubygems.org/gems/searchlight)
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
 [![Code Climate](https://codeclimate.com/github/nathanl/authority.png)](https://codeclimate.com/github/nathanl/authority)
+[![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority)
 
 ## Contents
 
