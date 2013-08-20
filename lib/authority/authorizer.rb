@@ -21,8 +21,8 @@ module Authority
     end
 
     # Each instance method simply calls the corresponding class method
-    Authority.adjectives.each do |adjective|
-      def_delegator :"self.class", :"#{adjective}_by?"
+    Authority.adjective_methods.each do |adjective_method|
+      def_delegator :"self.class", adjective_method
     end
 
     # Each class method simply calls the `default` method
@@ -33,6 +33,15 @@ module Authority
           default(:#{adjective}, *user_and_maybe_options)
         end
       RUBY
+    end
+
+    # Memoize the ability methods for this class
+    def self.memoize_adjective_methods
+      extend Memoist
+
+      Authority.adjective_methods.each do |adjective_method|
+        memoize adjective_method, :identifier => name
+      end
     end
 
   end

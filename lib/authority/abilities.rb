@@ -11,6 +11,8 @@ module Authority
     extend ActiveSupport::Concern
 
     included do |base|
+      include Memoization
+      
       class_attribute :authorizer_name
 
       # Set the default authorizer for this model.
@@ -37,6 +39,29 @@ module Authority
       end
     end
     include Definitions
+
+    module Memoization
+      extend ActiveSupport::Concern
+
+      included do
+        memoize_authorizer if Authority.configuration.memoization
+      end
+
+      module ClassMethods
+        # Enable authorizer memoization for this class
+        def memoize_authorizer
+          extend Memoist
+          memoize :authorizer, :identifier => name
+
+          instance_eval do
+            # Flushes the authorizer memoization cache on this model
+            def flush_authorizer_cache
+              flush_cache :authorizer
+            end
+          end
+        end
+      end
+    end
 
     module ClassMethods
       include Definitions
