@@ -56,7 +56,7 @@ module Authority
           class_eval do
             # Flushes the authorizer memoization cache on this model
             def flush_authorizer_cache
-              flush_cache :authorizer
+              flush_cache :"#{self.class.name}_authorizer"
             end
           end
         end
