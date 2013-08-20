@@ -53,7 +53,7 @@ module Authority
           extend Memoist
           memoize :authorizer, :identifier => name
 
-          instance_eval do
+          class_eval do
             # Flushes the authorizer memoization cache on this model
             def flush_authorizer_cache
               flush_cache :authorizer
