@@ -11,6 +11,8 @@ module Authority
     extend ActiveSupport::Concern
 
     included do |base|
+      include Memoization if Authority.use_memoization?
+      
       class_attribute :authorizer_name
 
       # Set the default authorizer for this model.
@@ -32,11 +34,39 @@ module Authority
       # Send all calls like `editable_by?` to an authorizer instance
       # Not using Forwardable because it makes it harder for users to track an ArgumentError
       # back to their authorizer
-      Authority.adjectives.each do |adjective|
-        define_method("#{adjective}_by?") { |*args| authorizer.send("#{adjective}_by?", *args) }
+      Authority.adjective_methods.each do |adjective_method|
+        define_method(adjective_method) { |*args| authorizer.send(adjective_method, *args) }
       end
     end
     include Definitions
+
+    module Memoization
+      extend ActiveSupport::Concern
+
+      included do
+        extend Memoist
+        # Memoize the authorizer instance on this model
+        memoize :authorizer, :identifier => name
+
+        # Memoize each adjective instance method
+        Authority.adjective_methods.each do |adjective_method|
+          memoize adjective_method, :identifier => name
+        end
+
+        class_eval do
+          # Flushes the authorizer memoization cache on this model
+          def flush_authority_cache
+            methods_to_flush = Authority.adjective_methods.map do |adjective_method|
+              :"#{self.class.name}_#{adjective_method}"
+            end
+
+            methods_to_flush << :"#{self.class.name}_authorizer"
+
+            flush_cache *methods_to_flush
+          end
+        end
+      end
+    end
 
     module ClassMethods
       include Definitions

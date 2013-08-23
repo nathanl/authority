@@ -3,8 +3,10 @@ require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/string/inflections'
 require 'active_support/rescuable'
+require 'active_support/descendants_tracker'
 require 'forwardable'
 require 'logger'
+require 'memoist'
 require 'authority/security_violation'
 
 module Authority
@@ -16,14 +18,20 @@ module Authority
     configuration.abilities.freeze
   end
 
-  # @return [Array] keys from adjectives method
+  # @return [Array] keys from abilities method
   def self.verbs
     abilities.keys
   end
 
-  # @return [Array] values from adjectives method
+  # @return [Array] values from abilities method
   def self.adjectives
     abilities.values
+  end
+
+  # @return [Array] list of adjective methods that will be created on each
+  # authorizer and resource
+  def self.adjective_methods
+    adjectives.map {|adjective| :"#{adjective}_by?"}.freeze
   end
 
   # @param [Symbol] action
@@ -58,6 +66,10 @@ module Authority
 
   def self.logger
     @logger ||= configuration.logger
+  end
+
+  def self.use_memoization?
+    configuration.memoization
   end
 
   private
