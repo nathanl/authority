@@ -10,10 +10,12 @@ module Authority
     end
 
     initializer "authority.memoization", :after => :load_config_initializers do
-      if Authority.configuration.memoization
+      # Memoize all the adjective methods in each Authorizer.
+      # Done in a Railtie so the methods are memoized after they are all defined.
+      if Authority.use_memoization?
         config.after_initialize do
           Authority::Authorizer.descendants.each do |authorizer_klass|
-            authorizer_klass.memoize_adjective_methods
+            authorizer_klass.send :include, Authority::Authorizer::Memoization
           end
         end
       end

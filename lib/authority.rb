@@ -68,6 +68,10 @@ module Authority
     @logger ||= configuration.logger
   end
 
+  def self.use_memoization?
+    configuration.memoization
+  end
+
   private
 
   def self.require_authority_internals!
