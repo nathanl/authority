@@ -49,6 +49,15 @@ module Authority
         authority_actions(action_map)
       end
 
+      def ensure_authorization_performed( options = {} )
+        self.after_filter options.slice(:only, :except) do |controller|
+          next if controller.instance_variable_defined?(:@_authorized)
+          next if options[:if] && !controller.send(options[:if])
+          next if options[:unless] && controller.send(options[:unless])
+          raise AuthorizationNotPerformed, "This action failed the authorization check!"
+        end
+      end
+
       # The controller action to authority action map used for determining
       # which Rails actions map to which authority actions (ex: index to read)
       #
@@ -74,7 +83,9 @@ module Authority
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
       end
+
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
+      @_authorized = true
     end
 
     # Renders a static file to minimize the chances of further errors.
@@ -112,7 +123,8 @@ module Authority
       send(Authority.configuration.user_method)
     end
 
-    class MissingAction   < StandardError ; end
-    class MissingResource < StandardError ; end
+    class MissingAction             < StandardError ; end
+    class MissingResource           < StandardError ; end
+    class AuthorizationNotPerformed < StandardError ; end
   end
 end

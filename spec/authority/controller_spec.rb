@@ -155,6 +155,49 @@ describe Authority::Controller do
 
       end
 
+      describe "ensure_authorization_performed" do
+
+        let(:controller_instance) { controller_class.new }
+
+        it "sets up a after_filter, passing the options it was given" do
+          filter_options = {:only => [:show, :edit, :update]}
+          controller_class.should_receive(:after_filter).with(filter_options)
+          controller_class.ensure_authorization_performed(filter_options)
+        end
+
+        it "triggers AuthorizationNotPerformed in after filter" do
+          controller_class.stub(:after_filter).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed
+          }.should raise_error(Authority::Controller::AuthorizationNotPerformed)
+        end
+
+        it "not triggers AuthorizationNotPerformed when :if is false" do
+          controller_instance.stub(:authorize?) { false }
+          controller_class.stub(:after_filter).with({}).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed(:if => :authorize?)
+          }.should_not raise_error()
+        end
+
+        it "not triggers AuthorizationNotPerformed when :unless is true" do
+          controller_instance.stub(:skip_authorization?) { true }
+          controller_class.stub(:after_filter).with({}).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed(:unless => :skip_authorization?)
+          }.should_not raise_error()
+        end
+
+        it "does not raise error when @_authorized is set" do
+          controller_instance.instance_variable_set(:@_authorized, true)
+          controller_class.stub(:after_filter).with({}).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed
+          }.should_not raise_error()
+        end
+
+      end
+
     end
 
     describe "instance methods" do
@@ -242,6 +285,12 @@ describe Authority::Controller do
           options = {:for => 'insolence'}
           Authority.should_receive(:enforce).with('delete', resource_class, user, options)
           controller_instance.send(:authorize_action_for, resource_class, options)
+        end
+
+        it "sets instance variable" do
+          Authority.stub(:enforce)
+          controller_instance.send(:authorize_action_for, resource_class)
+          controller_instance.instance_variable_defined?(:@_authorized).should be_true
         end
 
       end
