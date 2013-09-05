@@ -87,6 +87,8 @@ describe Authority::Controller do
 
       describe "authorize_actions_for" do
 
+        let(:child_controller) { Class.new(controller_class) }
+
         it "allows specifying the class of the model to protect" do
           controller_class.authorize_actions_for(resource_class)
           expect(controller_class.authority_resource).to eq(resource_class)
@@ -103,8 +105,14 @@ describe Authority::Controller do
           controller_class.authorize_actions_for(resource_class, filter_options)
         end
 
-        it "passes the action hash to the `authority_action` method" do
-          child_controller = Class.new(controller_class)
+        it "if :permit option is given it overrides action hash to use the permitted action" do
+          overridden_action_map = controller_class.authority_action_map
+          overridden_action_map.update(overridden_action_map) {|k,v| v = :annihilate}
+          child_controller.should_receive(:authority_actions).with(overridden_action_map)
+          child_controller.authorize_actions_for(resource_class, :permit => :annihilate)
+        end
+
+        it "passes the action hash to the `authority_actions` method" do
           new_actions = {:synthesize => :create, :annihilate => 'delete'}
           child_controller.should_receive(:authority_actions).with(new_actions)
           child_controller.authorize_actions_for(resource_class, :actions => new_actions)
@@ -137,7 +145,7 @@ describe Authority::Controller do
 
       end
 
-      describe "authority_action" do
+      describe "authority_actions" do
 
         it "modifies this controller's authority action map" do
           new_actions = {:show => :display, :synthesize => :create, :annihilate => 'delete'}
