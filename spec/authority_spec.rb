@@ -66,7 +66,7 @@ describe Authority do
     end
 
     it "doesn't raise a SecurityViolation if the action is authorized" do
-      expect { Authority.enforce(:read, resource_class, user) }.not_to raise_error(Authority::SecurityViolation)
+      expect { Authority.enforce(:read, resource_class, user) }.not_to raise_error()
     end
 
   end
