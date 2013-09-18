@@ -18,6 +18,12 @@ module Authority
       class_attribute :authority_resource, :instance_reader => false
     end
 
+    attr_writer :authorization_performed
+
+    def authorization_performed?
+      !!@authorization_performed
+    end
+
     module ClassMethods
 
       # Sets up before_filter to ensure user is allowed to perform a given controller action
@@ -49,12 +55,12 @@ module Authority
         authority_actions(action_map)
       end
 
-      def ensure_authorization_performed( options = {} )
+      def ensure_authorization_performed(options = {})
         self.after_filter options.slice(:only, :except) do |controller|
-          next if controller.instance_variable_defined?(:@_authorized)
+          next if controller.authorization_performed?
           next if options[:if] && !controller.send(options[:if])
           next if options[:unless] && controller.send(options[:unless])
-          raise AuthorizationNotPerformed, "This action failed the authorization check!"
+          raise AuthorizationNotPerformed, "No authorization was performed for #{controller.class.to_s}##{controller.action_name}"
         end
       end
 
@@ -85,7 +91,7 @@ module Authority
       end
 
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
-      @_authorized = true
+      self.authorization_performed = true
     end
 
     # Renders a static file to minimize the chances of further errors.
