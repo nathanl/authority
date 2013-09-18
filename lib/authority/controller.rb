@@ -7,7 +7,7 @@ module Authority
 
     def self.security_violation_callback
       Proc.new do |exception|
-        # Through the magic of ActiveSupport's `Proc#bind`, `ActionController::Base#rescue_from`
+        # Through the magic of `instance_exec` `ActionController::Base#rescue_from`
         # can call this proc and make `self` the actual controller instance
         self.send(Authority.configuration.security_violation_handler, exception)
       end
