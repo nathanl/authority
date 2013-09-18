@@ -49,15 +49,15 @@ describe Authority::Controller do
         controller_instance = controller_class.new
         # If a callback is passed to a controller's `rescue_from` method as the value for
         # the `with` option (like `SomeController.rescue_from FooException, :with => some_callback`),
-        # Rails will use ActiveSupport's `Proc#bind` to ensure that when the proc refers to
+        # Rails will use `instance_exec` to ensure that when the proc refers to
         # `self`, it will be the controller, not the proc itself.
         # I need this callback's `self` to be the controller for the purposes of
         # this test, so I'm stealing that behavior.
-        callback = Authority::Controller.security_violation_callback.bind(controller_instance)
 
         Authority.configuration.security_violation_handler = :fire_ze_missiles
         controller_instance.should_receive(:fire_ze_missiles).with(fake_exception)
-        callback.call(fake_exception)
+        controller_instance.instance_exec(fake_exception, &Authority::Controller.security_violation_callback)
+
       end
     end
 
@@ -306,7 +306,7 @@ describe Authority::Controller do
 
       describe "authority_forbidden action" do
 
-        let(:mock_error) { mock(:message => 'oh noes! an error!') }
+        let(:mock_error) { double(:message => 'oh noes! an error!') }
 
         it "logs an error" do
           Authority.logger.should_receive(:warn)
