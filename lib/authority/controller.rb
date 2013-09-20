@@ -18,6 +18,12 @@ module Authority
       class_attribute :authority_resource, :instance_reader => false
     end
 
+    attr_writer :authorization_performed
+
+    def authorization_performed?
+      !!@authorization_performed
+    end
+
     module ClassMethods
 
       # Sets up before_filter to ensure user is allowed to perform a given controller action
@@ -49,6 +55,15 @@ module Authority
         authority_actions(action_map)
       end
 
+      def ensure_authorization_performed(options = {})
+        self.after_filter options.slice(:only, :except) do |controller|
+          next if controller.authorization_performed?
+          next if options[:if] && !controller.send(options[:if])
+          next if options[:unless] && controller.send(options[:unless])
+          raise AuthorizationNotPerformed, "No authorization was performed for #{controller.class.to_s}##{controller.action_name}"
+        end
+      end
+
       # The controller action to authority action map used for determining
       # which Rails actions map to which authority actions (ex: index to read)
       #
@@ -74,7 +89,9 @@ module Authority
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
       end
+
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
+      self.authorization_performed = true
     end
 
     # Renders a static file to minimize the chances of further errors.
@@ -112,7 +129,8 @@ module Authority
       send(Authority.configuration.user_method)
     end
 
-    class MissingAction   < StandardError ; end
-    class MissingResource < StandardError ; end
+    class MissingAction             < StandardError ; end
+    class MissingResource           < StandardError ; end
+    class AuthorizationNotPerformed < StandardError ; end
   end
 end
