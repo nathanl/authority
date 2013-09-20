@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## Unreleased
+
+New controller method `ensure_authorization_performed`, thanks to [Igor Davydov](https://github.com/div).
+
 ## 2.7.0
 
 Allows setting authorizer by class (`authorizer = FooAuthorizer`) as well as by name (`authorizer_name = 'FooAuthorizer'`), thanks to [mguymon](https://github.com/mguymon)

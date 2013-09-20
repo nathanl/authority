@@ -382,7 +382,7 @@ class LlamasController < ApplicationController
 end
 ```
 
-Finally, note that if you have a controller that dynamically determines the class it's working with, you can pass the name of a controller instance method to `authorize_actions_for` instead of a class, and the class will be looked up when a request is made.
+If you have a controller that dynamically determines the class it's working with, you can pass the name of a controller instance method to `authorize_actions_for` instead of a class, and the class will be looked up when a request is made.
 
 ```ruby
 class LlamasController < ApplicationController
@@ -390,8 +390,22 @@ class LlamasController < ApplicationController
   authorize_actions_for :llama_class
 
   def llama_class
+    # In a real application, you would choose your llama class
+    # much more carefully
     [StandardLlama, LludicrousLlama].sample
   end
+end
+```
+
+Finally, if you want to ensure that all controller actions get authorized, you can use `ensure_authorization_performed`, which sets up an `after_filter` to raise an exception if it wasn't. Any `only` or `except` arguments will be passed to `after_filter`. You can also use `if` or `unless` to specify the name of a controller method which determines whether it's necessary.
+
+```ruby
+class ApplicationController < ActionController::Base
+  ensure_authorization_performed :except => [:index, :show]
+  # OR
+  ensure_authorization_performed :if => :user_seems_shifty?
+  # OR
+  ensure_authorization_performed :unless => :devise_controller?
 end
 ```
 
