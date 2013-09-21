@@ -397,7 +397,7 @@ class LlamasController < ApplicationController
 end
 ```
 
-Finally, you can enforce that every controller action runs an authorization check by using `ensure_authorization_performed`, which sets up an `after_filter` to raise an exception if it wasn't. Any `only` or `except` arguments will be passed to `after_filter`. You can also use `if` or `unless` to specify the name of a controller method which determines whether it's necessary.
+Finally, you can enforce that every controller action runs an authorization check using the class method `ensure_authorization_performed`, which sets up an `after_filter` to raise an exception if it wasn't. Any `only` or `except` arguments will be passed to `after_filter`. You can also use `if` or `unless` to specify the name of a controller method which determines whether it's necessary.
 
 Since this runs in an `after_filter`, it obviously doesn't prevent the action, it just alerts you that no authorization was performed. Therefore, it's most useful in development. An example usage might be:
 
@@ -406,6 +406,8 @@ class ApplicationController < ActionController::Base
   ensure_authorization_performed :except => [:index, :search], :if => Rails.env.development?, :unless => :devise_controller?
 end
 ```
+
+If you want a skippable filter, you can roll your own using the instance method, also called `ensure_authorization_performed`.
 
 <a name="views">
 ### Views
