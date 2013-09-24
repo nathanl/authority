@@ -403,7 +403,11 @@ Since this runs in an `after_filter`, it obviously doesn't prevent the action, i
 
 ```ruby
 class ApplicationController < ActionController::Base
-  ensure_authorization_performed :except => [:index, :search], :if => Rails.env.development?, :unless => :devise_controller?
+  ensure_authorization_performed :except => [:index, :search], :if => :auditing_security?, :unless => :devise_controller?
+
+  def auditing_security?
+    Rails.env != 'production'
+  end
 end
 ```
 
