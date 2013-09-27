@@ -2,7 +2,7 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
-## Unreleased
+## v2.8.0
 
 New controller method `ensure_authorization_performed`, thanks to [Igor Davydov](https://github.com/div).
 
