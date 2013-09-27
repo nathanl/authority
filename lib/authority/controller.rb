@@ -24,6 +24,13 @@ module Authority
       !!@authorization_performed
     end
 
+    def ensure_authorization_performed(options = {})
+      return if authorization_performed?
+      return if options[:if]     && !send(options[:if])
+      return if options[:unless] && send(options[:unless])
+      raise AuthorizationNotPerformed, "No authorization was performed for #{self.class.to_s}##{self.action_name}"
+    end
+
     module ClassMethods
 
       # Sets up before_filter to ensure user is allowed to perform a given controller action
@@ -55,12 +62,10 @@ module Authority
         authority_actions(action_map)
       end
 
+      # Convenience wrapper for instance method
       def ensure_authorization_performed(options = {})
-        self.after_filter options.slice(:only, :except) do |controller|
-          next if controller.authorization_performed?
-          next if options[:if] && !controller.send(options[:if])
-          next if options[:unless] && controller.send(options[:unless])
-          raise AuthorizationNotPerformed, "No authorization was performed for #{controller.class.to_s}##{controller.action_name}"
+        after_filter(options.slice(:only, :except)) do |controller_instance|
+          controller_instance.ensure_authorization_performed(options)
         end
       end
 
