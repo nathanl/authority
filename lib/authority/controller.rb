@@ -18,6 +18,19 @@ module Authority
       class_attribute :authority_resource, :instance_reader => false
     end
 
+    attr_writer :authorization_performed
+
+    def authorization_performed?
+      !!@authorization_performed
+    end
+
+    def ensure_authorization_performed(options = {})
+      return if authorization_performed?
+      return if options[:if]     && !send(options[:if])
+      return if options[:unless] && send(options[:unless])
+      raise AuthorizationNotPerformed, "No authorization was performed for #{self.class.to_s}##{self.action_name}"
+    end
+
     module ClassMethods
 
       # Sets up before_filter to ensure user is allowed to perform a given controller action
@@ -48,6 +61,13 @@ module Authority
         set multiple actions in one shot. Please update your controllers \
         accordingly. (called from #{caller.first})".squeeze(' ')
         authority_actions(action_map)
+      end
+
+      # Convenience wrapper for instance method
+      def ensure_authorization_performed(options = {})
+        after_filter(options.slice(:only, :except)) do |controller_instance|
+          controller_instance.ensure_authorization_performed(options)
+        end
       end
 
       # The controller action to authority action map used for determining
@@ -82,7 +102,9 @@ module Authority
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
       end
+
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
+      self.authorization_performed = true
     end
 
     # Renders a static file to minimize the chances of further errors.
@@ -120,7 +142,8 @@ module Authority
       send(Authority.configuration.user_method)
     end
 
-    class MissingAction   < StandardError ; end
-    class MissingResource < StandardError ; end
+    class MissingAction             < StandardError ; end
+    class MissingResource           < StandardError ; end
+    class AuthorizationNotPerformed < StandardError ; end
   end
 end

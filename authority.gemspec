@@ -2,6 +2,7 @@
 require File.expand_path('../lib/authority/version', __FILE__)
 
 Gem::Specification.new do |gem|
+  gem.license       = 'MIT'
   gem.authors       = ["Nathan Long", "Adam Hunter"]
   gem.email         = ["nathanmlong@gmail.com", "adamhunter@me.com"]
   gem.summary       = %q{Authority helps you authorize actions in your Rails app using plain Ruby methods on Authorizer classes.}

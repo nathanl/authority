@@ -382,7 +382,7 @@ class LlamasController < ApplicationController
 end
 ```
 
-Finally, note that if you have a controller that dynamically determines the class it's working with, you can pass the name of a controller instance method to `authorize_actions_for` instead of a class, and the class will be looked up when a request is made.
+If you have a controller that dynamically determines the class it's working with, you can pass the name of a controller instance method to `authorize_actions_for` instead of a class, and the class will be looked up when a request is made.
 
 ```ruby
 class LlamasController < ApplicationController
@@ -390,10 +390,28 @@ class LlamasController < ApplicationController
   authorize_actions_for :llama_class
 
   def llama_class
+    # In a real application, you would choose your llama class
+    # much more carefully
     [StandardLlama, LludicrousLlama].sample
   end
 end
 ```
+
+Finally, you can enforce that every controller action runs an authorization check using the class method `ensure_authorization_performed`, which sets up an `after_filter` to raise an exception if it wasn't. Any `only` or `except` arguments will be passed to `after_filter`. You can also use `if` or `unless` to specify the name of a controller method which determines whether it's necessary.
+
+Since this runs in an `after_filter`, it obviously doesn't prevent the action, it just alerts you that no authorization was performed. Therefore, it's most useful in development. An example usage might be:
+
+```ruby
+class ApplicationController < ActionController::Base
+  ensure_authorization_performed :except => [:index, :search], :if => :auditing_security?, :unless => :devise_controller?
+
+  def auditing_security?
+    Rails.env != 'production'
+  end
+end
+```
+
+If you want a skippable filter, you can roll your own using the instance method, also called `ensure_authorization_performed`.
 
 <a name="views">
 ### Views

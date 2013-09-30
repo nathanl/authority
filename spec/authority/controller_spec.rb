@@ -177,18 +177,77 @@ describe Authority::Controller do
       end
 
       describe "overridden_actions" do
+
         it "overrides authority action map if option :all is present" do
           options = { :all => :display, :actions => {:show => :display, :synthesize => :create} }
           expect(controller_class.overridden_actions(options).values.uniq).to eq([:display])
         end
+
         it "returns :actions hash if option :all is not present" do
           options = { :actions => {:show => :display, :synthesize => :create, :annihilate => 'delete'} }
           expect(controller_class.overridden_actions(options)).to eq(options[:actions])
         end
+
         it "returns an empty hash if no :all nor :actions options present" do
           options = { :show => :display, :synthesize => :create, :annihilate => 'delete' }
           expect(controller_class.overridden_actions(options)).to eq({})
         end
+
+      end
+
+      describe "ensure_authorization_performed" do
+
+        let(:controller_instance) { controller_class.new }
+
+        before(:each) do
+          controller_instance.stub(:class).and_return("FooController")
+          controller_instance.stub(:action_name).and_return(:bar)
+        end
+
+        it "sets up an after_filter, passing the options it was given" do
+          filter_options = {:only => [:show, :edit, :update]}
+          controller_class.should_receive(:after_filter).with(filter_options)
+          controller_class.ensure_authorization_performed(filter_options)
+        end
+
+        it "triggers AuthorizationNotPerformed in after filter" do
+          controller_class.stub(:after_filter).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed
+          }.should raise_error(Authority::Controller::AuthorizationNotPerformed)
+        end
+
+        it "AuthorizationNotPerformed error has meaningful message" do
+          controller_class.stub(:after_filter).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed
+          }.should raise_error("No authorization was performed for FooController#bar")
+        end
+
+        it "does not trigger AuthorizationNotPerformed when :if is false" do
+          controller_instance.stub(:authorize?) { false }
+          controller_class.stub(:after_filter).with({}).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed(:if => :authorize?)
+          }.should_not raise_error()
+        end
+
+        it "does not trigger AuthorizationNotPerformed when :unless is true" do
+          controller_instance.stub(:skip_authorization?) { true }
+          controller_class.stub(:after_filter).with({}).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed(:unless => :skip_authorization?)
+          }.should_not raise_error()
+        end
+
+        it "does not raise error when #authorization_performed is true" do
+          controller_instance.authorization_performed = true
+          controller_class.stub(:after_filter).with({}).and_yield(controller_instance)
+          lambda {
+            controller_class.ensure_authorization_performed
+          }.should_not raise_error()
+        end
+
       end
 
     end
@@ -278,6 +337,12 @@ describe Authority::Controller do
           options = {:for => 'insolence'}
           Authority.should_receive(:enforce).with('delete', resource_class, user, options)
           controller_instance.send(:authorize_action_for, resource_class, options)
+        end
+
+        it "sets correct authorization flag" do
+          Authority.stub(:enforce)
+          controller_instance.send(:authorize_action_for, resource_class)
+          controller_instance.authorization_performed?.should be_true
         end
 
       end
