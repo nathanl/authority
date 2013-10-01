@@ -43,7 +43,7 @@ module Authority
       # ones and any other options applicable to a before_filter
       def authorize_actions_for(resource_or_finder, options = {})
         self.authority_resource = resource_or_finder
-        authority_actions(options[:actions] || {})
+        authority_actions(overridden_actions(options))
         before_filter :run_authorization_check, options
       end
 
@@ -51,6 +51,7 @@ module Authority
       #
       # @param [Hash] action_map - controller actions and methods, to be merged with existing action_map
       def authority_actions(action_map)
+        authority_action_map.merge!(overridden_actions(action_map))
         authority_action_map.merge!(action_map.symbolize_keys)
       end
 
@@ -75,6 +76,13 @@ module Authority
       # @return [Hash] A duplicated copy of the configured controller_action_map
       def authority_action_map
         @authority_action_map ||= Authority.configuration.controller_action_map.dup
+      end
+
+      def overridden_actions(options = {})
+        if forced_action = options.fetch(:all, false)
+          overridden_actions = authority_action_map.inject({}) { |h, (k, v)| h[k] = forced_action ; h }
+        end
+        overridden_actions || options.fetch(:actions, {})
       end
 
     end
