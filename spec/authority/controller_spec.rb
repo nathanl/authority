@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'support/example_classes'
 require 'support/mock_rails'
 require 'active_support/core_ext/proc'
+require 'set'
 
 describe Authority::Controller do
 
@@ -165,7 +166,7 @@ describe Authority::Controller do
           controller_class.authority_actions({:all_actions  => :utilize})
           controller_class.authority_actions({:synthesize   => :create})
           controller_class.authority_actions({:transmogrify => :update})
-          expect(controller_class.authority_action_map.values.uniq.sort).to eq([:create, :update, :utilize])
+          expect(controller_class.authority_action_map.values.uniq.to_set).to eq([:create, :update, :utilize].to_set)
           expect(controller_class.authority_action_map[:synthesize]).to eq(:create)
         end
 
