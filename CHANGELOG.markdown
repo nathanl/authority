@@ -8,7 +8,7 @@ Add `all_actions` option for `authorize_actions_for`, thanks to [Igor Davydov](h
 
 ## v2.8.1
 
-Add license to gemspec, thanks to notice from Benjamin Fleischer - see [his blog post](http://www.benjaminfleischer.com/2013/07/12/make-the-world-a-better-place-put-a-license-in-your-gemspec/)
+Add license to gemspec, thanks to notice from [Benjamin Fleischer](https://github.com/bf4) - see [his blog post](http://www.benjaminfleischer.com/2013/07/12/make-the-world-a-better-place-put-a-license-in-your-gemspec/)
 
 ## v2.8.0
 
@@ -16,12 +16,12 @@ New controller method `ensure_authorization_performed`, thanks to [Igor Davydov]
 
 ## 2.7.0
 
-Allows setting authorizer by class (`authorizer = FooAuthorizer`) as well as by name (`authorizer_name = 'FooAuthorizer'`), thanks to [mguymon](https://github.com/mguymon)
+Allows setting authorizer by class (`authorizer = FooAuthorizer`) as well as by name (`authorizer_name = 'FooAuthorizer'`), thanks to [Michael Guymon](https://github.com/mguymon)
 
 ## v2.6.0
 
-- Now dependent on ActiveSupport, not all of Rails, as a step toward easier use with other frameworks. Thanks to [christhekeele](https://github.com/christhekeele)
-- Testing with Rails 4.0, thanks to [sanemat](https://github.com/sanemat)
+- Now dependent on ActiveSupport, not all of Rails, as a step toward easier use with other frameworks. Thanks to [Christopher Keele](https://github.com/christhekeele)
+- Testing with Rails 4.0, thanks to [Murahashi Sanemat Kenichi](https://github.com/sanemat)
 - Clearer backtraces in certain situations
 
 ## v2.5.0
@@ -60,7 +60,7 @@ Controller method `authorize_actions_for` can now be given a method name to dyna
 
 ## v2.2.0
 
-Allow passing options hash to `authorize_action_for`, like `authorize_action_for(@llama, :sporting => @hat_style)`. Thanks to [MP211](https://github.com/MP211).
+Allow passing options hash to `authorize_action_for`, like `authorize_action_for(@llama, :sporting => @hat_style)`. Thanks to [Mike Paulo](https://github.com/MP211).
 
 ## v2.1.0
 
@@ -77,7 +77,7 @@ Documentation and test cleanup.
 
 ## v1.1.0
 
-- Added `Authority::Authorizer.default` class method which is called before the `default_strategy` proc and delegates to that proc. This can be overridden per authorizer. Thanks to [kevmoo](https://github.com/kevmoo)
+- Added `Authority::Authorizer.default` class method which is called before the `default_strategy` proc and delegates to that proc. This can be overridden per authorizer. Thanks to [Kevin Moore](https://github.com/kevmoo)
 
 ## v1.0.0
 
