@@ -156,16 +156,16 @@ describe Authority::Controller do
         end
 
         it "forces to use a single method when :all_actions option is given" do
-          force_actions = {:all_actions => 'utilize'}
+          force_actions = {:all_actions => :utilize}
           controller_class.authority_actions(force_actions)
-          expect(controller_class.authority_action_map.values.uniq).to eq(['utilize'])
+          expect(controller_class.authority_action_map.values.uniq).to eq([:utilize])
         end
 
         it "can be used multiple times; each usage appends methods to authority_action_map" do
-          controller_class.authority_actions({:all_actions  => 'utilize'})
+          controller_class.authority_actions({:all_actions  => :utilize})
           controller_class.authority_actions({:synthesize   => :create})
           controller_class.authority_actions({:transmogrify => :update})
-          expect(controller_class.authority_action_map.values.uniq).to eq(['utilize', :create, :update])
+          expect(controller_class.authority_action_map.values.uniq.sort).to eq([:create, :update, :utilize])
           expect(controller_class.authority_action_map[:synthesize]).to eq(:create)
         end
 
