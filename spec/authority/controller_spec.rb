@@ -105,7 +105,7 @@ describe Authority::Controller do
           controller_class.authorize_actions_for(resource_class, filter_options)
         end
 
-        it "if :all_actions option is given it overrides action hash to use the forced action" do
+        it "if :all_actions option is given, it overrides the action hash to use the action given" do
           overridden_action_map = controller_class.authority_action_map
           overridden_action_map.update(overridden_action_map) {|k,v| v = :annihilate}
           child_controller.should_receive(:authority_actions).with(overridden_action_map)
@@ -161,10 +161,11 @@ describe Authority::Controller do
           expect(controller_class.authority_action_map.values.uniq).to eq(['utilize'])
         end
 
-        it "can be used several times appending methods to authority action map" do
-          controller_class.authority_actions({:all_actions => 'utilize'})
-          controller_class.authority_actions({:synthesize => :create})
-          expect(controller_class.authority_action_map.values.uniq).to eq(['utilize', :create])
+        it "can be used multiple times; each usage appends methods to authority_action_map" do
+          controller_class.authority_actions({:all_actions  => 'utilize'})
+          controller_class.authority_actions({:synthesize   => :create})
+          controller_class.authority_actions({:transmogrify => :update})
+          expect(controller_class.authority_action_map.values.uniq).to eq(['utilize', :create, :update])
           expect(controller_class.authority_action_map[:synthesize]).to eq(:create)
         end
 

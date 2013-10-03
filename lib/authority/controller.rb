@@ -80,7 +80,7 @@ module Authority
 
       def overridden_actions(options = {})
         if forced_action = options.fetch(:all_actions, false)
-          overridden_actions = authority_action_map.inject({}) { |h, (k, v)| h[k] = forced_action ; h }
+          overridden_actions = authority_action_map.inject({}) { |hash, (key)| hash.tap { |h| h[key] = forced_action } }
         end
         overridden_actions || options.fetch(:actions, {})
       end
@@ -126,7 +126,7 @@ module Authority
     def instance_authority_resource
       return self.class.authority_resource       if self.class.authority_resource.is_a?(Class)
       send(self.class.authority_resource)
-    rescue NoMethodError => e
+    rescue NoMethodError
       raise MissingResource.new(
           "Trying to authorize actions for '#{self.class.authority_resource}', but can't. \
           Must be either a resource class OR the name of a controller instance method that \
