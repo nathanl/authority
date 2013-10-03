@@ -397,6 +397,18 @@ class LlamasController < ApplicationController
 end
 ```
 
+If you want to authorize all actions the same way, use the special `all_actions` hash key. For instance, if you have nested resources, you might say "you're allowed to do anything you like with an employee if you're allowed to update their organization".
+
+```ruby
+class EmployeesController < ApplicationController
+  authorize_actions_for :parent_resource, all_actions: :update
+  private
+  def parent_resource
+    Employer.find(params[:employer_id])
+  end
+end
+```
+
 Finally, you can enforce that every controller action runs an authorization check using the class method `ensure_authorization_performed`, which sets up an `after_filter` to raise an exception if it wasn't. Any `only` or `except` arguments will be passed to `after_filter`. You can also use `if` or `unless` to specify the name of a controller method which determines whether it's necessary.
 
 Since this runs in an `after_filter`, it obviously doesn't prevent the action, it just alerts you that no authorization was performed. Therefore, it's most useful in development. An example usage might be:
