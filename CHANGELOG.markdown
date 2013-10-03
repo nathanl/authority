@@ -2,7 +2,7 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
-## Unreleased
+## v2.9.0
 
 Add `all_actions` option for `authorize_actions_for`, thanks to [Igor Davydov](https://github.com/div). 
 
