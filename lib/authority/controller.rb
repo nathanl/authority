@@ -80,7 +80,7 @@ module Authority
 
       def overridden_actions(options = {})
         if forced_action = options.fetch(:all_actions, false)
-          overridden_actions = authority_action_map.inject({}) { |hash, (key)| hash.tap { |h| h[key] = forced_action } }
+          overridden_actions = authority_action_map.inject({}) { |hash, (key, val)| hash.tap { |h| h[key] = forced_action } }
         end
         overridden_actions || options.fetch(:actions, {})
       end
