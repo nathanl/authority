@@ -105,11 +105,11 @@ describe Authority::Controller do
           controller_class.authorize_actions_for(resource_class, filter_options)
         end
 
-        it "if :all option is given it overrides action hash to use the forced action" do
+        it "if :all_actions option is given it overrides action hash to use the forced action" do
           overridden_action_map = controller_class.authority_action_map
           overridden_action_map.update(overridden_action_map) {|k,v| v = :annihilate}
           child_controller.should_receive(:authority_actions).with(overridden_action_map)
-          child_controller.authorize_actions_for(resource_class, :all => :annihilate)
+          child_controller.authorize_actions_for(resource_class, :all_actions => :annihilate)
         end
 
         it "passes the action hash to the `authority_actions` method" do
@@ -155,14 +155,14 @@ describe Authority::Controller do
           )
         end
 
-        it "forces to use a single method when :all option is given" do
-          force_actions = {:all => 'utilize'}
+        it "forces to use a single method when :all_actions option is given" do
+          force_actions = {:all_actions => 'utilize'}
           controller_class.authority_actions(force_actions)
           expect(controller_class.authority_action_map.values.uniq).to eq(['utilize'])
         end
 
         it "can be used several times appending methods to authority action map" do
-          controller_class.authority_actions({:all => 'utilize'})
+          controller_class.authority_actions({:all_actions => 'utilize'})
           controller_class.authority_actions({:synthesize => :create})
           expect(controller_class.authority_action_map.values.uniq).to eq(['utilize', :create])
           expect(controller_class.authority_action_map[:synthesize]).to eq(:create)
@@ -178,17 +178,17 @@ describe Authority::Controller do
 
       describe "overridden_actions" do
 
-        it "overrides authority action map if option :all is present" do
-          options = { :all => :display, :actions => {:show => :display, :synthesize => :create} }
+        it "overrides authority action map if option :all_actions is present" do
+          options = { :all_actions => :display, :actions => {:show => :display, :synthesize => :create} }
           expect(controller_class.overridden_actions(options).values.uniq).to eq([:display])
         end
 
-        it "returns :actions hash if option :all is not present" do
+        it "returns :actions hash if option :all_actions is not present" do
           options = { :actions => {:show => :display, :synthesize => :create, :annihilate => 'delete'} }
           expect(controller_class.overridden_actions(options)).to eq(options[:actions])
         end
 
-        it "returns an empty hash if no :all nor :actions options present" do
+        it "returns an empty hash if no :all_actions nor :actions options present" do
           options = { :show => :display, :synthesize => :create, :annihilate => 'delete' }
           expect(controller_class.overridden_actions(options)).to eq({})
         end
