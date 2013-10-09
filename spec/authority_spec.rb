@@ -39,34 +39,49 @@ describe Authority do
 
   describe "enforcement" do
 
-    let(:user)           { ExampleUser.new }
     let(:resource_class) { ExampleResource }
 
-    describe "when given options" do
+    describe "when given a user object" do
 
-      it "checks the user's authorization, passing along the options" do
-        options = { :for => 'context' }
-        user.should_receive(:can_delete?).with(resource_class, options).and_return(true)
-        Authority.enforce(:delete, resource_class, user, options)
+      let(:user)           { ExampleUser.new }
+
+      describe "when given options" do
+
+        it "checks the user's authorization, passing along the options" do
+          options = { :for => 'context' }
+          user.should_receive(:can_delete?).with(resource_class, options).and_return(true)
+          Authority.enforce(:delete, resource_class, user, options)
+        end
+
+      end
+
+      describe "when not given options" do
+
+        it "checks the user's authorization, passing no options" do
+          user.should_receive(:can_delete?).with(resource_class).and_return(true)
+          Authority.enforce(:delete, resource_class, user)
+        end
+
+      end
+
+      it "raises a SecurityViolation if the action is unauthorized" do
+        expect { Authority.enforce(:update, resource_class, user) }.to raise_error(Authority::SecurityViolation)
+      end
+
+      it "doesn't raise a SecurityViolation if the action is authorized" do
+        expect { Authority.enforce(:read, resource_class, user) }.not_to raise_error()
       end
 
     end
 
-    describe "when not given options" do
+    describe "when given a nil user" do
 
-      it "checks the user's authorization, passing no options" do
-        user.should_receive(:can_delete?).with(resource_class).and_return(true)
-        Authority.enforce(:delete, resource_class, user)
+      let(:user) { nil }
+
+      it "raises a helpful error" do
+        expect { Authority.enforce(:update, resource_class, user) }.to raise_error(Authority::MissingUser)
       end
 
-    end
-
-    it "raises a SecurityViolation if the action is unauthorized" do
-      expect { Authority.enforce(:update, resource_class, user) }.to raise_error(Authority::SecurityViolation)
-    end
-
-    it "doesn't raise a SecurityViolation if the action is authorized" do
-      expect { Authority.enforce(:read, resource_class, user) }.not_to raise_error()
     end
 
   end
