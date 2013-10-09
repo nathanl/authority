@@ -84,9 +84,11 @@ module Authority
       possibly by including `Authority::UserAbilities` and teaching your authorizers
       what an anonymous user can do.
 
-      The downside of option #2 is that a user who forgot to sign in will be
+      The downside of solution #2 is that a user who forgot to sign in will be
       told they are not authorized for an action they could normally do. This might
       be confusing.
+
+      However, you might use both strategies in different parts of your application.
       "
     end
   end
