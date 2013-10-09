@@ -37,7 +37,6 @@ module Authority
     unless action_authorized?(action, resource, user, options)
       raise SecurityViolation.new(user, action, resource)
     end
-    resource
   end
 
   def self.action_authorized?(action, resource, user, options = {})
