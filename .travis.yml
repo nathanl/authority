@@ -23,5 +23,5 @@ matrix:
       gemfile: gemfiles/4.0.gemfile
     - rvm: jruby-18mode
       gemfile: gemfiles/4.0.gemfile
-    - rvm: rbx-18mode
+    - rvm: rbx
       gemfile: gemfiles/4.0.gemfile
