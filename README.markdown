@@ -250,7 +250,7 @@ class ApplicationAuthorizer < Authority::Authorizer
 
   protected
 
-  def has_role_granting(user, able)
+  def has_role_granting?(user, able)
     # Does the user have any of the roles which give this permission?
     (roles_which_grant(able) & user.roles).any?
   end
