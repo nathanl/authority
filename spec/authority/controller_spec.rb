@@ -294,13 +294,28 @@ describe Authority::Controller do
 
           context "if the controller has such an instance method" do
 
-            before :each do
-              controller_instance.stub(:method_to_find_class).and_return(resource_class)
+            context "and the method returns a class" do
+              before :each do
+                controller_instance.stub(:method_to_find_class).and_return(resource_class)
+              end
+
+              it "checks authorization on class returned by that method" do
+                controller_instance.should_receive(:authorize_action_for).with(resource_class)
+                controller_instance.send(:run_authorization_check)
+              end
             end
 
-            it "checks authorization on class returned by that method" do
-              controller_instance.should_receive(:authorize_action_for).with(resource_class)
-              controller_instance.send(:run_authorization_check)
+            context "and the method returns an array" do
+              let(:some_options) { { a: 1, b: 2 } }
+
+              before :each do
+                controller_instance.stub(:method_to_find_class).and_return([resource_class, some_options])
+              end
+
+              it "checks authorization on class returned by that method" do
+                controller_instance.should_receive(:authorize_action_for).with(resource_class, some_options)
+                controller_instance.send(:run_authorization_check)
+              end
             end
 
           end
