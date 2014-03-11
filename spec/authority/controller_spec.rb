@@ -109,13 +109,13 @@ describe Authority::Controller do
         it "if :all_actions option is given, it overrides the action hash to use the action given" do
           overridden_action_map = controller_class.authority_action_map
           overridden_action_map.update(overridden_action_map) {|k,v| v = :annihilate}
-          child_controller.should_receive(:authority_actions).with(overridden_action_map)
           child_controller.authorize_actions_for(resource_class, :all_actions => :annihilate)
+          child_controller.authority_action_map.should eq(overridden_action_map)
         end
 
-        it "passes the action hash to the `authority_actions` method" do
+        it "passes the action hash to the `add_actions` method" do
           new_actions = {:synthesize => :create, :annihilate => 'delete'}
-          child_controller.should_receive(:authority_actions).with(new_actions)
+          child_controller.should_receive(:add_actions).with(new_actions)
           child_controller.authorize_actions_for(resource_class, :actions => new_actions)
         end
 
@@ -189,25 +189,6 @@ describe Authority::Controller do
           child_controller = Class.new(controller_class)
           child_controller.authority_actions(:smite => 'delete')
           expect(controller_class.authority_action_map[:smite]).to eq(nil)
-        end
-
-      end
-
-      describe "overridden_actions" do
-
-        it "overrides authority action map if option :all_actions is present" do
-          options = { :all_actions => :display, :actions => {:show => :display, :synthesize => :create} }
-          expect(controller_class.overridden_actions(options).values.uniq).to eq([:display])
-        end
-
-        it "returns :actions hash if option :all_actions is not present" do
-          options = { :actions => {:show => :display, :synthesize => :create, :annihilate => 'delete'} }
-          expect(controller_class.overridden_actions(options)).to eq(options[:actions])
-        end
-
-        it "returns an empty hash if no :all_actions nor :actions options present" do
-          options = { :show => :display, :synthesize => :create, :annihilate => 'delete' }
-          expect(controller_class.overridden_actions(options)).to eq({})
         end
 
       end
