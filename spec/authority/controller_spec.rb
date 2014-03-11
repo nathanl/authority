@@ -119,6 +119,21 @@ describe Authority::Controller do
           child_controller.authorize_actions_for(resource_class, :actions => new_actions)
         end
 
+        it "updates the action map if :actions option is given" do
+          updated_map = child_controller.authority_action_map
+          updated_map[:synthesize] = :create
+          new_actions = {:synthesize => :create}
+          child_controller.authorize_actions_for(resource_class, :actions => new_actions)
+          expect(child_controller.authority_action_map).to eq(updated_map)
+        end
+
+        it "doesn't throw an error if the actions hash has an :actions key" do
+          new_actions = {:actions => :read}
+          expect {
+            child_controller.authorize_actions_for(resource_class, :actions => new_actions)
+          }.to_not raise_error
+        end
+
       end
 
       describe "authority_resource" do
