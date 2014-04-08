@@ -43,7 +43,8 @@ module Authority
       # ones and any other options applicable to a before_filter
       def authorize_actions_for(resource_or_finder, options = {})
         self.authority_resource = resource_or_finder
-        authority_actions(overridden_actions(options))
+        add_actions(options.fetch(:actions, {}))
+        force_action(options[:all_actions]) if options[:all_actions]
         before_filter :run_authorization_check, options
       end
 
@@ -51,8 +52,9 @@ module Authority
       #
       # @param [Hash] action_map - controller actions and methods, to be merged with existing action_map
       def authority_actions(action_map)
-        authority_action_map.merge!(overridden_actions(action_map))
-        authority_action_map.merge!(action_map.symbolize_keys)
+        forced_action = action_map.delete(:all_actions)
+        add_actions(action_map)
+        force_action(forced_action) if forced_action
       end
 
       def authority_action(action_map)
@@ -78,13 +80,24 @@ module Authority
         @authority_action_map ||= Authority.configuration.controller_action_map.dup
       end
 
-      def overridden_actions(options = {})
-        if forced_action = options.fetch(:all_actions, false)
-          overridden_actions = authority_action_map.inject({}) { |hash, (key, val)| hash.tap { |h| h[key] = forced_action } }
-        end
-        overridden_actions || options.fetch(:actions, {})
+      # Adds the passed in actions to the current action map.
+      #
+      # @param [Hash] action_map - controller actions and methods to be merged
+      # with the existing action map
+      def add_actions(action_map)
+        authority_action_map.merge!(action_map)
       end
 
+      # Updates the current action map to use the forced action for all of it's
+      # actions.
+      #
+      # @param [String OR Symbol] forced_action - the authority action to use
+      # for all Rails actions in the action map
+      def force_action(forced_action)
+        add_actions(
+          Hash[authority_action_map.map {|key, _| [key, forced_action] }]
+        )
+      end
     end
 
     protected
