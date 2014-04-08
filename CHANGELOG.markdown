@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## Unreleased
+
+- Ability to return options when looking up a class for `authorize_actions_for`, thanks to [Adam Milligan](https://github.com/orchardadam)
+
 ## v2.9.0
 
 Add `all_actions` option for `authorize_actions_for`, thanks to [Igor Davydov](https://github.com/div). 
