@@ -299,20 +299,20 @@ describe Authority::Controller do
                 controller_instance.stub(:method_to_find_class).and_return(resource_class)
               end
 
-              it "checks authorization on class returned by that method" do
+              it "checks authorization on that class" do
                 controller_instance.should_receive(:authorize_action_for).with(resource_class)
                 controller_instance.send(:run_authorization_check)
               end
             end
 
-            context "and the method returns an array" do
+            context "and the method returns an array containing a class and some options" do
               let(:some_options) { { :a => 1, :b => 2 } }
 
               before :each do
                 controller_instance.stub(:method_to_find_class).and_return([resource_class, some_options])
               end
 
-              it "checks authorization on class returned by that method" do
+              it "checks authorization on that class and passes the options" do
                 controller_instance.should_receive(:authorize_action_for).with(resource_class, some_options)
                 controller_instance.send(:run_authorization_check)
               end

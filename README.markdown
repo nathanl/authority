@@ -390,9 +390,11 @@ class LlamasController < ApplicationController
   authorize_actions_for :llama_class
 
   def llama_class
-    # In a real application, you would choose your llama class
-    # much more carefully
+    # This method can simply return a class...
     [StandardLlama, LludicrousLlama].sample
+
+    # ... or an array with a class and some options
+    [OptionLladenLlama, {country: 'Peru'}]
   end
 end
 ```
