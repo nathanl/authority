@@ -127,13 +127,6 @@ describe Authority::Controller do
           expect(child_controller.authority_action_map).to eq(updated_map)
         end
 
-        it "doesn't throw an error if the actions hash has an :actions key" do
-          new_actions = {:actions => :read}
-          expect {
-            child_controller.authorize_actions_for(resource_class, :actions => new_actions)
-          }.to_not raise_error
-        end
-
       end
 
       describe "authority_resource" do
