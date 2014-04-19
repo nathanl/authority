@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## v3.0.0
+
+Officially drop support for Ruby < 1.9.3 and Rails < 3.2.
+
 ## v2.10.0
 
 - Ability to return options when looking up a class for `authorize_actions_for`, thanks to [Adam Milligan](https://github.com/orchardadam)
