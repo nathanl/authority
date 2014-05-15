@@ -169,7 +169,8 @@ class Article
   # Adds `creatable_by?(user)`, etc
   include Authority::Abilities
 
-  # Without this, 'ArticleAuthorizer' is assumed
+  # Without this, 'ArticleAuthorizer' is assumed;
+  # if that doesn't exist, 'ApplicationAuthorizer'
   self.authorizer_name = 'AdminAuthorizer'
   ...
 end
