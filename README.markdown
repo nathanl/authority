@@ -280,11 +280,11 @@ describe AdminAuthorizer do
   end
 
   describe "class" do
-    it "lets admins update in bulk" do
+    it "lets admins update" do
       expect(AdminAuthorizer).to be_updatable_by(@admin)
     end
 
-    it "doesn't let users update in bulk" do
+    it "doesn't let users update" do
       expect(AdminAuthorizer).not_to be_updatable_by(@user)
     end
   end
