@@ -347,7 +347,7 @@ describe Authority::Controller do
         it "sets correct authorization flag" do
           Authority.stub(:enforce)
           controller_instance.send(:authorize_action_for, resource_class)
-          controller_instance.authorization_performed?.should be_true
+          controller_instance.authorization_performed?.should eq(true)
         end
 
       end
