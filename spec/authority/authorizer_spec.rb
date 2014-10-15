@@ -88,14 +88,14 @@ describe Authority::Authorizer do
     context "when given an options hash" do
 
       it "returns false" do
-        expect(Authority::Authorizer.default(:implodable, user, {:for => "my_object"})).to be_false
+        expect(Authority::Authorizer.default(:implodable, user, {:for => "my_object"})).to eq(false)
       end
     end
 
     context "when not given an options hash" do
 
       it "returns false" do
-        expect(Authority::Authorizer.default(:implodable, user)).to be_false
+        expect(Authority::Authorizer.default(:implodable, user)).to eq(false)
       end
 
     end
