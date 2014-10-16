@@ -314,12 +314,14 @@ end
 
 If you're using Rails, ActionController support will be loaded in through a Railtie. Otherwise, you'll want to integrate it into your framework yourself. [Authority's controller](https://github.com/nathanl/authority/blob/master/lib/authority/controller.rb) is an excellent starting point.
 
-Anytime a controller finds a user attempting something they're not authorized to do, a [Security Violation](#security_violations_and_logging) will result. Controllers get two ways to check authorization:
+You can check authorization in your controllers in one of two ways:
 
 - `authorize_actions_for Llama` protects multiple controller actions with a `before_filter`, which performs a **class-level** check. If the current user is never allowed to delete a `Llama`, they'll never even get to the controller's `destroy` method.
 - `authorize_action_for @llama` can be called inside a single controller action, and performs an **instance-level** check. If called inside `update`, it will check whether the current user is allowed to update this particular `@llama` instance.
 
-How does Authority know to check `deletable_by?` before the controller's `destroy` action? It checks your configuration. These mappings are configurable globally from the initializer file. Defaults are as follows:
+If either method finds a user attempting something they're not authorized to do, a [Security Violation](#security_violations_and_logging) will result.
+
+How does `authorize_actions_for` know to check `deletable_by?` before the controller's `destroy` action? It checks your configuration. These mappings are configurable globally from the initializer file. Defaults are as follows:
 
 ```ruby
 config.controller_action_map = {
