@@ -121,6 +121,9 @@ The authorization process generally flows like this:
 
 If the answer is `false` and the original caller was a controller, this is treated as a `SecurityViolation`. If it was a view, maybe you just don't show a link.
 
+The authorization process for instances is different in that it calls the instances `default` method before calling the class `default` method. This allows to
+define default behaviour that requires access to the model instance to be determined.
+
 (Diagrams made with [AsciiFlow](http://asciiflow.com))
 
 <a name="installation">
