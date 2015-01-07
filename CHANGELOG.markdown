@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## Unreleased
+
+Nothing
+
 ## v3.0.0
 
 Officially drop support for Ruby < 1.9.3 and Rails < 3.2.
