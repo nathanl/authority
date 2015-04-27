@@ -10,6 +10,7 @@ If you're using it with Rails controllers, it requires that you already have som
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
 [![Code Climate](https://codeclimate.com/github/nathanl/authority.png)](https://codeclimate.com/github/nathanl/authority)
 [![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority)
+[![Join the chat at https://gitter.im/nathanl/authority](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nathanl/authority?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Contents
 
