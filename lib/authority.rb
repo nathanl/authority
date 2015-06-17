@@ -58,7 +58,7 @@ module Authority
   end
 
   def self.logger
-    @logger ||= configuration.logger
+     configuration.logger
   end
 
   private

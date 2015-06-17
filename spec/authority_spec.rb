@@ -35,6 +35,19 @@ describe Authority do
       Authority.should_receive(:require_authority_internals!)
       Authority.configure
     end
+
+    it "allows changing the logger" do
+      logger1 = Object.new
+      logger2 = Object.new
+      config = Authority::Configuration.new
+      Authority.configuration = config
+
+      config.logger = logger1
+      expect(Authority.logger).to eq(logger1)
+
+      config.logger = logger2
+      expect(Authority.logger).to eq(logger2)
+    end
   end
 
   describe "enforcement" do
