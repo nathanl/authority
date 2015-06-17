@@ -4,7 +4,7 @@ Authority does its best to use [semantic versioning](http://semver.org).
 
 ## Unreleased
 
-Nothing
+- Allow changing the logger by updating the configuration (see commit 0214d24)
 
 ## v3.0.0
 
