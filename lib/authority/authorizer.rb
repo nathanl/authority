@@ -1,7 +1,5 @@
 module Authority
   class Authorizer
-    extend Forwardable
-
     # The base Authorizer class, from which all the authorizers in an app will
     # descend. Provides the authorizer with both class and instance methods
     # like `updatable_by?(user)`.
