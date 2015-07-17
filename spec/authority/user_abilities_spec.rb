@@ -18,7 +18,7 @@ describe Authority::UserAbilities do
       describe "if given options" do
 
         it "delegates the authorization check to the resource, passing the options" do
-          resource_instance.should_receive("#{Authority.abilities[verb]}_by?").with(user, :size => 'wee')
+          expect(resource_instance).to receive("#{Authority.abilities[verb]}_by?").with(user, :size => 'wee')
           user.send(method_name, resource_instance, :size => 'wee')
         end
 
@@ -27,7 +27,7 @@ describe Authority::UserAbilities do
       describe "if not given options" do
 
         it "delegates the authorization check to the resource, passing no options" do
-          resource_instance.should_receive("#{Authority.abilities[verb]}_by?").with(user)
+          expect(resource_instance).to receive("#{Authority.abilities[verb]}_by?").with(user)
           user.send(method_name, resource_instance)
         end
 
@@ -42,7 +42,7 @@ describe Authority::UserAbilities do
     context "when ApplicationAuthorizer responds to a matching `authorizes_to?` call" do
 
       before :each do
-        ApplicationAuthorizer.stub(:authorizes_to_mimic_lemurs?).and_return('yessir')
+        allow(ApplicationAuthorizer).to receive(:authorizes_to_mimic_lemurs?).and_return('yessir')
       end
 
       it "uses the `authorizes_to` return value" do
@@ -50,12 +50,12 @@ describe Authority::UserAbilities do
       end
 
       it "passes along options if any were given" do
-        ApplicationAuthorizer.should_receive(:authorizes_to_mimic_lemurs?).with(user, :for => :academic_credit)
+        expect(ApplicationAuthorizer).to receive(:authorizes_to_mimic_lemurs?).with(user, :for => :academic_credit)
         user.can?(:mimic_lemurs, :for => :academic_credit)
       end
 
       it "doesn't pass along options if none were given" do
-        ApplicationAuthorizer.should_receive(:authorizes_to_mimic_lemurs?).with(user)
+        expect(ApplicationAuthorizer).to receive(:authorizes_to_mimic_lemurs?).with(user)
         user.can?(:mimic_lemurs)
       end
 
@@ -64,14 +64,14 @@ describe Authority::UserAbilities do
     context "when ApplicationAuthorizer does not respond to a matching `authorizes_to?` call" do
 
       before :each do
-        ApplicationAuthorizer.stub(:authorizes_to_mimic_lemurs?).and_raise(NoMethodError.new('eh?'))
+        allow(ApplicationAuthorizer).to receive(:authorizes_to_mimic_lemurs?).and_raise(NoMethodError.new('eh?'))
       end
 
       context "when ApplicationAuthorizer responds to a matching `can` call" do
 
         before :each do
-          ApplicationAuthorizer.stub(:can_mimic_lemurs?).and_return('thumbs up!')
-          Authority.logger.stub(:warn)
+          allow(ApplicationAuthorizer).to receive(:can_mimic_lemurs?).and_return('thumbs up!')
+          allow(Authority.logger).to receive(:warn)
         end
 
         it "uses the `can` return value (for backwards compatibility)" do
@@ -79,7 +79,7 @@ describe Authority::UserAbilities do
         end
 
         it "sends a deprecation warning" do
-          Authority.logger.should_receive(:warn).with(
+          expect(Authority.logger).to receive(:warn).with(
             "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_mimic_lemurs?` to `authorizes_to_mimic_lemurs?`"
           )
           user.can?(:mimic_lemurs)
@@ -90,7 +90,7 @@ describe Authority::UserAbilities do
       context "when ApplicationAuthorizer does not respond to a matching `can` call" do
 
         before(:each) do
-          ApplicationAuthorizer.stub(:can_mimic_lemurs?).and_raise(NoMethodError.new('whaaa?'))
+          allow(ApplicationAuthorizer).to receive(:can_mimic_lemurs?).and_raise(NoMethodError.new('whaaa?'))
         end
 
         it "re-raises the NoMethodError from the missing `authorizes_to?`" do

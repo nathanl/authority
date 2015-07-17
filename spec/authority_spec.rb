@@ -32,7 +32,7 @@ describe Authority do
     end
 
     it "requires the remainder of library internals after configuration" do
-      Authority.should_receive(:require_authority_internals!)
+      expect(Authority).to receive(:require_authority_internals!)
       Authority.configure
     end
 
@@ -62,7 +62,7 @@ describe Authority do
 
         it "checks the user's authorization, passing along the options" do
           options = { :for => 'context' }
-          user.should_receive(:can_delete?).with(resource_class, options).and_return(true)
+          expect(user).to receive(:can_delete?).with(resource_class, options).and_return(true)
           Authority.enforce(:delete, resource_class, user, options)
         end
 
@@ -71,7 +71,7 @@ describe Authority do
       describe "when not given options" do
 
         it "checks the user's authorization, passing no options" do
-          user.should_receive(:can_delete?).with(resource_class).and_return(true)
+          expect(user).to receive(:can_delete?).with(resource_class).and_return(true)
           Authority.enforce(:delete, resource_class, user)
         end
 

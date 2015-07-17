@@ -71,13 +71,13 @@ describe Authority::Abilities do
 
       it "constantizes the authorizer name as the authorizer" do
         resource_class.instance_variable_set(:@authorizer, nil)
-        resource_class.authorizer_name.should_receive(:constantize)
+        expect(resource_class.authorizer_name).to receive(:constantize)
         resource_class.authorizer
       end
 
       it "memoizes the authorizer to avoid reconstantizing" do
         resource_class.authorizer
-        resource_class.authorizer_name.should_not_receive(:constantize)
+        expect(resource_class.authorizer_name).not_to receive(:constantize)
         resource_class.authorizer
       end
 
@@ -106,7 +106,7 @@ describe Authority::Abilities do
         context "when given an options hash" do
 
           it "delegates `#{method_name}` to its authorizer class, passing the options" do
-            resource_class.authorizer.should_receive(method_name).with(user, :lacking => 'nothing')
+            expect(resource_class.authorizer).to receive(method_name).with(user, :lacking => 'nothing')
             resource_class.send(method_name, user, :lacking => 'nothing')
           end
 
@@ -115,7 +115,7 @@ describe Authority::Abilities do
         context "when not given an options hash" do
 
           it "delegates `#{method_name}` to its authorizer class, passing no options" do
-            resource_class.authorizer.should_receive(method_name).with(user)
+            expect(resource_class.authorizer).to receive(method_name).with(user)
             resource_class.send(method_name, user)
           end
 
@@ -147,8 +147,8 @@ describe Authority::Abilities do
         context "when given an options hash" do
 
           it "delegates `#{method_name}` to a new authorizer instance, passing the options" do
-            resource_class.authorizer.stub(:new).and_return(@authorizer)
-            @authorizer.should_receive(method_name).with(user, :with => 'mayo')
+            allow(resource_class.authorizer).to receive(:new).and_return(@authorizer)
+            expect(@authorizer).to receive(method_name).with(user, :with => 'mayo')
             resource_instance.send(method_name, user, :with => 'mayo')
           end
 
@@ -157,8 +157,8 @@ describe Authority::Abilities do
         context "when not given an options hash" do
 
           it "delegates `#{method_name}` to a new authorizer instance, passing no options" do
-            resource_class.authorizer.stub(:new).and_return(@authorizer)
-            @authorizer.should_receive(method_name).with(user)
+            allow(resource_class.authorizer).to receive(:new).and_return(@authorizer)
+            expect(@authorizer).to receive(method_name).with(user)
             resource_instance.send(method_name, user)
           end
 
@@ -176,7 +176,7 @@ describe Authority::Abilities do
     # instance of the authorizer. Otherwise, you might check, make a change to the
     # model instance, check again, and get an outdated answer.
     it "always creates a new authorizer instance when accessing the authorizer" do
-      resource_instance.class.authorizer.should_receive(:new).with(resource_instance).twice
+      expect(resource_instance.class.authorizer).to receive(:new).with(resource_instance).twice
       2.times { resource_instance.authorizer }
     end
 

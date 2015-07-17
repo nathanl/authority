@@ -19,7 +19,7 @@ describe "integration from user through model to authorizer" do
         describe "if given an options hash" do
 
           it "delegates `#{adjective_method}` to its authorizer class, passing the options" do
-            resource_class.authorizer.should_receive(adjective_method).with(user, :lacking => 'nothing')
+            expect(resource_class.authorizer).to receive(adjective_method).with(user, :lacking => 'nothing')
             user.send(verb_method, resource_class, :lacking => 'nothing')
           end
 
@@ -28,7 +28,7 @@ describe "integration from user through model to authorizer" do
         describe "if not given an options hash" do
 
           it "delegates `#{adjective_method}` to its authorizer class, passing no options" do
-            resource_class.authorizer.should_receive(adjective_method).with(user)
+            expect(resource_class.authorizer).to receive(adjective_method).with(user)
             user.send(verb_method, resource_instance)
           end
 
@@ -45,7 +45,7 @@ describe "integration from user through model to authorizer" do
     let!(:authorizer_instance) { resource_class.authorizer.new(resource_instance) }
 
     before :each do
-      resource_class.authorizer.stub(:new).and_return(authorizer_instance)
+      allow(resource_class.authorizer).to receive(:new).and_return(authorizer_instance)
     end
 
     Authority.verbs.each do |verb|
@@ -58,7 +58,7 @@ describe "integration from user through model to authorizer" do
         describe "if given an options hash" do
 
           it "delegates `#{adjective_method}` to a new authorizer instance, passing the options" do
-            authorizer_instance.should_receive(adjective_method).with(user, :consistency => 'mushy')
+            expect(authorizer_instance).to receive(adjective_method).with(user, :consistency => 'mushy')
             user.send(verb_method, resource_instance, :consistency => 'mushy')
           end
 
@@ -67,7 +67,7 @@ describe "integration from user through model to authorizer" do
         describe "if not given an options hash" do
 
           it "delegates `#{adjective_method}` to a new authorizer instance, passing no options" do
-            authorizer_instance.should_receive(adjective_method).with(user)
+            expect(authorizer_instance).to receive(adjective_method).with(user)
             user.send(verb_method, resource_instance)
           end
 
