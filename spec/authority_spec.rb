@@ -37,6 +37,7 @@ describe Authority do
     end
 
     it "allows changing the logger" do
+      starting_config = Authority.configuration
       logger1 = Object.new
       logger2 = Object.new
       config = Authority::Configuration.new
@@ -47,6 +48,7 @@ describe Authority do
 
       config.logger = logger2
       expect(Authority.logger).to eq(logger2)
+      Authority.configuration = starting_config
     end
   end
 
