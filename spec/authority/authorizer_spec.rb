@@ -13,6 +13,20 @@ describe Authority::Authorizer do
 
   describe "instance methods" do
 
+    it "calls the instance default method if no instance method is defined" do
+      expect(authorizer).to receive(:default)
+      authorizer.creatable_by?(user)
+    end
+
+    context "the instance default method" do
+
+      it "delegates to the class default method" do
+        expect(authorizer.class).to receive(:default)
+        authorizer.default(:creatable, user)
+      end
+
+    end
+
     Authority.adjectives.each do |adjective|
       method_name = "#{adjective}_by?"
 
