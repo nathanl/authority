@@ -5,6 +5,7 @@ Authority does its best to use [semantic versioning](http://semver.org).
 ## Unreleased
 
 - Allow changing the logger by updating the configuration (see commit 0214d24)
+- Authorizers can now have an instance default method (`def default`), thanks to [Pascal Friederich](https://github.com/paukul)
 
 ## v3.0.0
 
