@@ -137,8 +137,10 @@ module Authority
     end
 
     def instance_authority_resource
-      return self.class.authority_resource       if self.class.authority_resource.is_a?(Class)
-      send(self.class.authority_resource)
+      case self.class.authority_resource
+      when Class          then self.class.authority_resource
+      when String, Symbol then send(self.class.authority_resource)
+      end
     rescue NoMethodError
       raise MissingResource.new(
           "Trying to authorize actions for '#{self.class.authority_resource}', but can't. \
