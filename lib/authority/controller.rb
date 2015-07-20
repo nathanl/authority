@@ -133,12 +133,21 @@ module Authority
     # The `before_filter` that will be setup to run when the class method
     # `authorize_actions_for` is called
     def run_authorization_check
-      authorize_action_for(*instance_authority_resource)
+      if instance_authority_resource.is_a?(Array)
+        # Array includes options; pass as separate args
+        authorize_action_for(*instance_authority_resource)
+      else
+        # *resource would be interpreted as resource.to_a, which is wrong and
+        # actually triggers a query if it's a Sequel model
+        authorize_action_for(instance_authority_resource)
+      end
     end
 
     def instance_authority_resource
-      return self.class.authority_resource       if self.class.authority_resource.is_a?(Class)
-      send(self.class.authority_resource)
+      case self.class.authority_resource
+      when Class          then self.class.authority_resource
+      when String, Symbol then send(self.class.authority_resource)
+      end
     rescue NoMethodError
       raise MissingResource.new(
           "Trying to authorize actions for '#{self.class.authority_resource}', but can't. \

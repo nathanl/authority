@@ -291,6 +291,13 @@ describe Authority::Controller do
                 expect(controller_instance).to receive(:authorize_action_for).with(resource_class)
                 controller_instance.send(:run_authorization_check)
               end
+
+              it "does not call to_a on that class" do
+                expect(controller_instance).to receive(:authorize_action_for).with(resource_class)
+                # *resource is syntactic sugar for resource.to_a
+                expect(resource_class).not_to receive(:to_a)
+                controller_instance.send(:run_authorization_check)
+              end
             end
 
             context "and the method returns an array containing a class and some options" do
