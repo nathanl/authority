@@ -4,6 +4,10 @@ Authority does its best to use [semantic versioning](http://semver.org).
 
 ## Unreleased
 
+Nothing
+
+## 3.1.0
+
 - Allow changing the logger by updating the configuration (see commit 0214d24), based on [a question](https://github.com/nathanl/authority/issues/101) from [Nate Bird](https://github.com/natebird)
 - Authorizers can now have an instance default method (`def default`), thanks to [Pascal Friederich](https://github.com/paukul)
 - Fix "wrong number of arguments" bug for Sequel users, reported by [Sebastian Porto](https://github.com/sporto) in [Issue 100](https://github.com/nathanl/authority/issues/100)
