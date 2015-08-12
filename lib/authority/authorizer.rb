@@ -43,6 +43,4 @@ module Authority
     end
     private_class_method :user_and_maybe_options
   end
-
-  class NoAuthorizerError < StandardError ; end
 end

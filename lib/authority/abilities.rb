@@ -58,4 +58,6 @@ module Authority
     end
 
   end
+
+  NoAuthorizerError = Class.new(RuntimeError)
 end
