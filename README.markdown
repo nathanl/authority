@@ -405,7 +405,7 @@ class LlamasController < ApplicationController
 end
 ```
 
-If you want to authorize all actions the same way, use the special `all_actions` hash key. For instance, if you have nested resources, you might say "you're allowed to do anything you like with an employee if you're allowed to update their organization".
+If you want to authorize all actions the same way, use the special `all_actions` hash key. For instance, if you have nested resources, you might say "you're allowed to do anything you like with an employee if you're allowed to update their employer".
 
 ```ruby
 class EmployeesController < ApplicationController
