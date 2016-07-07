@@ -45,7 +45,11 @@ module Authority
         self.authority_resource = resource_or_finder
         add_actions(options.fetch(:actions, {}))
         force_action(options[:all_actions]) if options[:all_actions]
-        before_filter :run_authorization_check, options
+        if respond_to? :before_action
+          before_action :run_authorization_check, options
+        else
+          before_filter :run_authorization_check, options
+        end
       end
 
       # Allows defining and overriding a controller's map of its actions to the model's authorizer methods
