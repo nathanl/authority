@@ -89,6 +89,12 @@ describe Authority::Controller do
 
         let(:child_controller) { Class.new(controller_class) }
 
+        let(:rails5_controller) do
+          Class.new(controller_class) do
+            def self.before_action(*args) ; end
+          end
+        end
+
         it "allows specifying the class of the model to protect" do
           controller_class.authorize_actions_for(resource_class)
           expect(controller_class.authority_resource).to eq(resource_class)
@@ -103,6 +109,12 @@ describe Authority::Controller do
           filter_options = {:only => [:show, :edit, :update]}
           expect(controller_class).to receive(:before_filter).with(:run_authorization_check, filter_options)
           controller_class.authorize_actions_for(resource_class, filter_options)
+        end
+
+        it "prefers to set up a before_action over before_filter, passing the options it was given" do
+          filter_options = {:only => [:show, :edit, :update]}
+          expect(rails5_controller).to receive(:before_action).with(:run_authorization_check, filter_options)
+          rails5_controller.authorize_actions_for(resource_class, filter_options)
         end
 
         it "if :all_actions option is given, it overrides the action hash to use the action given" do
