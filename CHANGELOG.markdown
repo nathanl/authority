@@ -6,6 +6,11 @@ Authority does its best to use [semantic versioning](http://semver.org).
 
 Nothing
 
+## 3.2.0
+
+- [Fix Rails 5 deprecation warning](https://github.com/nathanl/authority/pull/110), thanks to [Douglas Teoh](https://github.com/dteoh)
+- CI now only testing latest MRI (2.3.1) and latest Rails (5.0.0). Nothing has been changed to deliberately drop support for older versions; I just don't have time to figure out [the various issues with installing gems and running tests for other versions](https://travis-ci.org/nathanl/authority/builds/142925459). If someone wants to add back some versions [I dropped](https://github.com/nathanl/authority/commit/a91971bc4b30ddbfdc455805fa2566b537f28b6f), PRs are welcome.
+
 ## 3.1.0
 
 - Allow changing the logger by updating the configuration (see commit 0214d24), based on [a question](https://github.com/nathanl/authority/issues/101) from [Nate Bird](https://github.com/natebird)
