@@ -8,7 +8,7 @@ rvm:
   - rbx-2
 
 before_install:
-  - gem update bundler
+  - gem update bundler && bundle --version
 
 gemfile:
   - gemfiles/3.2.gemfile
