@@ -138,6 +138,11 @@ describe Authority::Controller do
           expect(child_controller.authority_action_map).to eq(updated_map)
         end
 
+        it "if :opts option is given, it supplies extra options to the authorization check" do
+          expect(controller_class).to receive(:before_action).with(:run_authorization_check, [:foo, :bar, {}])
+          controller_class.authorize_actions_for(resource_class, :opts => [:foo, :bar])
+        end
+
       end
 
       describe "authority_resource" do
