@@ -16,6 +16,7 @@ module Authority
     included do
       rescue_from(Authority::SecurityViolation, :with => Authority::Controller.security_violation_callback)
       class_attribute :authority_resource, :instance_reader => false
+      class_attribute :authority_options, :instance_writer => false
     end
 
     attr_writer :authorization_performed
@@ -47,10 +48,8 @@ module Authority
         add_actions(options.fetch(:actions, {}))
         force_action(options[:all_actions]) if options[:all_actions]
         
-        # Inject custom opts for authority actions as leading options
-        if opts = options.delete(:opts)
-          options = [*(opts.respond_to?(:to_ary) ? opts.to_ary : [opts]), options]
-        end
+        # Capture custom authorization options
+        self.authority_options = options.delete(:opts)
         
         if respond_to? :before_action
           before_action :run_authorization_check, options
@@ -146,11 +145,11 @@ module Authority
     def run_authorization_check
       if instance_authority_resource.is_a?(Array)
         # Array includes options; pass as separate args
-        authorize_action_for(*instance_authority_resource)
+        authorize_action_for(*instance_authority_resource, *authority_options)
       else
         # *resource would be interpreted as resource.to_a, which is wrong and
         # actually triggers a query if it's a Sequel model
-        authorize_action_for(instance_authority_resource)
+        authorize_action_for(instance_authority_resource, *authority_options)
       end
     end
 
