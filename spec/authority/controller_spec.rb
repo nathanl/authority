@@ -143,6 +143,16 @@ describe Authority::Controller do
           controller_class.authorize_actions_for(resource_class, :opts => [:foo, :bar])
         end
 
+        it "if single :opts option is given, it supplies an extra option to the authorization check" do
+          expect(controller_class).to receive(:before_action).with(:run_authorization_check, [:foo, {}])
+          controller_class.authorize_actions_for(resource_class, :opts => :foo)
+        end
+
+        it "if a hash :opts option is given, it supplies an extra hash option to the authorization check" do
+          expect(controller_class).to receive(:before_action).with(:run_authorization_check, [{foo: :bar}, {}])
+          controller_class.authorize_actions_for(resource_class, :opts => {foo: :bar})
+        end
+
       end
 
       describe "authority_resource" do

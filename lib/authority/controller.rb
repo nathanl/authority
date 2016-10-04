@@ -41,15 +41,15 @@ module Authority
       # @param [Hash] options - can contain :actions to
       # be merged with existing
       # ones and any other options applicable to a before_filter,
-      # and can contain :opts to pass to the authorizer
+      # and can contain an array of :opts to pass to the authorizer
       def authorize_actions_for(resource_or_finder, options = {})
         self.authority_resource = resource_or_finder
         add_actions(options.fetch(:actions, {}))
         force_action(options[:all_actions]) if options[:all_actions]
         
         # Inject custom opts for authority actions as leading options
-        if options.kind_of? Hash and opts = options.delete(:opts)
-          options = [*opts, options]
+        if opts = options.delete(:opts)
+          options = [*(opts.respond_to?(:to_ary) ? opts.to_ary : [opts]), options]
         end
         
         if respond_to? :before_action
