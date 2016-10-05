@@ -2,8 +2,9 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
-## Unreleased
+## 3.2.1
 
+- Allow supplying extra arguments to authorizers in `authorize_actions_for` via the `:args` parameter.
 - Resume CI testing against multiple versions of Ruby and Rails, thanks to [Douglas Teoh's work](https://github.com/nathanl/authority/pull/112).
 
 ## 3.2.0
