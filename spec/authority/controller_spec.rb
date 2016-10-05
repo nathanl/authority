@@ -138,6 +138,16 @@ describe Authority::Controller do
           expect(child_controller.authority_action_map).to eq(updated_map)
         end
 
+        it "if :opts option is given, it extracts extra options for the authorization check" do
+          controller_class.authorize_actions_for(resource_class, :opts => [:foo, :bar])
+          expect(controller_class.authority_options).to eq([:foo, :bar])
+        end
+
+        it "if :opts option wasn't given, no extra options are set" do
+          controller_class.authorize_actions_for(resource_class)
+          expect(controller_class.authority_options?).not_to be true
+        end
+
       end
 
       describe "authority_resource" do
@@ -280,6 +290,27 @@ describe Authority::Controller do
             controller_instance.send(:run_authorization_check)
           end
 
+        end
+
+        context "if extra opts were specified" do
+
+          let(:resource_class) { Hash }
+          let(:controller_class) do
+            Class.new(ExampleController).tap do |c|
+              c.send(:include, Authority::Controller)
+              c.authorize_actions_for(:method_to_find_class, opts: [:extra, :opts])
+            end
+          end
+          
+          before :each do
+            allow(controller_instance).to receive(:method_to_find_class).and_return(resource_class)
+          end
+
+          it "uses extra opts in authorization check" do
+            expect(controller_instance).to receive(:authorize_action_for).with(resource_class, :extra, :opts)
+            controller_instance.send(:run_authorization_check)
+          end
+          
         end
 
         context "if a method for determining the class was specified" do
