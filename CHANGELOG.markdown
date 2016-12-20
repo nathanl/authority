@@ -2,6 +2,10 @@
 
 Authority does its best to use [semantic versioning](http://semver.org).
 
+## Unreleased
+
+- [Fix Rails 5 `after_filter` deprecation warning](https://github.com/nathanl/authority/pull/115), thanks to [Erik Axel Nielsen](https://github.com/erikaxel))
+
 ## 3.2.1
 
 - Allow supplying extra arguments to authorizers in `authorize_actions_for` via the `:args` parameter.
