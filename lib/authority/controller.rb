@@ -77,9 +77,15 @@ module Authority
 
       # Convenience wrapper for instance method
       def ensure_authorization_performed(options = {})
-        after_filter(options.slice(:only, :except)) do |controller_instance|
-          controller_instance.ensure_authorization_performed(options)
-        end
+        if respond_to? :after_action
+          after_action(options.slice(:only, :except)) do |controller_instance|
+             controller_instance.ensure_authorization_performed(options)
+          end
+        else
+          after_filter(options.slice(:only, :except)) do |controller_instance|
+             controller_instance.ensure_authorization_performed(options)
+          end
+        end        
       end
 
       # The controller action to authority action map used for determining
