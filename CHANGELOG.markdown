@@ -4,6 +4,10 @@ Authority does its best to use [semantic versioning](http://semver.org).
 
 ## Unreleased
 
+(nothing)
+
+## 3.2.2
+
 - [Fix Rails 5 `after_filter` deprecation warning](https://github.com/nathanl/authority/pull/115), thanks to [Erik Axel Nielsen](https://github.com/erikaxel))
 
 ## 3.2.1
