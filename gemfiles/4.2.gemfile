@@ -8,4 +8,10 @@ platforms :jruby, :ruby_19 do
   gem 'mime-types', '~> 2.99.2'
 end
 
+platforms :ruby do
+  if RUBY_VERSION < "2.1.0"
+    gem "nokogiri", "1.6.8.1"
+  end
+end
+
 gemspec path: '../'
