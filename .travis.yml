@@ -22,6 +22,12 @@ matrix:
   exclude:
     - rvm: rbx
       gemfile: gemfiles/4.0.gemfile
+    - rvm: 2.4.0
+      gemfile: gemfiles/3.2.gemfile
+    - rvm: 2.4.0
+      gemfile: gemfiles/4.1.gemfile
+    - rvm: 2.4.0
+      gemfile: gemfiles/4.2.gemfile
   include:
     - rvm: 2.2.6
       gemfile: gemfiles/5.0.gemfile
