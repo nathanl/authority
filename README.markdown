@@ -6,7 +6,7 @@ Authority will work fine with a standalone app or a single sign-on system. You c
 
 If you're using it with Rails controllers, it requires that you already have some kind of user object in your application, accessible via a method like `current_user` (configurable).
 
-[![Gem Version](https://badge.fury.io/rb/authority.png)](https://rubygems.org/gems/searchlight)
+[![Gem Version](https://badge.fury.io/rb/authority.png)](https://rubygems.org/gems/authority)
 [![Build Status](https://secure.travis-ci.org/nathanl/authority.png?branch=master)](http://travis-ci.org/nathanl/authority)
 [![Code Climate](https://codeclimate.com/github/nathanl/authority.png)](https://codeclimate.com/github/nathanl/authority)
 [![Dependency Status](https://gemnasium.com/nathanl/authority.png)](https://gemnasium.com/nathanl/authority)
