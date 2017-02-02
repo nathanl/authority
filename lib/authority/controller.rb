@@ -134,9 +134,8 @@ module Authority
 
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
 
-      if Authority.configuration.log_all
-        authority_success(authority_user, authority_action, authority_resource)
-      end
+      # This method is always invoked, but will only log if it's enabled
+      authority_success(authority_user, authority_action, authority_resource)
       
       self.authorization_performed = true
     end
@@ -153,7 +152,9 @@ module Authority
     #
     # This method can be overloaded inside the application controller, similar to authority_forbidden.
     def authority_success(user, action, resource)
-      Authority.logger.info("#{user} successfully performed the #{action} action to this resource: #{resource}")
+      if Authority.configuration.log_all
+        Authority.logger.info("#{user} successfully performed the #{action} action to this resource: #{resource}")
+      end
     end
 
     private
