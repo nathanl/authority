@@ -37,14 +37,6 @@ module Authority
     unless action_authorized?(action, resource, user, options)
       raise SecurityViolation.new(user, action, resource)
     end
-
-    if Authority.configuration.log_all
-      Authority.log_action("#{user} is attempting to #{action} #{resource} with options #{options}")     
-    end
-  end
-
-  def self.log_action(message)
-    Authority.logger.info(message)
   end
 
   def self.action_authorized?(action, resource, user, options = {})

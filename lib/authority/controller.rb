@@ -133,6 +133,11 @@ module Authority
       end
 
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
+
+      if Authority.configuration.log_all
+        authority_success(authority_user, authority_action, authority_resource)
+      end
+      
       self.authorization_performed = true
     end
 
@@ -142,6 +147,13 @@ module Authority
     def authority_forbidden(error)
       Authority.logger.warn(error.message)
       render :file => Rails.root.join('public', '403.html'), :status => 403, :layout => false
+    end
+
+    # Log successful authorization attempt if enabled in the authority configuration.
+    #
+    # This method can be overloaded inside the application controller, similar to authority_forbidden.
+    def authority_success(user, action, resource)
+      Authority.logger.info("#{user} successfully performed the #{action} action to this resource: #{resource}")
     end
 
     private
