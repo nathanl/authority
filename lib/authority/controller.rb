@@ -152,7 +152,7 @@ module Authority
     #
     # This method can be overloaded inside the application controller, similar to authority_forbidden.
     def authority_success(user, action, resource)
-      if Authority.configuration.log_all
+      if Authority.configuration.log_success
         Authority.logger.info("#{user} successfully performed the #{action} action to this resource: #{resource}")
       end
     end

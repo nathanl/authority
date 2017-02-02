@@ -433,14 +433,14 @@ describe Authority::Controller do
       describe "authority_success action" do
 
         it "logs an info if enabled" do
-          Authority.configuration.log_all = true
+          Authority.configuration.log_success = true
 
           expect(Authority.logger).to receive(:info)
           controller_instance.send(:authority_success, "a", "b", "c")
         end
 
         it "does not log anything if disabled" do
-          Authority.configuration.log_all = false
+          Authority.configuration.log_success = false
 
           expect(Authority.logger).not_to receive(:info)
           controller_instance.send(:authority_success, "a", "b", "c")
