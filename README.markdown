@@ -493,6 +493,16 @@ end
 
 Your method will be handed the `SecurityViolation`, which has a `message` method. In case you want to build your own message, it also exposes `user`, `action` and `resource`.
 
+When a user action is successfully authorized, Authority will call `authority_success` on your controller.
+By default, this does nothing, but you can override it to log the event or do something else.
+For instance:
+
+```ruby
+def authority_success(user, action, resource)
+  Authority.logger.info "user #{user} was authorized to #{action} resource #{resource}"
+end
+```
+
 <a name="credits">
 ## Credits, AKA 'Shout-Outs'
 
