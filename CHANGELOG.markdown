@@ -4,6 +4,10 @@ Authority does its best to use [semantic versioning](http://semver.org).
 
 ## Unreleased
 
+(nothing)
+
+## 3.3.0
+
 - [Allow defining `authority_success` controller action to handle successful authorization](https://github.com/nathanl/authority/pull/119), thanks to [John Poulin](https://github.com/forced-request)
 
 ## 3.2.2
