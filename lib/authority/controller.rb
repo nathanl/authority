@@ -134,7 +134,7 @@ module Authority
 
       Authority.enforce(authority_action, authority_resource, authority_user, *options)
 
-      # This method is always invoked, but will only log if it's enabled
+      # This method is always invoked, but will only log if it's overriden
       authority_success(authority_user, authority_action, authority_resource)
       
       self.authorization_performed = true
@@ -148,13 +148,9 @@ module Authority
       render :file => Rails.root.join('public', '403.html'), :status => 403, :layout => false
     end
 
-    # Log successful authorization attempt if enabled in the authority configuration.
-    #
     # This method can be overloaded inside the application controller, similar to authority_forbidden.
     def authority_success(user, action, resource)
-      if Authority.configuration.log_success
-        Authority.logger.info("#{user} successfully performed the #{action} action to this resource: #{resource}")
-      end
+      # Do nothing by default, but provide the option for users to override if they will.
     end
 
     private
