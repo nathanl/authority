@@ -508,9 +508,9 @@ end
 
 - [adamhunter](https://github.com/adamhunter) for pairing with me on this gem. The only thing faster than his typing is his brain.
 - [kevmoo](https://github.com/kevmoo), [MP211](https://github.com/MP211), and [scottmartin](https://github.com/scottmartin) for pitching in.
-- [nkallen](https://github.com/nkallen) for writing [a lovely blog post on access control](http://blog.pivotal.io/labs/labs/access-control-permissions-in-rails-access-control-permissions-in-rails) when he worked at Pivotal Labs. I cried sweet tears of joy when I read that a couple of years ago. I was like, "Zee access code, she is so BEEUTY-FUL!"
+- [nkallen](https://github.com/nkallen) for writing [a lovely blog post on access control](http://blog.pivotal.io/labs/labs/access-control-permissions-in-rails-access-control-permissions-in-rails) when he worked at Pivotal Labs. I cried sweet tears of joy when I read that in 2010. I was like, "Zee access code, she is so BEEUTY-FUL!"
 - [jnunemaker](https://github.com/jnunemaker) for later creating [Canable](http://github.com/jnunemaker/canable), another inspiration for Authority.
-- [TMA](http://www.tma1.com) for employing me and letting me open source some of our code.
+- [TMA](http://www.tma1.com) for sponsoring the initial releases of Authority.
 
 <a name="contributing">
 
