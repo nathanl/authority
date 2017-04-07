@@ -1,4 +1,4 @@
-# Authority
+# Authority *(CURRENTLY UNMAINTAINED)*
 
 Authority helps you authorize actions in your Ruby app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
 
