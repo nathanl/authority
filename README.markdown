@@ -1,5 +1,15 @@
 # Authority *(CURRENTLY UNMAINTAINED)*
 
+Authority is now unmaintained.
+Users who have installed it decided to trust me, and I'm not comfortable transferring that trust to someone else on their behalf.
+However, if you'd like to fork it, feel free to open a PR to add your repo and/or gem name to this README, and I'll probably merge it.
+
+Known forks:
+
+- (none yet)
+
+## Overview
+
 Authority helps you authorize actions in your Ruby app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
 
 Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic and handle unauthorized actions.
