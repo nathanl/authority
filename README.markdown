@@ -10,6 +10,8 @@ Known forks:
 
 ## Overview
 
+[![Join the chat at https://gitter.im/nathanl/authority](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nathanl/authority?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Authority helps you authorize actions in your Ruby app. It's **ORM-neutral** and has very little fancy syntax; just group your models under one or more Authorizer classes and write plain Ruby methods on them.
 
 Authority will work fine with a standalone app or a single sign-on system. You can check roles in a database or permissions in a YAML file. It doesn't care! What it **does** do is give you an easy way to organize your logic and handle unauthorized actions.
