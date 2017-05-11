@@ -130,6 +130,9 @@ module Authority
       authority_action = self.class.authority_action_map[action_name.to_sym]
       if authority_action.nil?
         raise MissingAction.new("No authority action defined for #{action_name}")
+      elsif authority_action.kind_of?(Array)
+        options = authority_action[1..-1]
+        authority_action = authority_action.first
       end
 
       Authority.enforce(authority_action, authority_resource, authority_user, *options)

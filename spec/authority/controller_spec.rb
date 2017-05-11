@@ -394,6 +394,13 @@ describe Authority::Controller do
           controller_instance.send(:authorize_action_for, resource_class, options)
         end
 
+        it "passes options set by authority_actions" do
+          options = {:for => 'insolence'}
+          controller_class.authority_actions({:destroy => ['delete', options]})
+          Authority.should_receive(:enforce).with('delete', resource_class, user, options)
+          controller_instance.send(:authorize_action_for, resource_class)
+        end
+
         it "sets correct authorization flag" do
           allow(Authority).to receive(:enforce)
           controller_instance.send(:authorize_action_for, resource_class)
