@@ -6,7 +6,7 @@ However, if you'd like to fork it, feel free to open a PR to add your repo and/o
 
 Known forks:
 
-- (none yet)
+- [tuliren/authority](https://github.com/tuliren/authority)
 
 ## Overview
 
