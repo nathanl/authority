@@ -11,6 +11,8 @@ module Authority
     extend ActiveSupport::Concern
 
     included do |base|
+      @@authorized_classes ||= []
+      @@authorized_classes << base
       class_attribute :authorizer_name
 
       # Set the default authorizer for this model.
@@ -23,6 +25,13 @@ module Authority
       end
     end
 
+    def self.authorized_classes
+      if class_variable_defined?(:@@authorized_classes)
+        @@authorized_classes.freeze
+      else
+        [].freeze
+      end
+    end
 
     def authorizer
       self.class.authorizer.new(self) # instantiate on every check, in case model has changed

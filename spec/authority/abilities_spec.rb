@@ -8,6 +8,14 @@ describe Authority::Abilities do
   let(:namespaced_resource_class) { Namespaced::SampleResource }
   let(:other_resource_class)      { OtherResource }
 
+  describe "module methods" do
+
+    it 'has a list of authorized classes defined in spec/support/example_classes.rb' do
+      expect(Authority::Abilities.authorized_classes.count).to eq 3
+    end
+
+  end
+
   describe "instance methods" do
 
     describe "authorizer_name" do
