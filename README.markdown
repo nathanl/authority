@@ -4,7 +4,7 @@ Authority is now unmaintained.
 Users who have installed it decided to trust me, and I'm not comfortable transferring that trust to someone else on their behalf.
 However, if you'd like to fork it, feel free.
 
-Gary Foster has provided a [guide to migrating to Pundit](https://gist.github.com/garyfoster/5f1aba65b20ac7464e7e9642ea966c3f).
+Gary Foster has provided a [script to migrate to Pundit](https://gist.github.com/garyfoster/5f1aba65b20ac7464e7e9642ea966c3f).
 
 ## Overview
 
