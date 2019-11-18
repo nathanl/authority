@@ -2,11 +2,9 @@
 
 Authority is now unmaintained.
 Users who have installed it decided to trust me, and I'm not comfortable transferring that trust to someone else on their behalf.
-However, if you'd like to fork it, feel free to open a PR to add your repo and/or gem name to this README, and I'll probably merge it.
+However, if you'd like to fork it, feel free.
 
-Known forks:
-
-- (none yet)
+Gary Foster has provided a [guide to migrating to Pundit](https://gist.github.com/garyfoster/5f1aba65b20ac7464e7e9642ea966c3f).
 
 ## Overview
 
